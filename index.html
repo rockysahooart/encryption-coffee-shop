@@ -1,0 +1,1911 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encryption at the coffee shop</title>
+<style>
+:root{
+  --bg:#0E1013;
+  --surface:#16191D;
+  --surface-2:#1E2329;
+  --ink:#ECEEF0;
+  --muted:#9BA3AB;
+  --faint:#7C858D;
+  --line:#242A30;
+  --line-2:#39414A;
+  --asym:#E9C46A;
+  --sym:#6FD08C;
+  --glow:rgba(236,238,240,.20);
+
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+  --r1:4px; --r2:8px; --r3:12px;
+
+  --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+
+  --dev:150px;
+  --col:224px;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --t-fast:200ms; --t-mid:360ms; --t-slow:560ms;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+svg{display:block}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+button:disabled{cursor:default}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:var(--r1)}
+
+.frame{
+  height:100dvh;
+  display:grid;
+  grid-template-rows:auto auto minmax(0,1fr) auto auto;
+  gap:var(--s5);
+  padding:var(--s5) var(--s6) var(--s5);
+  max-width:1440px;
+  margin:0 auto;
+}
+
+/* ---------- header ---------- */
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s5)}
+h1{font-size:clamp(15px,.5vw + 11px,17px);font-weight:600;letter-spacing:-.01em;color:var(--muted)}
+.sub{color:var(--faint);font-size:13px;line-height:1.5;margin-top:var(--s1);max-width:60ch}
+
+.ambient{display:flex;align-items:center;gap:var(--s3);color:var(--faint);flex:none;padding-top:var(--s1)}
+.ambient .ssid{font-family:var(--mono);font-size:11px;letter-spacing:.02em}
+.ambient svg{color:var(--faint)}
+
+/* ---------- steps ---------- */
+.steps{display:flex;align-items:center;gap:var(--s2)}
+.step{
+  display:flex;align-items:center;gap:var(--s2);
+  padding:var(--s1) var(--s3) var(--s1) var(--s2);
+  border-radius:var(--r3);
+  color:var(--muted);font-size:13px;
+  transition:color var(--t-fast) var(--ease),background var(--t-fast) var(--ease);
+}
+.step:hover{color:var(--ink)}
+.step .num{
+  display:grid;place-items:center;width:18px;height:18px;border-radius:50%;
+  border:1px solid var(--line-2);color:var(--faint);
+  font-family:var(--mono);font-size:10px;line-height:1;
+  transition:border-color var(--t-fast) var(--ease),background var(--t-fast) var(--ease),color var(--t-fast) var(--ease);
+}
+.step:hover .num{border-color:var(--muted);color:var(--muted)}
+.step[aria-current="step"]{color:var(--ink);background:var(--surface-2);font-weight:500}
+.step[aria-current="step"] .num{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.step[data-done="true"] .num{border-color:var(--muted);color:var(--muted)}
+.sep{color:var(--line-2);font-size:12px;user-select:none}
+
+/* ---------- stage ---------- */
+.stage{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  gap:var(--s5);
+  min-height:0;
+}
+
+.concept{display:flex;align-items:center;gap:var(--s3);justify-content:center;height:22px}
+.concept-name{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;font-weight:600;
+  transition:opacity var(--t-mid) var(--ease),transform var(--t-mid) var(--ease);
+}
+.concept-sub{color:var(--muted);font-size:13px;transition:opacity var(--t-mid) var(--ease)}
+.concept[data-kind="asym"] .concept-name{color:var(--asym)}
+.concept[data-kind="dh"] .concept-name{color:var(--asym)}
+.concept[data-kind="sym"] .concept-name{color:var(--sym)}
+.concept[hidden]{visibility:hidden}
+
+.lanes{
+  flex:1;
+  display:grid;
+  grid-template-columns:var(--col) minmax(260px,1fr) var(--col);
+  grid-template-rows:auto auto auto;
+  column-gap:var(--s5);
+  row-gap:var(--s5);
+  align-content:center;
+  min-height:0;
+  width:100%;
+  max-width:1000px;
+  margin:0 auto;
+}
+
+/* endpoints */
+.ep{position:relative;height:var(--dev);display:flex;justify-content:center}
+.ep--idle .device{opacity:.3}
+.ep--idle .ep-label{color:var(--faint)}
+.ep-label{
+  position:absolute;top:calc(100% + var(--s2));left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);
+}
+.device{
+  width:100%;height:100%;
+  display:grid;place-items:center;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r3);
+  box-shadow:0 1px 2px rgba(0,0,0,.35);
+  color:var(--ink);
+  transition:border-color var(--t-mid) var(--ease),opacity var(--t-mid) var(--ease);
+}
+.device.live{border-color:var(--line-2)}
+
+/* token row (row 2) */
+.slot{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2);min-height:30px}
+.slot--you{justify-content:flex-end}
+.slot--svc{justify-content:flex-start}
+/* on desktop the column IS the ownership signal, so the wrapper and the
+   spoken label stay out of the way entirely */
+.slot-tokens,.corridor,.env,.module{display:contents}
+.context{display:none}
+.holds-label,.mid-label{display:none}
+
+.token{
+  display:none;align-items:center;gap:6px;
+  padding:5px 7px;
+  border-radius:var(--r2);
+  font-size:11.5px;line-height:1;
+  background:var(--surface);
+  opacity:0;
+  transition:opacity var(--t-mid) var(--ease),transform var(--t-mid) var(--ease),filter var(--t-mid) var(--ease);
+  transform:scale(.94);
+  white-space:nowrap;
+}
+.token.show{display:inline-flex}
+.token.on{opacity:1;transform:none}
+.token.dim{color:var(--faint);border-color:var(--line);background:transparent}
+.token--public{color:var(--asym);border:1px dashed rgba(233,196,106,.45)}
+.token--session{color:var(--sym);border:1px solid rgba(111,208,140,.42);background:rgba(111,208,140,.09)}
+.token--private{color:var(--asym);border:1px solid rgba(233,196,106,.42)}
+
+.pair{display:flex;align-items:center;gap:var(--s2)}
+.anchor{position:relative;display:flex;align-items:center}
+.token--private.held,.token.check{animation:hold 420ms var(--ease)}
+@keyframes merge-r{0%{transform:none}55%{transform:translateX(11px)}100%{transform:none}}
+@keyframes merge-l{0%{transform:none}55%{transform:translateX(-11px)}100%{transform:none}}
+.token.merge-r{animation:merge-r 640ms var(--ease)}
+.token.merge-l{animation:merge-l 640ms var(--ease)}
+@keyframes hold{
+  0%{transform:none}
+  40%{transform:scale(1.07)}
+  100%{transform:none}
+}
+
+/* network band */
+.net{position:relative;height:var(--dev)}
+.wire{
+  position:absolute;left:-10px;right:-10px;top:50%;height:0;
+  border-top:1px dashed var(--line-2);
+  opacity:.4;transition:opacity var(--t-mid) var(--ease);
+}
+.wire.live{opacity:1}
+.track{position:absolute;left:0;right:0;top:50%;height:0}
+.flyer{
+  position:absolute;left:0;top:0;
+  transform:translate(0,-50%);
+  opacity:0;
+  will-change:transform,opacity;
+}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px var(--s2);
+  border-radius:var(--r2);
+  background:var(--surface);
+  border:1px solid var(--line-2);
+  font-family:var(--mono);font-size:12px;letter-spacing:.02em;
+  box-shadow:0 0 0 7px var(--bg),0 1px 3px rgba(0,0,0,.5);
+  white-space:nowrap;
+}
+.pulse{width:56px;height:2px;border-radius:1px;background:var(--muted)}
+.flyer--branch{transition:transform var(--t-slow) var(--ease),opacity var(--t-mid) var(--ease)}
+.flyer--up .chip{margin-top:-15px}
+.flyer--down .chip{margin-top:15px}
+.chip--public{color:var(--asym);border-color:rgba(233,196,106,.45);border-style:dashed}
+.chip--sig{color:var(--asym);border-color:rgba(233,196,106,.42)}
+
+/* wifi */
+.wifi{
+  position:absolute;left:-16px;top:50%;transform:translateY(-50%) scaleX(-1);
+  padding:0 var(--s2);background:var(--bg);
+  color:var(--muted);opacity:0;transition:opacity var(--t-mid) var(--ease);
+}
+.wifi.on{opacity:1}
+.wifi .arc{opacity:0}
+.wifi.play .arc{animation:arc 1400ms var(--ease) forwards}
+.wifi.play .arc:nth-child(2){animation-delay:120ms}
+.wifi.play .arc:nth-child(3){animation-delay:240ms}
+.wifi.settled .arc{opacity:.9}
+@keyframes arc{
+  0%{opacity:0;transform:translateX(-4px)}
+  35%{opacity:1;transform:none}
+  100%{opacity:.9;transform:none}
+}
+
+/* observer */
+.observer{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,calc(-100% - 48px));
+  display:flex;flex-direction:column;align-items:center;gap:var(--s1);
+  opacity:0;transition:opacity var(--t-mid) var(--ease);
+  text-align:center;
+}
+.obs-head{display:flex;align-items:center;gap:var(--s2);color:var(--faint)}
+.obs-row{display:flex;align-items:center;gap:var(--s2)}
+.observer.on{opacity:1}
+.obs-label-mini{display:none}
+.observer .obs-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--faint)}
+.observer .obs-sees{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:12px;color:var(--muted);
+  opacity:0;transition:opacity var(--t-fast) var(--ease);
+}
+.observer .obs-sees.on{opacity:1}
+
+/* shared secret link (row 2, center) */
+.link{position:relative;padding:0 var(--s4);display:flex;flex-direction:column;align-items:center;gap:var(--s1);opacity:0;transition:opacity var(--t-mid) var(--ease)}
+.link.on{opacity:1}
+.link-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--sym)}
+.link-line{
+  display:flex;gap:var(--s7);width:100%;
+  transform:scaleX(0);transform-origin:center;transition:transform var(--t-slow) var(--ease);
+}
+.link-line i{flex:1;height:1px;background:rgba(111,208,140,.38)}
+.link.on .link-line{transform:scaleX(1)}
+
+/* message row (row 3) */
+.msg-cell{display:grid;min-height:184px;grid-row:3}
+.msg-cell--you{grid-column:1}
+.msg-cell--svc{grid-column:3}
+.msg-cell > *{grid-area:1/1;justify-self:center;align-self:start}
+
+.cta{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);
+  min-height:52px;min-width:212px;padding:0 var(--s5);
+  border:1px solid var(--ink);border-radius:var(--r3);
+  background:var(--ink);color:var(--bg);font-size:15px;font-weight:600;letter-spacing:-.005em;
+  box-shadow:0 0 22px var(--glow),0 2px 10px rgba(0,0,0,.55);
+  transition:box-shadow var(--t-fast) var(--ease),background var(--t-fast) var(--ease),
+             color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);
+}
+.cta:hover{background:#FFFFFF;box-shadow:0 0 26px rgba(236,238,240,.26),0 2px 10px rgba(0,0,0,.55)}
+/* stays in place when it is not yet available */
+.cta:disabled{
+  background:transparent;border-color:var(--line-2);color:var(--faint);
+  box-shadow:none;
+}
+
+.reveal{opacity:0;transform:translateY(4px);pointer-events:none}
+.reveal.on{opacity:1;transform:none;pointer-events:auto}
+
+
+.card{
+  width:100%;min-width:0;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r3);
+  padding:var(--s3);
+  text-align:left;
+  box-shadow:0 1px 2px rgba(0,0,0,.35);
+  opacity:0;transform:translateY(6px) scale(.98);
+  transition:opacity var(--t-mid) var(--ease),transform var(--t-mid) var(--ease);
+  pointer-events:none;
+}
+.card.on{opacity:1;transform:none;pointer-events:auto}
+.card-from{font-size:11px;color:var(--faint);letter-spacing:.02em;margin-bottom:var(--s2)}
+
+.pane{display:none}
+.card[data-mode="wifi"] .pane--wifi,
+.card[data-mode="portal"] .pane--portal,
+.card[data-mode="apps"] .pane--apps,
+.card[data-mode="mail"] .pane--mail{display:block}
+.panel.swap{opacity:0}
+
+.netrow{
+  display:flex;align-items:center;gap:var(--s2);
+  border:1px solid transparent;
+  width:calc(100% + var(--s4));margin:0 calc(var(--s2) * -1);
+  min-height:44px;padding:0 var(--s2);
+  border-radius:var(--r1);font-size:13px;color:var(--faint);text-align:left;
+  transition:background var(--t-fast) var(--ease);
+}
+.netrow .netname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.netrow .netmeta{font-size:11px;color:var(--faint);letter-spacing:.01em}
+button.netrow{color:var(--ink)}
+button.netrow:hover{background:var(--surface-2)}
+button.netrow[aria-pressed="true"]{background:var(--surface-2);border-color:var(--line-2)}
+button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
+.approw{
+  display:flex;align-items:center;gap:var(--s2);
+  min-height:44px;padding:0 var(--s2);margin:0 calc(var(--s2) * -1);
+  border-radius:var(--r1);font-size:13px;color:var(--muted);
+  transition:color var(--t-fast) var(--ease),background var(--t-fast) var(--ease);
+}
+.approw.active{color:var(--ink);background:var(--surface-2)}
+
+.pane-note{font-size:12px;color:var(--muted);margin-bottom:var(--s3)}
+.pwrow{display:flex;align-items:center;gap:var(--s2);min-width:0}
+.field{
+  flex:1;min-width:0;height:44px;padding:0 var(--s2);
+  border:1px solid var(--line-2);border-radius:var(--r2);
+  background:var(--surface-2);color:var(--ink);
+  font-family:var(--mono);font-size:13px;letter-spacing:.12em;
+}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;padding:0 var(--s3);
+  border:1px solid var(--line-2);border-radius:var(--r2);
+  background:transparent;color:var(--ink);font-size:13px;
+  transition:border-color var(--t-fast) var(--ease),background var(--t-fast) var(--ease);
+}
+.btn:hover{border-color:var(--ink);background:var(--surface-2)}
+.card-body{font-size:13px;line-height:1.4;min-height:38px}
+.card-body.enc{font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.04em}
+.card-line2{color:var(--muted);font-size:12px}
+.card-key{
+  display:flex;align-items:center;gap:var(--s1);height:15px;
+  font-size:11px;letter-spacing:.01em;
+  margin-bottom:var(--s1);color:var(--sym);
+  opacity:0;transition:opacity var(--t-fast) var(--ease);
+}
+.card-key.on{opacity:1}
+
+/* ---------- legend ---------- */
+.legend{
+  display:flex;align-items:flex-start;gap:var(--s7);
+  padding-top:var(--s4);
+  border-top:1px solid var(--line);
+}
+.leg{display:flex;align-items:center;gap:var(--s3);opacity:.72;transition:opacity var(--t-mid) var(--ease)}
+.leg.active{opacity:1}
+.leg-name{font-family:var(--mono);font-size:11px;letter-spacing:.12em;font-weight:600;min-width:96px}
+.leg--asym .leg-name,.leg--dh .leg-name{color:var(--asym)}
+.leg--sym .leg-name{color:var(--sym)}
+.leg-items{display:flex;align-items:center;gap:var(--s3);font-size:12px;color:var(--muted)}
+.leg-item{display:inline-flex;align-items:center;gap:6px}
+.leg--asym .leg-item,.leg--dh .leg-item{color:var(--asym)}
+.leg--sym .leg-item{color:var(--sym)}
+.leg-note{color:var(--muted);font-size:12px;padding-left:var(--s3);border-left:1px solid var(--line)}
+
+/* ---------- scene change + next action ---------- */
+.stage.enter .lanes,.stage.enter .concept{animation:scene 280ms var(--ease)}
+@keyframes scene{from{opacity:.35;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+.actions{
+  display:flex;align-items:center;justify-content:space-between;gap:var(--s5);
+  min-height:56px;
+}
+.replay{
+  display:inline-flex;align-items:center;gap:var(--s2);
+  min-height:44px;padding:0 var(--s3);
+  border-radius:var(--r2);color:var(--muted);font-size:13px;
+  transition:color var(--t-fast) var(--ease),opacity var(--t-mid) var(--ease),transform var(--t-mid) var(--ease);
+}
+.replay:hover{color:var(--ink)}
+.next .ic{opacity:.7}
+.next[data-act="restart"] .ic-arrow,.next:not([data-act="restart"]) .ic-replay{display:none}
+
+
+
+/* ---------- moment: what is happening / what to do ---------- */
+.moment{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:var(--s2);
+  width:100%;max-width:720px;margin:0 auto;
+  min-height:104px;                 /* reserved so the diagram never shifts */
+  margin-bottom:var(--s3);
+  text-align:center;
+}
+.story{display:flex;align-items:center;justify-content:center;gap:var(--s4)}
+.story-icon{flex:none;display:grid;place-items:center;width:34px;height:34px;color:var(--ink)}
+.story-icon svg{
+  width:32px;height:32px;
+  fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.story-icon[data-tone="asym"]{color:var(--asym)}
+.story-icon[data-tone="sym"]{color:var(--sym)}
+.story-icon[data-tone="mute"]{color:var(--muted)}
+.story-icon .accent-sym{stroke:var(--sym)}
+.story-icon .accent-asym{stroke:var(--asym)}
+.story-icon .accent-mute{stroke:var(--muted)}
+.story.payoff .story-icon{width:40px;height:40px}
+.story.payoff .story-icon svg{width:38px;height:38px}
+
+/* each motion answers "what is happening now"; each runs once, then rests */
+@keyframes ic-in{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+@keyframes ic-left{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+@keyframes ic-right{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+@keyframes ic-settle{0%{transform:translateY(-4px) scale(1.06)}60%{transform:none}100%{transform:none}}
+@keyframes ic-from-left{from{opacity:0;transform:translateX(-9px)}to{opacity:1;transform:none}}
+@keyframes ic-from-right{from{opacity:0;transform:translateX(9px)}to{opacity:1;transform:none}}
+@keyframes ic-fade-out{from{opacity:1}to{opacity:.22}}
+@keyframes ic-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes ic-shift{from{transform:translateX(-7px)}to{transform:translateX(3px)}}
+@keyframes ic-focus{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+
+.story-icon svg{animation:ic-in 320ms var(--ease) both}
+.story-icon svg.a-left{animation:ic-left 620ms var(--ease) both}
+.story-icon svg.a-right{animation:ic-right 620ms var(--ease) both}
+.story-icon svg.a-settle{animation:ic-settle 520ms var(--ease) both}
+.story-icon svg.a-send .p2{animation:ic-shift 700ms var(--ease) both}
+.story-icon .p1.from-left{animation:ic-from-left 620ms var(--ease) both;transform-origin:center}
+.story-icon .p2.from-right{animation:ic-from-right 620ms var(--ease) both;transform-origin:center}
+.story-icon .p1.out{animation:ic-fade-out 520ms var(--ease) both}
+.story-icon .p2.in{animation:ic-fade-in 520ms 260ms var(--ease) both}
+.story-icon .p3.in-late{animation:ic-fade-in 420ms 420ms var(--ease) both}
+.story-icon .p3.focus{animation:ic-focus 460ms 200ms var(--ease) both}
+
+.status{
+  font-size:clamp(18px,1vw + 8px,23px);
+  font-weight:500;line-height:1.32;letter-spacing:-.011em;color:var(--ink);
+  transition:opacity var(--t-fast) var(--ease),font-size var(--t-fast) var(--ease);
+  text-wrap:balance;
+}
+/* the sentences the whole lesson is for */
+.status.payoff{font-size:clamp(21px,1.2vw + 9px,27px);font-weight:600}
+.status.swap{opacity:0}
+.cue{
+  font-size:14px;color:var(--muted);
+  opacity:0;transition:opacity var(--t-mid) var(--ease);
+}
+.cue.on{opacity:1}
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){
+  .frame{padding:var(--s4) var(--s5);gap:var(--s4)}
+  .lanes{column-gap:var(--s4)}
+  .legend{gap:var(--s5);flex-wrap:wrap}
+}
+@media (max-width:900px){
+  body{font-size:14px}
+  :root{--dev:104px;--col:132px}
+  .lanes{column-gap:var(--s4);row-gap:var(--s5)}
+  .device svg{width:48px;height:48px}
+  .card-body{font-size:12px}
+  .msg-cell{min-height:176px}
+  .observer{transform:translate(-50%,calc(-100% - 26px))}
+  .ambient .ssid{display:none}
+  .leg-name{min-width:auto}
+  .legend{gap:var(--s3);flex-direction:column;align-items:flex-start}
+  .token{font-size:11px;padding:4px 6px}
+}
+
+@media (max-height:840px){
+  :root{--dev:124px}
+  .observer{transform:translate(-50%,calc(-100% - 32px))}
+  .lanes{row-gap:var(--s5)}
+  .stage{gap:var(--s4)}
+  .msg-cell{min-height:180px}
+}
+
+
+/* ============================================================
+   MOBILE COMPOSITION  (<= 768px)
+
+   Desktop explains encryption across the screen. Mobile explains it down
+   the screen. This is not the desktop grid rotated: the three columns
+   become one centred column, every structural element is placed by normal
+   flow / flex / grid, and the only absolutely positioned things left are
+   the packets in flight — which are positioned inside the corridor they
+   travel through, never against the viewport.
+
+   Reading order, top to bottom:
+     YOU  ->  the keys you hold  ->  your screen
+     NETWORK  (access point, corridor, who else is listening)
+     the shared secret
+     EMAIL  ->  the keys it holds  ->  its screen
+
+   Spacing uses the same scale as the rest of the file:
+     4 / 8 / 12 / 16 / 24 / 32 / 48 / 64
+   12 inside a group, 24 between groups, 48 at a chapter change.
+   ============================================================ */
+@media (max-width:768px){
+  :root{
+    --pad:20px;        /* page gutter        */
+    --cardpad:16px;    /* card inner padding */
+    --dev:44px;        /* endpoint glyph     */
+  }
+
+  .frame{
+    grid-template-rows:auto auto minmax(0,1fr) auto;
+    /* nav 12 title, title 16 box — the controls and the sentence stay
+       attached to the thing they are steering */
+    gap:var(--s3);
+    padding:var(--s4) var(--pad) calc(76px + env(safe-area-inset-bottom));
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+  }
+
+  /* ---------- type scale ---------- */
+  /* the deck is chrome, not the lesson — it stays legible but it does not
+     get to spend the stage's height */
+  h1{font-size:15px;line-height:1.3;color:var(--muted)}
+  /* the narrated title says what is happening at every step, which makes the
+     standing deck redundant on a screen this size — and four lines of it is
+     the difference between the demonstration fitting and not */
+  .sub{display:none}
+  .ambient .ssid{display:none}
+  .step{font-size:13px;padding:var(--s1) var(--s3) var(--s1) var(--s2)}
+  .steps{gap:var(--s1)}
+  .sep{display:none}
+
+  .stage{gap:var(--s2);min-height:0}
+  .moment{max-width:none;min-height:76px;margin-bottom:0;gap:var(--s2)}
+  .story{flex-direction:row;gap:var(--s3);align-items:center}
+  .story-icon{width:30px;height:30px;flex:none}
+  .story-icon svg{width:28px;height:28px}
+  .story.payoff .story-icon{width:32px;height:32px}
+  .story.payoff .story-icon svg{width:30px;height:30px}
+  .status{font-size:clamp(20px,5.2vw,24px);line-height:1.22}
+  .status.payoff{font-size:clamp(21px,5.6vw,25px)}
+  .cue{font-size:14px;line-height:1.45}
+  .concept{height:auto;gap:var(--s2);flex-wrap:wrap}
+  .concept-name{font-size:12px}
+  .concept-sub{font-size:14px}
+
+  /* ------------------------------------------------------------------
+     Two levels of containment, and the difference between them carries
+     meaning. The outer box is the environment: the network and everything
+     on it. The inner box is the demonstration currently running. Secondary
+     devices belong to the environment, never to the demonstration — which
+     is why the observer is moved out of the module on this breakpoint.
+     ------------------------------------------------------------------ */
+  .env{
+    display:flex;flex-direction:column;
+    gap:var(--s4);
+    flex:1;min-height:0;width:100%;
+    margin-top:var(--s2);            /* 16 below the title, with .stage gap */
+    padding:var(--s4);
+    border:1px solid var(--line);
+    border-radius:var(--r3);
+  }
+  .context{
+    display:flex;flex-direction:column;
+    gap:var(--s2);
+    flex:none;width:100%;
+  }
+
+  /* ---------- inner box: the focused demonstration ---------- */
+  .module{
+    display:flex;flex-direction:column;
+    flex:1;min-height:0;width:100%;
+    padding:var(--s4);
+    /* stronger surface and border than the environment around it, so it is
+       immediately obvious which box is live */
+    background:rgba(255,255,255,.022);
+    border:1px solid var(--line-2);
+    border-radius:var(--r2);
+  }
+  .lanes{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:var(--s3);                /* 12 inside a group */
+    width:100%;
+    max-width:none;
+    margin:0;
+    flex:1;min-height:0;
+    /* the late states carry two full screens plus the network band; rather
+       than shrink the type to force them into one viewport, the diagram
+       scrolls inside its own box while everything around it holds still */
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:none;
+    /* the fade sits on the content, not on the box, so a partly-visible row
+       reads as scrolled while the box's own border stays crisp */
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%);
+    mask-image:linear-gradient(to bottom,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%);
+  }
+  .lanes::-webkit-scrollbar{display:none}
+
+  /* Conceptual order, expressed as flow order rather than coordinates.
+     Each side reads outward from the wire: your screen and Email's screen
+     sit at the two ends, the keys each side holds sit against the corridor
+     they act across, and the corridor itself is the middle of the story.
+        YOU  ->  your screen  ->  what you hold
+        [ NETWORK ]  ->  the shared secret
+        what Email holds  ->  EMAIL  ->  its screen
+     Keeping the two key rows adjacent to the band is what lets a single
+     phone screen hold both halves of an exchange at once. */
+  #epYou        {order:1}
+  .msg-cell--you{order:2}
+  .slot--you    {order:3}
+  .net          {order:4}
+  .link         {order:5}
+  .slot--svc    {order:6}
+  #epSvc        {order:7}
+  .msg-cell--svc{order:8}
+
+  /* 12 inside a group, 24 between groups */
+  .net{margin-top:var(--s3)}
+  .slot--svc{margin-top:var(--s3)}
+
+  /* ---------- endpoint: glyph and name on one line ---------- */
+  .ep{
+    height:auto;flex:none;
+    flex-direction:row;align-items:center;justify-content:flex-start;
+    gap:var(--s3);
+  }
+  .device{width:var(--dev);height:var(--dev);flex:none;border-radius:var(--r2)}
+  .device svg{width:24px;height:24px}
+  .ep-label{
+    position:static;text-align:left;
+    font-size:12px;letter-spacing:.14em;color:var(--ink);
+  }
+  .ep--idle .ep-label{color:var(--faint)}
+
+  /* ---------- keys: the owner is named, then what that owner holds ---------- */
+  .slot{
+    flex:none;
+    flex-direction:column;align-items:flex-start;
+    gap:var(--s2);min-height:0;
+  }
+  .holds-label{
+    display:block;
+    font-family:var(--mono);font-size:12px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--faint);line-height:1.35;
+  }
+  .slot-tokens{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2)}
+  /* EMAIL's row is authored right-to-left so it mirrors YOU across the
+     desktop centre line; stacked vertically that mirror reads as
+     inconsistency, so flip it back and both sides scan the same way */
+  .slot--svc .slot-tokens{flex-direction:row-reverse;justify-content:flex-end}
+  .token{font-size:13px;padding:7px 9px;white-space:normal}
+  /* no owner label until that owner actually holds something */
+  .slot:not(:has(.token.show)){display:none}
+
+  /* ---------- screens ---------- */
+  .msg-cell{flex:none;min-height:0}
+  .msg-cell > *{justify-self:stretch}
+  .card{width:100%;max-width:none;padding:var(--cardpad)}
+  /* four levels of padding is the most this composition can carry; the card
+     gives up its last 4px so the message inside stays readable at 320 */
+  .card-from{font-size:13px;margin-bottom:var(--s3)}
+  .card-body{font-size:14px;line-height:1.5}
+  .msg-cell--svc:not(:has(.card.on)){display:none}
+  .netrow,.approw{min-height:48px;font-size:14px}
+  .pane-note{font-size:14px;line-height:1.5}
+
+  /* long values never set the width of the page */
+  .mono,.card-body{overflow-wrap:anywhere;max-width:100%}
+
+  /* ---------- the network: a contained band, everything in flow ---------- */
+  .net{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    grid-template-rows:auto auto;
+    column-gap:var(--s3);row-gap:var(--s3);
+    height:auto;width:100%;flex:none;
+    padding:var(--s3) 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .mid-label{
+    display:block;position:static;grid-column:1;grid-row:1;align-self:center;
+    font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--faint);
+  }
+  .wifi{
+    position:static;grid-column:2;grid-row:1;
+    justify-self:start;align-self:center;
+    transform:rotate(90deg) scaleX(-1);
+    padding:0;background:none;
+  }
+  .wifi svg{width:20px;height:20px}
+
+  /* the one place absolute positioning survives — and it is measured
+     against this box, which is a normal grid child with a known height */
+  .corridor{
+    display:block;position:relative;
+    grid-column:1 / -1;grid-row:2;
+    width:100%;min-height:56px;
+  }
+  .wire{
+    left:50%;right:auto;top:0;bottom:0;height:auto;width:0;
+    border-top:0;border-left:1px dashed var(--line-2);
+  }
+  .track{left:50%;right:auto;top:0;bottom:0;width:0;height:100%}
+  .flyer{left:50%;top:0;transform:translate(-50%,0)}
+  /* a copy in transit between the two containers is parked on the stage,
+     which clips nothing, so it can cross the module boundary */
+  .flyer.detached{position:absolute;left:0;top:0;z-index:6}
+  .flyer--up .chip,.flyer--down .chip{margin:0}
+  .pulse{width:2px;height:40px;transform:translate(-50%,0)}
+  .chip{
+    font-size:13px;padding:var(--s2) var(--s3);
+    box-shadow:0 0 0 6px var(--bg),0 1px 3px rgba(0,0,0,.5);
+    max-width:calc(100vw - (var(--pad) * 2) - var(--s6));
+  }
+
+  /* One representative neighbour. It lives in the environment box, below
+     the demonstration, anchored in flow — it is never dragged into the
+     module and it cannot overlap anything. */
+  .context .observer{
+    position:static;transform:none;
+    max-width:none;width:100%;
+    flex-direction:row;align-items:center;justify-content:space-between;
+    gap:var(--s3);text-align:left;
+    padding:var(--s3);
+    border:1px dashed var(--line);border-radius:var(--r2);
+  }
+  /* a row of nothing in eight states out of nine is worse than the shift
+     when it arrives, and it arrives announced */
+  .observer:not(.on){display:none}
+  /* a short connector so the neighbour reads as attached to the network
+     above it rather than as a card that happens to sit there */
+  .context::before{
+    content:"";align-self:center;
+    width:0;height:var(--s4);
+    border-left:1px dashed var(--line-2);
+  }
+  .context:not(:has(.observer.on))::before{display:none}
+  .obs-label-full{display:none}
+  .obs-label-mini{display:inline}
+  .obs-head svg:nth-child(2){display:none}
+  .observer .obs-label{font-size:12px}
+  .observer .obs-sees{font-size:13px;min-width:0;max-width:100%}
+  .observer .obs-sees .mono{min-width:0;overflow-wrap:anywhere}
+
+  /* the shared secret is named beneath the corridor, never sent along it */
+  .link{
+    position:static;flex:none;
+    align-self:center;justify-self:auto;max-width:100%;
+    padding:0;align-items:center;text-align:center;
+  }
+  .link-line{display:none}
+  .link-label{font-size:12px;background:none;padding:0;line-height:1.4}
+
+  /* ---------- colour key: without it yellow and green are decoration ---------- */
+  .legend{
+    display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;
+    gap:var(--s2) var(--s5);
+    padding-top:var(--s3);
+  }
+  .leg{gap:var(--s2)}
+  .leg-name{min-width:0;font-size:12px;letter-spacing:.1em}
+  .leg-items{display:none}
+  .leg-note{font-size:13px;padding-left:var(--s2)}
+  .leg--dh{display:none}
+
+  /* ---------- touch ---------- */
+  .actions{
+    position:fixed;left:0;right:0;bottom:0;z-index:5;
+    width:100%;max-width:480px;margin:0 auto;
+    padding:var(--s3) var(--pad) calc(var(--s3) + env(safe-area-inset-bottom));
+    background:var(--bg);border-top:1px solid var(--line);
+    gap:var(--s3);
+  }
+  .cta{flex:1;min-width:0;min-height:48px;font-size:15px}
+  .replay{flex:none;min-height:48px;padding:0 var(--s3)}
+
+  /* ---------- vertical motion: toward YOU is up, toward EMAIL is down ---------- */
+  @keyframes ic-left{from{opacity:0;transform:translateY(11px)}to{opacity:1;transform:none}}
+  @keyframes ic-right{from{opacity:0;transform:translateY(-11px)}to{opacity:1;transform:none}}
+  @keyframes ic-from-left{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+  @keyframes ic-from-right{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes ic-shift{from{transform:translateY(-6px)}to{transform:translateY(3px)}}
+  /* the two sides fold their values together along the axis they face */
+  @keyframes merge-r{0%{transform:none}55%{transform:translateY(9px)}100%{transform:none}}
+  @keyframes merge-l{0%{transform:none}55%{transform:translateY(-9px)}100%{transform:none}}
+}
+
+/* narrow phones: gutters tighten, nothing else changes */
+@media (max-width:374px){
+  :root{--pad:16px;--cardpad:12px}
+  .status{font-size:20px}
+  .netrow,.approw{font-size:13px}
+}
+
+/* short phones: trim the chrome, never the reading size */
+@media (max-width:768px) and (max-height:820px){
+  .moment{min-height:84px}
+  .corridor{min-height:60px}
+  .frame{gap:var(--s3)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:1ms !important;
+    animation-delay:0ms !important;
+    transition-duration:1ms !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <header class="head">
+    <div>
+      <h1>You’re checking email at a coffee shop.</h1>
+      <p class="sub">Before your inbox loads, your laptop and the mail server agree on a secret. Follow what crosses the network — and what never leaves either end.</p>
+    </div>
+    <div class="ambient">
+      <!-- coffee cup -->
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8Z"/>
+        <path d="M17 9h1.5a2.5 2.5 0 0 1 0 5H17"/>
+        <path d="M8 3.5v1.8M12 3v2.3"/>
+      </svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+        <path d="M3.5 9.2a13 13 0 0 1 17 0"/><path d="M6.4 12.6a8.6 8.6 0 0 1 11.2 0"/><path d="M9.3 16a4.3 4.3 0 0 1 5.4 0"/><circle cx="12" cy="19" r=".9" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="ssid">CoffeeShop_WiFi</span>
+    </div>
+  </header>
+
+  <nav class="steps" aria-label="Steps">
+    <button class="step" id="tab-connect" data-state="connect" aria-current="step"><span class="num">1</span>Connect</button>
+    <span class="sep" aria-hidden="true">→</span>
+    <button class="step" id="tab-secure" data-state="secure"><span class="num">2</span>Secure</button>
+    <span class="sep" aria-hidden="true">→</span>
+    <button class="step" id="tab-mail" data-state="mail"><span class="num">3</span>Email</button>
+  </nav>
+
+  <main class="stage" id="stage">
+
+    <div class="moment" id="moment" aria-live="polite">
+      <div class="story" id="story">
+        <span class="story-icon" id="storyIcon" data-tone="n" aria-hidden="true"></span>
+        <p class="status" id="status">You need Wi-Fi.</p>
+      </div>
+      <p class="cue" id="cue">Pick a network.</p>
+    </div>
+
+    <div class="concept" id="concept" data-kind="asym" hidden>
+      <span class="concept-name" id="conceptName">ASYMMETRIC</span>
+      <span class="concept-sub" id="conceptSub">Different keys.</span>
+    </div>
+
+    <!-- Outer environment: the broader system the exchange happens inside.
+         Holds the interaction module and any secondary devices. On desktop
+         it is display:contents, so the grid below is untouched. -->
+    <div class="env">
+
+    <div class="module">
+    <div class="lanes">
+
+      <!-- ============ YOU ============ -->
+      <section class="ep" id="epYou">
+        <div class="device" id="devYou">
+          <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3.5" y="5.5" width="17" height="11" rx="1.6"/>
+            <path d="M2 19.5h20"/>
+          </svg>
+        </div>
+        <p class="ep-label">YOU</p>
+      </section>
+
+      <!-- ============ NETWORK ============ -->
+      <div class="net">
+        <span class="mid-label" aria-hidden="true">NETWORK</span>
+        <div class="wifi" id="wifi" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path class="arc" d="M7 15.5a6.6 6.6 0 0 1 0-7"/>
+            <path class="arc" d="M11 17.6a10.6 10.6 0 0 1 0-11.2"/>
+            <path class="arc" d="M15 19.6a14.4 14.4 0 0 1 0-15.2"/>
+          </svg>
+        </div>
+
+        <div class="corridor">
+        <div class="wire" id="wire"></div>
+
+        <div class="track" id="track">
+          <div class="flyer" id="flyIdPublic">
+            <span class="chip chip--public"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Public key</span>
+          </div>
+          <div class="flyer" id="flySig">
+            <span class="chip chip--sig">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8.5 11V7.6a3.5 3.5 0 0 1 7 0V11"/>
+              </svg>
+              Signature
+            </span>
+          </div>
+          <div class="flyer flyer--up" id="flyDhOut">
+            <span class="chip chip--public"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Your public value</span>
+          </div>
+          <div class="flyer flyer--down" id="flyDhIn">
+            <span class="chip chip--public"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Email public value</span>
+          </div>
+          <div class="flyer pulse" id="pulse"></div>
+          <div class="flyer" id="flyPacket">
+            <span class="chip mono">8F A2 91 C7 4E…</span>
+          </div>
+          <div class="flyer flyer--branch" id="flyBranch">
+            <span class="chip mono">8F A2 91 C7 4E…</span>
+          </div>
+        </div>
+        </div>
+
+        <div class="observer" id="observer">
+          <span class="obs-row">
+          <span class="obs-head" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.5" y="6" width="17" height="10.5" rx="1.6"/><path d="M2 19h20"/>
+            </svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>
+            </svg>
+          </span>
+          <span class="obs-label obs-label-full">OTHERS ON THIS NETWORK</span><span class="obs-label obs-label-mini">OTHER DEVICE</span>
+          </span>
+          <span class="obs-sees" id="obsSees">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.6"/>
+            </svg>
+            <span class="mono">8F A2 91 C7 4E…</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- ============ MAIL SERVICE ============ -->
+      <section class="ep ep--idle" id="epSvc">
+        <div class="device" id="devSvc">
+          <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3.5" y="4.5" width="17" height="6" rx="1.6"/>
+            <rect x="3.5" y="13.5" width="17" height="6" rx="1.6"/>
+            <path d="M7 7.5h.01M7 16.5h.01"/>
+          </svg>
+        </div>
+        <p class="ep-label">EMAIL</p>
+      </section>
+
+      <!-- ---------- row 2: keys ---------- -->
+      <div class="slot slot--you">
+        <span class="holds-label">You hold</span>
+        <span class="slot-tokens">
+        <span class="token token--public" id="youIdPublic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Email’s public key</span>
+        <span class="token token--private" id="youDhPrivate"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg>Private value</span>
+        <span class="token token--public" id="youDhPublic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Public value</span>
+        <span class="token token--session" id="youSession"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="3.2"/><path d="M11.2 12H20M17 12v3M14 12v2.2"/></svg>Session key</span>
+        </span>
+      </div>
+
+      <div class="link" id="link">
+        <span class="link-label">SAME SECRET · NEVER SENT</span>
+        <span class="link-line"><i></i><i></i></span>
+      </div>
+
+      <div class="slot slot--svc">
+        <span class="holds-label">Email holds</span>
+        <span class="slot-tokens">
+        <span class="token token--session" id="svcSession"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="3.2"/><path d="M11.2 12H20M17 12v3M14 12v2.2"/></svg>Session key</span>
+        <span class="token token--public" id="svcDhPublic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Public value</span>
+        <span class="token token--private" id="svcDhPrivate"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg>Private value</span>
+        <span class="token token--public" id="svcIdPublic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Public key</span>
+        <span class="anchor" id="svcAnchor">
+          <span class="token token--private" id="svcIdPrivate"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg>Private key</span>
+        </span>
+        </span>
+      </div>
+
+      <!-- ---------- row 3: messages ---------- -->
+      <div class="msg-cell msg-cell--you">
+        <article class="card panel" id="panel" data-mode="wifi">
+
+          <div class="pane pane--wifi">
+            <p class="card-from">Wi-Fi networks</p>
+            <button class="netrow" id="netPick" aria-pressed="false">
+              <span class="netname">CoffeeShop_WiFi</span>
+              <span class="netmeta">Unsecured</span>
+            </button>
+            <p class="netrow netrow--off">
+              <span class="netname">Cafe_Guest</span>
+              <span class="netmeta">Locked</span>
+            </p>
+            <p class="netrow netrow--off">
+              <span class="netname">Printer_2F</span>
+              <span class="netmeta">Locked</span>
+            </p>
+          </div>
+
+          <div class="pane pane--portal">
+            <p class="card-from">CoffeeShop_WiFi</p>
+            <p class="pane-note" id="portalNote">Joined without a password.</p>
+          </div>
+
+          <div class="pane pane--apps">
+            <p class="card-from" id="appsHead">Online</p>
+            <p class="approw" id="appRow">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m3.6 7 8.4 6 8.4-6"/>
+              </svg>Inbox
+            </p>
+          </div>
+
+          <div class="pane pane--mail">
+            <p class="card-from">From: Maya</p>
+            <div class="card-key" id="youKey">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 4v13m0 0-3.5-3.5M12 17l3.5-3.5"/>
+              </svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="8" cy="12" r="3.2"/><path d="M11.2 12H20M17 12v3M14 12v2.2"/>
+              </svg>
+              <span>encrypted</span>
+            </div>
+            <div class="card-body" id="youBody">
+              <div id="youLine1">Dinner at 8?</div>
+            </div>
+          </div>
+
+        </article>
+      </div>
+
+      <div class="msg-cell msg-cell--svc">
+        <article class="card" id="cardSvc">
+          <p class="card-from">From: Maya</p>
+          <div class="card-key" id="svcKey">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 4v13m0 0-3.5-3.5M12 17l3.5-3.5"/>
+            </svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="8" cy="12" r="3.2"/><path d="M11.2 12H20M17 12v3M14 12v2.2"/>
+            </svg>
+            <span>decrypted</span>
+          </div>
+          <div class="card-body" id="svcBody">
+            <div id="svcLine1">Dinner at 8?</div>
+          </div>
+        </article>
+      </div>
+
+    </div>
+
+    <!-- Surrounding context. Devices that are not part of the demonstration
+         itself live here, outside the interaction module, in their own
+         container so they can never overlap it. Empty (and hidden) on
+         desktop, where the observer sits inside the network band; on mobile
+         the observer is moved in here by placeContext(). -->
+    </div>
+
+    <aside class="context" id="context" aria-label="Other devices on this network"></aside>
+
+    </div>
+
+  </main>
+
+    <div class="actions">
+      <button class="replay reveal" id="replay">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v4h-4"/>
+        </svg>Replay
+      </button>
+      <button class="next cta" id="next" data-act="join" disabled>
+        <span id="nextLabel">Join Network</span>
+        <svg class="ic ic-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 12h15m0 0-5-5m5 5-5 5"/>
+        </svg>
+        <svg class="ic ic-replay" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v4h-4"/>
+        </svg>
+      </button>
+    </div>
+
+  <footer class="legend">
+    <div class="leg leg--asym" id="legAsym">
+      <span class="leg-name">ASYMMETRIC</span>
+      <span class="leg-items">
+        <span class="leg-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Public</span>
+        <span class="leg-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg>Private</span>
+      </span>
+      <span class="leg-note">Different keys</span>
+    </div>
+    <div class="leg leg--dh" id="legDh">
+      <span class="leg-name">DIFFIE–HELLMAN</span>
+      <span class="leg-items">
+        <span class="leg-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16m0 0-3-3m3 3-3 3M20 15H4m0 0 3-3m-3 3 3 3"/></svg>Public values cross
+        </span>
+      </span>
+      <span class="leg-note">Secret never sent</span>
+    </div>
+    <div class="leg leg--sym" id="legSym">
+      <span class="leg-name">SYMMETRIC</span>
+      <span class="leg-items">
+        <span class="leg-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="3.2"/><path d="M11.2 12H20M17 12v3M14 12v2.2"/></svg>Session keys
+        </span>
+      </span>
+      <span class="leg-note">Same secret</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var RM = mq.matches;
+  mq.addEventListener("change", function(e){ RM = e.matches; });
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ---------- primitives ---------- */
+  var el = {
+    tabs: Array.prototype.slice.call(document.querySelectorAll(".step")),
+    lanes: document.querySelector(".lanes"),
+    stage: $("stage"), moment: $("moment"),
+    concept: $("concept"), conceptName: $("conceptName"), conceptSub: $("conceptSub"),
+    status: $("status"), cue: $("cue"), story: $("story"), storyIcon: $("storyIcon"),
+    epYou: $("epYou"), epSvc: $("epSvc"),
+    wire: $("wire"), wifi: $("wifi"), track: $("track"),
+    flyIdPublic: $("flyIdPublic"), flySig: $("flySig"), flyDhOut: $("flyDhOut"), flyDhIn: $("flyDhIn"),
+    flyPacket: $("flyPacket"), flyBranch: $("flyBranch"),
+    observer: $("observer"), obsSees: $("obsSees"),
+    context: $("context"), corridor: document.querySelector(".corridor"),
+    net: document.querySelector(".net"),
+    youIdPublic: $("youIdPublic"), youDhPrivate: $("youDhPrivate"),
+    youDhPublic: $("youDhPublic"), youSession: $("youSession"),
+    svcIdPublic: $("svcIdPublic"), svcIdPrivate: $("svcIdPrivate"), svcAnchor: $("svcAnchor"),
+    svcDhPrivate: $("svcDhPrivate"), svcDhPublic: $("svcDhPublic"), svcSession: $("svcSession"),
+    link: $("link"),
+    panel: $("panel"), netPick: $("netPick"), portalNote: $("portalNote"),
+    appRow: $("appRow"), appsHead: $("appsHead"), pulse: $("pulse"), cardSvc: $("cardSvc"),
+    youLine1: $("youLine1"), youBody: $("youBody"), youKey: $("youKey"),
+    svcLine1: $("svcLine1"), svcBody: $("svcBody"), svcKey: $("svcKey"),
+    next: $("next"), nextLabel: $("nextLabel"), replay: $("replay"),
+    legAsym: $("legAsym"), legDh: $("legDh"), legSym: $("legSym")
+  };
+
+  var TRAVEL = 1000;      /* an object crossing the network */
+  var CIPHER = "8F A2 91 C7 4E D3 77 B9 02 FC 61 A8 3D 5B E0 94";
+  var CIPHER_TAG = "8F A2 91 C7 4E…";
+  var PLAIN  = "Dinner at 8?";
+
+  var TOKENS = [el.youIdPublic, el.youDhPrivate, el.youDhPublic, el.youSession,
+                el.svcIdPublic, el.svcIdPrivate, el.svcDhPrivate, el.svcDhPublic, el.svcSession];
+
+  /* ACCESS → AGREE → PROTECT, three chapters over ten internal states */
+  var ORDER = ["find-network","join","portal","email",
+               "identity","key-agreement","symmetric","data","observer"];
+  var CHAPTER = {"find-network":"connect","join":"connect","portal":"connect","email":"connect",
+                 "identity":"secure","key-agreement":"secure","symmetric":"secure",
+                 "data":"mail","observer":"mail"};
+  var CH_ORDER = ["connect","secure","mail"];
+  var CH_ENTRY = {connect:"find-network", secure:"identity", mail:"data"};
+  function idx(state){ return ORDER.indexOf(state); }
+
+  /* ---------- timing ---------- */
+  var timers = [], rafs = [];
+  function at(ms, fn){ timers.push(setTimeout(fn, ms)); }
+  function clearAll(){
+    timers.forEach(clearTimeout); timers = [];
+    rafs.forEach(cancelAnimationFrame); rafs = [];
+  }
+  function on(node, yes){ node.classList.toggle("on", !!yes); }
+  function dim(node, yes){ node.classList.toggle("dim", !!yes); }
+
+  /* a token exists only while its concept is live */
+  function place(node){ node.classList.add("show"); }
+  function raise(node){ node.classList.add("show"); requestAnimationFrame(function(){ node.classList.add("on"); }); }
+  function recede(node){ dim(node, true); }
+
+  /* ---------- copy ---------- */
+
+  /* ---------------- storytelling icons ----------------
+     one language: 24-grid, 1.7 stroke, round joins, no fills.
+     each entry declares its tone and the motion that explains it. */
+  var LOCK_OPEN = '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8.5 11V7.6A3.4 3.4 0 0 1 15.2 6.7"/>';
+  var LOCK_SHUT = '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8.5 11V7.6a3.5 3.5 0 0 1 7 0V11"/>';
+  var KEY       = '<circle cx="8.6" cy="12" r="3.1"/><path d="M11.7 12h7.7M17 12v2.6M14.4 12v2"/>';
+  var BLOCKS    = '<path d="M5 9.5h3M10 9.5h4M16 9.5h3M5 14.5h5M12 14.5h2M16 14.5h3"/>';
+
+  var ICONS = {
+    wifi:    ["n","", '<path d="M3.5 9.4a13 13 0 0 1 17 0"/><path d="M6.5 12.8a8.5 8.5 0 0 1 11 0"/><path d="M9.4 16.2a4.2 4.2 0 0 1 5.2 0"/><path d="M12 19.4h.01"/>'],
+    gate:    ["mute","", '<rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M3.5 12h17"/>'],
+    globe:   ["n","", '<circle cx="12" cy="12" r="8"/><path d="M4 12h16"/><path d="M12 4a13 13 0 0 1 0 16 13 13 0 0 1 0-16Z"/>'],
+    devices: ["mute","", '<rect x="2.5" y="6.5" width="12" height="8.5" rx="1.4"/><path d="M1.5 17.5h13"/><rect x="17" y="4.5" width="5.5" height="15" rx="1.6"/>'],
+    envelope:["n","a-right", '<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m3.7 7.2 8.3 6 8.3-6"/>'],
+    link:    ["n","", '<circle cx="5.5" cy="12" r="2.5"/><circle cx="18.5" cy="12" r="2.5"/><path d="M8 12h8"/>'],
+    keyPub:  ["asym","a-left", LOCK_OPEN],
+    keyPriv: ["asym","a-settle", LOCK_SHUT],
+    pair:    ["asym","", '<g transform="translate(-5.5,0) scale(.72) translate(3.5,3.5)"><g class="p1">' + LOCK_OPEN + '</g></g><g transform="translate(5.5,0) scale(.72) translate(3.5,3.5)"><g class="p2 in">' + LOCK_SHUT + '</g></g>'],
+    cross:   ["asym","", '<g transform="translate(-5,-3.5) scale(.68) translate(3.5,3.5)"><g class="p1 from-left">' + LOCK_OPEN + '</g></g><g transform="translate(5,3.5) scale(.68) translate(3.5,3.5)"><g class="p2 from-right">' + LOCK_OPEN + '</g></g>'],
+    anchored:["asym","a-settle", '<g transform="translate(0,-1.6) scale(.82) translate(2.2,2.2)">' + LOCK_SHUT + '</g><path d="M5.5 21h13"/>'],
+    derive:  ["asym","", '<path class="p1 from-left" d="M1.5 12h4.2m0 0L4 10.2M5.7 12 4 13.8"/><path class="p2 from-right" d="M22.5 12h-4.2m0 0L20 10.2M18.3 12l1.7 1.8"/><g transform="translate(0,0) scale(.6) translate(8,8)"><g class="p3 in-late accent-sym">' + KEY + '</g></g>'],
+    twin:    ["sym","", '<g transform="translate(-5,0) scale(.74) translate(3.5,3.5)"><g class="p1 from-left">' + KEY + '</g></g><g transform="translate(5,0) scale(.74) translate(3.5,3.5)"><g class="p2 from-right">' + KEY + '</g></g>'],
+    handoff: ["sym","", '<g transform="translate(-5.5,0) scale(.68) translate(3.5,3.5)"><g class="p1 out accent-asym">' + LOCK_SHUT + '</g></g><path class="accent-mute" d="M10.6 12h2.8m0 0-1.1-1.1m1.1 1.1-1.1 1.1"/><g transform="translate(5.5,0) scale(.68) translate(3.5,3.5)"><g class="p2 in">' + KEY + '</g></g>'],
+    message: ["n","", '<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M6.5 10.5h11M6.5 14h7"/>'],
+    encrypt: ["sym","", '<path class="p1 out" d="M5 9.5h14M5 14.5h9"/><path class="p2 in" d="M5 9.5h3M10 9.5h4M16 9.5h3M5 14.5h5M12 14.5h2M16 14.5h3"/>'],
+    send:    ["sym","a-send", '<g class="p2">' + BLOCKS + '</g><path class="accent-mute" d="M2.5 19.5h19"/>'],
+    observe: ["mute","", '<path d="M2.6 9.2S6 4.5 12 4.5s9.4 4.7 9.4 4.7-3.4 4.7-9.4 4.7S2.6 9.2 2.6 9.2Z"/><circle class="p3 focus" cx="12" cy="9.2" r="2.2"/><path class="accent-sym" d="M5 18h3M10 18h4M16 18h3"/>'],
+    scrambled:["sym","", '<g class="p2">' + BLOCKS.replace('9.5','8.5').replace('14.5','13') + '</g><g class="p3 in-late" transform="translate(0,4.5) scale(.55) translate(9,9)">' + LOCK_SHUT + '</g>'],
+    decrypt: ["sym","", '<g transform="translate(0,-4.5) scale(.58) translate(8.7,8.7)">' + LOCK_OPEN + '</g><path class="p1 out" d="M4 19.5h3.5M10 19.5h4M17 19.5h3"/><path class="p2 in" d="M4 19.5h16"/>'],
+    opened:  ["sym","", '<path d="M3 10.5 12 4.5l9 6v8a1.6 1.6 0 0 1-1.6 1.6H4.6A1.6 1.6 0 0 1 3 18.5v-8Z"/><path class="p2 in" d="m3 10.5 9 6 9-6"/>']
+  };
+
+  function setIcon(name){
+    var ic = ICONS[name] || ICONS.link;
+    el.storyIcon.dataset.tone = ic[0];
+    el.storyIcon.innerHTML = '<svg viewBox="0 0 24 24" class="' + ic[1] + '">' + ic[2] + '</svg>';
+  }
+
+  /* one icon per storytelling moment, changing with the sentence */
+  var STORY_ICON = {
+    "You need Wi-Fi.": "wifi",
+    "Selected. No password needed.": "wifi",
+    "Joining CoffeeShop_WiFi…": "wifi",
+    "Joined — no password needed.": "wifi",
+    "The network lets you in, not out.": "gate",
+    "Getting internet access…": "globe",
+    "You’re online.": "globe",
+    "Other devices share this network.": "devices",
+    "Opening Email…": "envelope",
+    "Establishing a secure connection…": "link",
+    "Email shares its public key.": "keyPub",
+    "Email keeps its private key.": "keyPriv",
+    "Email signs with the private key.": "keyPriv",
+    "Your copy of the public key checks it. It really is Email.": "pair",
+    "Public can be shared. Private stays private.": "pair",
+    "You create a private value.": "keyPriv",
+    "Email creates a private value.": "keyPriv",
+    "You exchange public values.": "cross",
+    "Private values never leave.": "anchored",
+    "Both sides derive the same secret.": "derive",
+    "Same secret. Never sent.": "twin",
+    "Shared secret established.": "twin",
+    "Switching to symmetric encryption.": "handoff",
+    "Symmetric session keys ready.": "twin",
+    "Your message is readable here.": "message",
+    "Encrypting message…": "encrypt",
+    "Sending encrypted data…": "send",
+    "Decrypting…": "decrypt",
+    "Email opened. Protected the whole way.": "opened",
+    "Another device is listening on this network.": "devices",
+    "Other devices only see encrypted data.": "observe",
+    "Without the key, the data stays scrambled.": "scrambled"
+  };
+
+  var PAYOFF = {
+    "Public can be shared. Private stays private.": 1,
+    "Same secret. Never sent.": 1,
+    "Other devices only see encrypted data.": 1,
+    "Without the key, the data stays scrambled.": 1,
+    "Email opened. Protected the whole way.": 1
+  };
+
+  /* ------------------------------------------------------------------
+     Mobile keeps one step in view at a time. The narration already names
+     the object each beat is about; this maps that same sentence to the
+     part of the vertical stage it describes, and eases the stage to it so
+     the words and the thing they describe are never on different screens.
+     Desktop shows everything at once and never calls this.
+     ------------------------------------------------------------------ */
+  var FOCUS = {
+    "You need Wi-Fi.": "#panel",
+    "Selected. No password needed.": "#panel",
+    "Joining CoffeeShop_WiFi…": "#panel",
+    "Joined — no password needed.": "#panel",
+    "The network lets you in, not out.": ".net",
+    "Getting internet access…": "#panel",
+    "You’re online.": "#panel",
+    "Other devices share this network.": ".net",
+    "Opening Email…": "#panel",
+    "Establishing a secure connection…": ".net",
+    "Email shares its public key.": ".net",
+    "Email keeps its private key.": ".slot--svc",
+    "Email signs with the private key.": ".slot--svc",
+    "Your copy of the public key checks it. It really is Email.": ".slot--you",
+    "Public can be shared. Private stays private.": ".net",
+    "You create a private value.": ".slot--you",
+    "Email creates a private value.": ".slot--svc",
+    "You exchange public values.": ".net",
+    "Private values never leave.": ".net",
+    "Both sides derive the same secret.": ".net",
+    "Same secret. Never sent.": ".net",
+    "Shared secret established.": ".net",
+    "Switching to symmetric encryption.": ".net",
+    "Symmetric session keys ready.": ".net",
+    "Your message is readable here.": "#panel",
+    "Encrypting message…": "#panel",
+    "Sending encrypted data…": ".net",
+    "Decrypting…": ".msg-cell--svc",
+    "Email opened. Protected the whole way.": ".msg-cell--svc",
+    "Another device is listening on this network.": ".corridor",
+    "Other devices only see encrypted data.": ".corridor",
+    "Without the key, the data stays scrambled.": ".corridor"
+  };
+  /* The observer is a secondary device, not part of the demonstration.
+     Desktop shows it inside the network band, where there is room beside
+     the wire. Mobile moves it out of the module entirely, into its own
+     container below, so the module holds only the two endpoints actually
+     exchanging keys. Same element, same state, different host. */
+  function placeContext(){
+    var host = vertical.matches ? el.context : el.net;
+    if (el.observer.parentNode !== host) host.appendChild(el.observer);
+  }
+
+  var focusTimer = null;
+  function focusOn(sel){
+    if (!sel || !el.lanes || !vertical.matches) return;
+    var node = document.querySelector(sel);
+    if (!node || !node.offsetParent || !el.lanes.contains(node)) return;
+    clearTimeout(focusTimer);
+    focusTimer = setTimeout(function(){
+      var box = el.lanes.getBoundingClientRect();
+      var it  = node.getBoundingClientRect();
+      var to  = el.lanes.scrollTop + (it.top - box.top) - (box.height - it.height) / 2;
+      to = Math.max(0, Math.min(el.lanes.scrollHeight - el.lanes.clientHeight, to));
+      if (Math.abs(to - el.lanes.scrollTop) < 8) return;
+      try { el.lanes.scrollTo({ top: to, behavior: RM ? "auto" : "smooth" }); }
+      catch (e){ el.lanes.scrollTop = to; }
+    }, 140);
+  }
+
+  function setStatus(text, now){
+    var same = el.status.textContent === text;
+    if (!same || !el.storyIcon.firstChild){
+      el.status.classList.toggle("payoff", !!PAYOFF[text]);
+      el.story.classList.toggle("payoff", !!PAYOFF[text]);
+      setIcon(STORY_ICON[text]);
+    }
+    focusOn(FOCUS[text]);
+    if (same) return;
+    if (now){ el.status.textContent = text; el.status.classList.remove("swap"); return; }
+    el.status.classList.add("swap");
+    setTimeout(function(){
+      el.status.textContent = text;
+      el.status.classList.remove("swap");
+    }, RM ? 0 : 160);
+  }
+  function setCue(text){
+    if (!text){ on(el.cue, false); return; }
+    if (el.cue.textContent !== text){
+      if (el.cue.classList.contains("on")){
+        on(el.cue, false);
+        at(180, function(){ el.cue.textContent = text; on(el.cue, true); });
+        return;
+      }
+      el.cue.textContent = text;
+    }
+    on(el.cue, true);
+  }
+
+  var CONCEPT = {
+    asym: ["ASYMMETRIC", "Different keys.", "asym", "legAsym"],
+    dh:   ["DIFFIE–HELLMAN", "Key agreement.", "dh", "legDh"],
+    sym:  ["SYMMETRIC", "Shared session keys.", "sym", "legSym"]
+  };
+  function setConcept(kind){
+    el.legAsym.classList.remove("active");
+    el.legDh.classList.remove("active");
+    el.legSym.classList.remove("active");
+    if (!kind){ el.concept.hidden = true; return; }
+    var c = CONCEPT[kind];
+    el.concept.hidden = false;
+    el.concept.dataset.kind = c[2];
+    el.conceptName.textContent = c[0];
+    el.conceptSub.textContent  = c[1];
+    el[c[3]].classList.add("active");
+  }
+
+  /* the CTA never moves and never disappears — it is armed, then enabled */
+  function armNext(act, label){
+    el.next.dataset.act = act;
+    el.nextLabel.textContent = label;
+    el.next.disabled = true;
+  }
+  function enableNext(){ el.next.disabled = false; }
+  /* replay is offered only for states that actually animate */
+  function showReplay(){ on(el.replay, true); }
+
+  function setPanel(mode){
+    var visible = el.panel.classList.contains("on");
+    if (!visible || RM || el.panel.dataset.mode === mode){
+      el.panel.dataset.mode = mode;
+      on(el.panel, true);
+      return;
+    }
+    el.panel.classList.add("swap");
+    at(180, function(){
+      el.panel.dataset.mode = mode;
+      el.panel.classList.remove("swap");
+    });
+  }
+
+  /* ---------- motion ---------- */
+  var vertical = window.matchMedia("(max-width:768px)");
+  function at_(node, v){ node.style.transform = v; }
+  function place(dir, ratioNode){
+    /* returns [from, to] transforms for the current axis */
+    if (vertical.matches){
+      var spanY = Math.max(0, el.track.clientHeight - ratioNode.offsetHeight);
+      var a = dir === "ltr" ? 0 : spanY;        /* you → email is downward */
+      var b = dir === "ltr" ? spanY : 0;
+      return ["translate(-50%," + a + "px)", "translate(-50%," + b + "px)"];
+    }
+    var spanX = Math.max(0, el.track.clientWidth - ratioNode.offsetWidth);
+    var c = dir === "ltr" ? 0 : spanX;
+    var d = dir === "ltr" ? spanX : 0;
+    return ["translate(" + c + "px,-50%)", "translate(" + d + "px,-50%)"];
+  }
+  function fly(node, dir, ms, done){
+    var p = place(dir, node);
+    node.style.transition = "none";
+    node.style.opacity = "0";
+    at_(node, p[0]);
+    void node.offsetWidth;
+    if (RM){
+      node.style.opacity = "1";
+      at_(node, p[1]);
+      if (done) done();
+      return;
+    }
+    node.style.transition = "transform " + ms + "ms var(--ease), opacity 180ms linear";
+    node.style.opacity = "1";
+    at_(node, p[1]);
+    if (done) at(ms, done);
+  }
+  function hideFly(node){
+    node.style.transition = "opacity 180ms linear";
+    node.style.opacity = "0";
+    if (node.dataset.home === "track"){
+      delete node.dataset.home;
+      /* send it home only once it has finished fading, and clear the
+         stage-space transform on the way — left behind, it would stretch
+         the module's scroll height by the length of its own journey */
+      var home = function(){
+        if (node.dataset.home) return;
+        node.classList.remove("detached");
+        node.style.transition = "none";
+        node.style.transform = "";
+        el.track.appendChild(node);
+      };
+      if (RM) home(); else setTimeout(home, 220);
+    }
+  }
+  /* a copy of what is on the wire peels off toward the other devices */
+  /* a copy of what is already on the wire peels off toward the neighbour */
+  function branch(node, done){
+    var from, to, ms = 520;
+
+    if (vertical.matches){
+      /* The observer lives outside the module now, so the copy has to cross
+         a container boundary. Parking the chip on the stage — which clips
+         nothing — lets it fly from the middle of the corridor to the device
+         waiting below, instead of the secondary device being dragged into
+         the animation area to meet it. */
+      var sr = el.stage.getBoundingClientRect();
+      var cr = el.corridor.getBoundingClientRect();
+      var tr = el.observer.getBoundingClientRect();
+      if (node.parentNode !== el.stage){
+        node.dataset.home = "track";
+        el.stage.appendChild(node);
+      }
+      node.classList.add("detached");
+      var w = node.offsetWidth, h = node.offsetHeight;
+      from = "translate(" + Math.round(cr.left + cr.width / 2 - sr.left - w / 2) + "px," +
+                            Math.round(cr.top  + cr.height / 2 - sr.top  - h / 2) + "px)";
+      to   = "translate(" + Math.round(tr.left + tr.width / 2 - sr.left - w / 2) + "px," +
+                            Math.round(tr.top  + tr.height / 2 - sr.top  - h / 2) + "px)";
+      ms = 620;
+    } else {
+      var x = Math.round(el.track.clientWidth / 2 - node.offsetWidth / 2);
+      from = "translate(" + x + "px,-50%)";
+      to   = "translate(" + x + "px,calc(-50% - 28px))";
+    }
+
+    node.style.transition = "none";
+    node.style.opacity = "0";
+    node.style.transform = from;
+    void node.offsetWidth;
+    if (RM){
+      node.style.opacity = "1";
+      node.style.transform = to;
+      if (done) done();
+      return;
+    }
+    node.style.transition = "transform " + ms + "ms var(--ease), opacity 200ms linear";
+    node.style.opacity = "1";
+    node.style.transform = to;
+    if (done) at(ms, done);
+  }
+
+
+  var GLYPHS = "0123456789ABCDEF ";
+  function scramble(node, target, ms, cb){
+    if (RM){ node.textContent = target; if (cb) cb(); return; }
+    var start = performance.now();
+    var settle = target.split("").map(function(_, i){ return 0.25 + (i / target.length) * 0.7; });
+    function tick(now){
+      var p = Math.min(1, (now - start) / ms), out = "";
+      for (var i = 0; i < target.length; i++){
+        out += p >= settle[i] ? target[i] : GLYPHS[(Math.random() * GLYPHS.length) | 0];
+      }
+      node.textContent = out;
+      if (p < 1) rafs.push(requestAnimationFrame(tick));
+      else { node.textContent = target; if (cb) cb(); }
+    }
+    rafs.push(requestAnimationFrame(tick));
+  }
+
+  /* ---------- world ---------- */
+  function reset(){
+    clearAll();
+    TOKENS.forEach(function(t){ t.classList.remove("show", "on", "dim", "held"); });
+    el.svcAnchor.classList.remove("on");
+    on(el.link, false);
+    on(el.wifi, false);
+    el.wifi.classList.remove("play", "settled");
+    on(el.observer, false);
+    on(el.obsSees, false);
+    on(el.cardSvc, false);
+    on(el.youKey, false);
+    on(el.svcKey, false);
+    el.next.disabled = true;
+    on(el.replay, false);
+    el.appRow.classList.remove("active");
+    el.appsHead.textContent = "Online";
+    [el.flyIdPublic, el.flySig, el.flyDhOut, el.flyDhIn, el.flyPacket, el.flyBranch, el.pulse].forEach(hideFly);
+    el.wire.classList.remove("live");
+    el.epSvc.classList.add("ep--idle");
+    el.youBody.classList.remove("enc");
+    el.svcBody.classList.remove("enc");
+    el.youLine1.textContent = PLAIN;
+    el.svcLine1.textContent = PLAIN;
+    el.portalNote.textContent = "Joined without a password.";
+  }
+
+  /* whatever must already be true when a state starts */
+  function world(i){
+    if (i >= idx("portal")){
+      on(el.wifi, true);
+      el.wifi.classList.add("settled");
+      el.wire.classList.add("live");
+      on(el.observer, true);
+    }
+    if (i >= idx("email")) el.epSvc.classList.remove("ep--idle");
+
+    if (i >= idx("key-agreement")){
+      [el.youDhPrivate, el.youDhPublic, el.svcDhPrivate, el.svcDhPublic].forEach(function(t){ t.classList.add("show","on"); });
+    }
+    if (i >= idx("symmetric")){
+      [el.youDhPublic, el.svcDhPublic].forEach(function(t){ t.classList.remove("show","on"); });
+      [el.youDhPrivate, el.svcDhPrivate].forEach(function(t){ t.classList.add("dim"); });
+      [el.youSession, el.svcSession].forEach(function(t){ t.classList.add("show","on"); });
+      on(el.link, true);
+    }
+  }
+
+  /* ================= ACCESS =================
+     one message names the action happening now; one CTA, always in the same place,
+     always labelled with what pressing it will do. */
+
+  function runFindNetwork(){
+    setConcept(null);
+    setStatus("You need Wi-Fi.", true);
+    setCue("Pick a network.");
+    setPanel("wifi");
+    el.netPick.setAttribute("aria-pressed", "false");
+    armNext("join", "Join Network");
+  }
+
+  function runJoin(){
+    setConcept(null);
+    setStatus("Joining CoffeeShop_WiFi…", true);
+    setCue(null);
+    setPanel("portal");
+    armNext("portal", "Get Online");
+    on(el.wifi, true);
+    el.wifi.classList.add("play");
+
+    at(1400, function(){
+      el.wifi.classList.remove("play");
+      el.wifi.classList.add("settled");
+      setStatus("Joined — no password needed.");
+    });
+    at(1900, function(){
+      el.portalNote.textContent = "Restricted — no internet yet.";
+      setStatus("The network lets you in, not out.");
+      enableNext();
+    });
+  }
+
+  function runPortal(){
+    setConcept(null);
+    setStatus("Getting internet access…", true);
+    setCue(null);
+    setPanel("apps");
+    armNext("email", "Open Email");
+    el.wire.classList.add("live");
+
+    at(900, function(){
+      setStatus("You’re online.");
+      on(el.observer, true);
+    });
+    at(1600, function(){
+      setStatus("Other devices share this network.");
+      enableNext();
+    });
+  }
+
+  /* the click is answered in the same frame; the CTA stays put, disabled, showing what is next */
+  function runEmail(){
+    setConcept(null);
+    setPanel("apps");
+    el.appRow.classList.add("active");
+    el.appsHead.textContent = "Opening Email…";
+    setStatus("Opening Email…", true);
+    setCue(null);
+    armNext("key-agreement", "Exchange Keys");
+
+    fly(el.pulse, "ltr", 1200, function(){ hideFly(el.pulse); });
+    at(1200, function(){
+      el.epSvc.classList.remove("ep--idle");
+      el.appsHead.textContent = "Email";
+      setStatus("Establishing a secure connection…");
+    });
+    at(1700, function(){ go("identity", true); });
+  }
+
+  /* ================= AGREE ================= */
+  function runIdentity(){
+    setPanel("apps");
+    el.appRow.classList.add("active");
+    el.appsHead.textContent = "Email";
+    setStatus("Establishing a secure connection…", true);
+    setCue(null);
+    armNext("key-agreement", "Exchange Keys");
+
+    at(300, function(){
+      setStatus("Email shares its public key.");
+      raise(el.svcIdPublic);
+    });
+    at(800, function(){
+      fly(el.flyIdPublic, "rtl", TRAVEL, function(){
+        hideFly(el.flyIdPublic);
+        raise(el.youIdPublic);
+        setStatus("Email keeps its private key.");
+        raise(el.svcIdPrivate);
+        el.svcAnchor.classList.add("on");
+        el.svcIdPrivate.classList.add("held");
+      });
+    });
+    at(2400, function(){ el.svcIdPrivate.classList.remove("held"); });
+
+    /* the private key does something only it can do… */
+    at(2700, function(){
+      setStatus("Email signs with the private key.");
+      el.svcIdPrivate.classList.add("held");
+      at(420, function(){ el.svcIdPrivate.classList.remove("held"); });
+      fly(el.flySig, "rtl", TRAVEL, function(){
+        hideFly(el.flySig);
+        /* …and the copy you hold is what checks it */
+        el.youIdPublic.classList.add("check");
+        setStatus("Your copy of the public key checks it. It really is Email.");
+        at(420, function(){ el.youIdPublic.classList.remove("check"); });
+      });
+    });
+
+    at(5200, function(){
+      setStatus("Public can be shared. Private stays private.");
+      setConcept("asym");
+      enableNext();
+      showReplay();
+    });
+  }
+
+  function runKeyAgreement(){
+    setConcept(null);
+    setPanel("apps");
+    el.appRow.classList.add("active");
+    el.appsHead.textContent = "Email";
+    setStatus("You create a private value.", true);
+    setCue(null);
+    armNext("symmetric", "Switch to Symmetric");
+    [el.svcIdPublic, el.svcIdPrivate, el.youIdPublic].forEach(function(t){ t.classList.remove("show","on"); });
+    raise(el.youDhPrivate);
+
+    at(700, function(){
+      setStatus("Email creates a private value.");
+      raise(el.svcDhPrivate);
+    });
+    at(1400, function(){
+      setStatus("You exchange public values.");
+      raise(el.youDhPublic);
+      raise(el.svcDhPublic);
+    });
+    at(1900, function(){
+      fly(el.flyDhIn, "rtl", TRAVEL, function(){
+        hideFly(el.flyDhIn);
+        fly(el.flyDhOut, "ltr", TRAVEL, function(){
+          hideFly(el.flyDhOut);
+          setStatus("Private values never leave.");
+          el.youDhPrivate.classList.add("held");
+          el.svcDhPrivate.classList.add("held");
+          at(500, function(){
+            el.youDhPrivate.classList.remove("held");
+            el.svcDhPrivate.classList.remove("held");
+            setStatus("Both sides derive the same secret.");
+            /* each side folds its own private value into the public one it received */
+            el.youDhPrivate.classList.add("merge-r");
+            el.youDhPublic.classList.add("merge-r");
+            el.svcDhPrivate.classList.add("merge-l");
+            el.svcDhPublic.classList.add("merge-l");
+            at(340, function(){
+              raise(el.youSession);
+              raise(el.svcSession);
+              [el.youDhPublic, el.svcDhPublic].forEach(function(t){ on(t, false); });
+              [el.youDhPrivate, el.svcDhPrivate].forEach(recede);
+            });
+            at(980, function(){
+              [el.youDhPublic, el.svcDhPublic].forEach(function(t){ t.classList.remove("show"); });
+              [el.youDhPrivate, el.svcDhPrivate].forEach(function(t){ t.classList.remove("merge-r","merge-l"); });
+              on(el.link, true);
+            });
+            at(1500, function(){
+              setStatus("Same secret. Never sent.");
+              setConcept("dh");
+              enableNext();
+              showReplay();
+            });
+          });
+        });
+      });
+    });
+  }
+
+  function runSymmetric(){
+    [el.youDhPublic, el.svcDhPublic].forEach(function(t){ t.classList.remove("show","on"); });
+    [el.youDhPrivate, el.svcDhPrivate].forEach(function(t){ t.classList.remove("dim"); });
+    setPanel("apps");
+    el.appRow.classList.add("active");
+    el.appsHead.textContent = "Email";
+    setStatus("Shared secret established.", true);
+    setCue(null);
+    armNext("data", "Encrypt Message");
+
+    at(500, function(){
+      setStatus("Switching to symmetric encryption.");
+      [el.youDhPrivate, el.svcDhPrivate].forEach(recede);
+      setConcept("sym");
+    });
+    at(1400, function(){
+      setStatus("Symmetric session keys ready.");
+      enableNext();
+    });
+  }
+
+  /* ================= PROTECT ================= */
+  function runData(){
+    setConcept("sym");
+    setStatus("Your message is readable here.", true);
+    setCue(null);
+    setPanel("mail");
+    armNext("observer", "Inspect Traffic");
+
+    at(800, function(){
+      setStatus("Encrypting message…");
+      on(el.youKey, true);
+      el.youBody.classList.add("enc");
+      scramble(el.youLine1, CIPHER, 800, function(){
+        setStatus("Sending encrypted data…");
+        fly(el.flyPacket, "ltr", 1100, function(){
+          hideFly(el.flyPacket);
+          on(el.cardSvc, true);
+          el.svcBody.classList.add("enc");
+          el.svcLine1.textContent = CIPHER;
+          setStatus("Decrypting…");
+          on(el.svcKey, true);
+          el.svcBody.classList.remove("enc");
+          scramble(el.svcLine1, PLAIN, 800, function(){
+            setStatus("Email opened. Protected the whole way.");
+            enableNext();
+            showReplay();
+          });
+        });
+      });
+    });
+  }
+
+  function runObserver(){
+    setConcept("sym");
+    setPanel("mail");
+    on(el.youKey, true);
+    el.youBody.classList.add("enc");
+    el.youLine1.textContent = CIPHER;
+    on(el.cardSvc, true);
+    on(el.svcKey, true);
+    setStatus("Another device is listening on this network.", true);
+    setCue(null);
+    armNext("restart", "Start Over");
+
+    at(600, function(){
+      setStatus("Sending encrypted data…");
+      fly(el.flyPacket, "ltr", 1100, function(){ hideFly(el.flyPacket); });
+    });
+    at(1100, function(){
+      branch(el.flyBranch, function(){
+        on(el.obsSees, true);
+        setStatus("Other devices only see encrypted data.");
+        at(900, function(){ hideFly(el.flyBranch); });
+      });
+    });
+    at(2900, function(){
+      setStatus("Without the key, the data stays scrambled.");
+      enableNext();
+      showReplay();
+    });
+  }
+
+  var RUN = {
+    "find-network": runFindNetwork, "join": runJoin, "portal": runPortal, "email": runEmail,
+    "identity": runIdentity, "key-agreement": runKeyAgreement,
+    "symmetric": runSymmetric, "data": runData, "observer": runObserver
+  };
+
+  var current = null;
+
+  function go(state, quiet){
+    var i = idx(state);
+    if (i < 0) return;
+    current = state;
+
+    var ch = CHAPTER[state];
+    el.tabs.forEach(function(t){
+      var isCur = t.dataset.state === ch;
+      if (isCur) t.setAttribute("aria-current", "step"); else t.removeAttribute("aria-current");
+      t.dataset.done = CH_ORDER.indexOf(t.dataset.state) < CH_ORDER.indexOf(ch) ? "true" : "false";
+    });
+
+    reset();
+    world(i);
+
+    if (!quiet){
+      el.stage.classList.remove("enter");
+      void el.stage.offsetWidth;
+      el.stage.classList.add("enter");
+    }
+    RUN[state]();
+  }
+
+  /* ---------- controls ---------- */
+  el.netPick.addEventListener("click", function(){
+    el.netPick.setAttribute("aria-pressed", "true");
+    setStatus("Selected. No password needed.");
+    enableNext();
+  });
+  el.replay.addEventListener("click", function(){ if (current) go(current, true); });
+  el.next.addEventListener("click", function(){
+    var act = el.next.dataset.act;
+    go(act === "restart" ? "find-network" : act);
+  });
+
+  el.tabs.forEach(function(t){
+    t.addEventListener("click", function(){ go(CH_ENTRY[t.dataset.state]); });
+    t.addEventListener("keydown", function(e){
+      var i = CH_ORDER.indexOf(t.dataset.state);
+      if (e.key === "ArrowRight" && i < 2){ el.tabs[i + 1].focus(); go(CH_ENTRY[CH_ORDER[i + 1]]); }
+      if (e.key === "ArrowLeft"  && i > 0){ el.tabs[i - 1].focus(); go(CH_ENTRY[CH_ORDER[i - 1]]); }
+    });
+  });
+
+  var rz;
+  vertical.addEventListener("change", function(){ placeContext(); if (current) go(current, true); });
+  window.addEventListener("resize", function(){
+    clearTimeout(rz);
+    rz = setTimeout(function(){ if (current) go(current, true); }, 220);
+  });
+
+  placeContext();
+  go("find-network");
+})();
+</script>
+</body>
+</html>
