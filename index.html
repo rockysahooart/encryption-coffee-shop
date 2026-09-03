@@ -18,7 +18,7 @@
   --sym:#6FD08C;
   --glow:rgba(236,238,240,.20);
 
-  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px;
   --r1:4px; --r2:8px; --r3:12px;
 
   --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
@@ -89,6 +89,7 @@ h1{font-size:clamp(15px,.5vw + 11px,17px);font-weight:600;letter-spacing:-.01em;
 
 /* ---------- stage ---------- */
 .stage{
+  position:relative;
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
@@ -145,6 +146,11 @@ h1{font-size:clamp(15px,.5vw + 11px,17px);font-weight:600;letter-spacing:-.01em;
 .slot{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2);min-height:30px}
 .slot--you{justify-content:flex-end}
 .slot--svc{justify-content:flex-start}
+/* on desktop the column IS the ownership signal, so the wrapper and the
+   spoken label stay out of the way entirely */
+.slot-tokens,.corridor,.env,.module{display:contents}
+.context{display:none}
+.holds-label,.mid-label{display:none}
 
 .token{
   display:none;align-items:center;gap:6px;
@@ -486,145 +492,327 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
 
 
 /* ============================================================
-   MOBILE COMPOSITION — the story turns vertical:
-   YOU ↓ NETWORK ↓ EMAIL. Same states, same colours, new axis.
+   MOBILE COMPOSITION  (<= 768px)
+
+   Desktop explains encryption across the screen. Mobile explains it down
+   the screen. This is not the desktop grid rotated: the three columns
+   become one centred column, every structural element is placed by normal
+   flow / flex / grid, and the only absolutely positioned things left are
+   the packets in flight — which are positioned inside the corridor they
+   travel through, never against the viewport.
+
+   Reading order, top to bottom:
+     YOU  ->  the keys you hold  ->  your screen
+     NETWORK  (access point, corridor, who else is listening)
+     the shared secret
+     EMAIL  ->  the keys it holds  ->  its screen
+
+   Spacing uses the same scale as the rest of the file:
+     4 / 8 / 12 / 16 / 24 / 32 / 48 / 64
+   12 inside a group, 24 between groups, 48 at a chapter change.
    ============================================================ */
 @media (max-width:768px){
-  :root{--dev:64px}
+  :root{
+    --pad:20px;        /* page gutter        */
+    --cardpad:16px;    /* card inner padding */
+    --dev:44px;        /* endpoint glyph     */
+  }
 
   .frame{
-    grid-template-rows:auto auto minmax(0,1fr);
+    grid-template-rows:auto auto minmax(0,1fr) auto;
+    /* nav 12 title, title 16 box — the controls and the sentence stay
+       attached to the thing they are steering */
     gap:var(--s3);
-    padding:var(--s4) var(--s4) calc(96px + env(safe-area-inset-bottom));
-    max-width:520px;
+    padding:var(--s4) var(--pad) calc(76px + env(safe-area-inset-bottom));
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
   }
+
+  /* ---------- type scale ---------- */
+  /* the deck is chrome, not the lesson — it stays legible but it does not
+     get to spend the stage's height */
+  h1{font-size:15px;line-height:1.3;color:var(--muted)}
+  /* the narrated title says what is happening at every step, which makes the
+     standing deck redundant on a screen this size — and four lines of it is
+     the difference between the demonstration fitting and not */
+  .sub{display:none}
   .ambient .ssid{display:none}
-  .sub{font-size:12px;max-width:none}
-  h1{font-size:15px}
-  .step{font-size:12px;padding:2px var(--s2)}
+  .step{font-size:13px;padding:var(--s1) var(--s3) var(--s1) var(--s2)}
   .steps{gap:var(--s1)}
   .sep{display:none}
-  .legend{display:none}
 
-  .stage{gap:var(--s3)}
-  .concept{height:20px}
+  .stage{gap:var(--s2);min-height:0}
+  .moment{max-width:none;min-height:76px;margin-bottom:0;gap:var(--s2)}
+  .story{flex-direction:row;gap:var(--s3);align-items:center}
+  .story-icon{width:30px;height:30px;flex:none}
+  .story-icon svg{width:28px;height:28px}
+  .story.payoff .story-icon{width:32px;height:32px}
+  .story.payoff .story-icon svg{width:30px;height:30px}
+  .status{font-size:clamp(20px,5.2vw,24px);line-height:1.22}
+  .status.payoff{font-size:clamp(21px,5.6vw,25px)}
+  .cue{font-size:14px;line-height:1.45}
+  .concept{height:auto;gap:var(--s2);flex-wrap:wrap}
+  .concept-name{font-size:12px}
+  .concept-sub{font-size:14px}
 
-  .lanes{
-    grid-template-columns:minmax(0,1fr);
-    grid-template-rows:auto;
-    row-gap:var(--s3);
-    max-width:none;
+  /* ------------------------------------------------------------------
+     Two levels of containment, and the difference between them carries
+     meaning. The outer box is the environment: the network and everything
+     on it. The inner box is the demonstration currently running. Secondary
+     devices belong to the environment, never to the demonstration — which
+     is why the observer is moved out of the module on this breakpoint.
+     ------------------------------------------------------------------ */
+  .env{
+    display:flex;flex-direction:column;
+    gap:var(--s4);
+    flex:1;min-height:0;width:100%;
+    margin-top:var(--s2);            /* 16 below the title, with .stage gap */
+    padding:var(--s4);
+    border:1px solid var(--line);
+    border-radius:var(--r3);
   }
-  .moment{max-width:none;min-height:92px;margin-bottom:0}
-  #epYou{grid-column:1;grid-row:2}
-  .msg-cell--you{grid-column:1;grid-row:3}
-  .slot--you{grid-column:1;grid-row:4;justify-content:center}
-  .net{grid-column:1;grid-row:5}
-  .link{grid-column:1;grid-row:5}
-  .slot--svc{grid-column:1;grid-row:6;justify-content:center}
-  #epSvc{grid-column:1;grid-row:7}
-  .msg-cell--svc{grid-column:1;grid-row:8}
+  .context{
+    display:flex;flex-direction:column;
+    gap:var(--s2);
+    flex:none;width:100%;
+  }
 
-  /* endpoints stack their own label instead of hanging it below */
-  .ep{height:auto;flex-direction:column;align-items:center;gap:var(--s1)}
-  .ep-label{position:static;font-size:10px}
-  .device{width:var(--dev);height:var(--dev);border-radius:var(--r2)}
-  .device svg{width:34px;height:34px}
+  /* ---------- inner box: the focused demonstration ---------- */
+  .module{
+    display:flex;flex-direction:column;
+    flex:1;min-height:0;width:100%;
+    padding:var(--s4);
+    /* stronger surface and border than the environment around it, so it is
+       immediately obvious which box is live */
+    background:rgba(255,255,255,.022);
+    border:1px solid var(--line-2);
+    border-radius:var(--r2);
+  }
+  .lanes{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:var(--s3);                /* 12 inside a group */
+    width:100%;
+    max-width:none;
+    margin:0;
+    flex:1;min-height:0;
+    /* the late states carry two full screens plus the network band; rather
+       than shrink the type to force them into one viewport, the diagram
+       scrolls inside its own box while everything around it holds still */
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:none;
+    /* the fade sits on the content, not on the box, so a partly-visible row
+       reads as scrolled while the box's own border stays crisp */
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%);
+    mask-image:linear-gradient(to bottom,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%);
+  }
+  .lanes::-webkit-scrollbar{display:none}
 
-  .msg-cell{min-height:auto}
-  .card{width:100%;max-width:none}
-  .msg-cell--svc .card:not(.on){display:none}
-  .slot{min-height:0}
+  /* Conceptual order, expressed as flow order rather than coordinates.
+     Each side reads outward from the wire: your screen and Email's screen
+     sit at the two ends, the keys each side holds sit against the corridor
+     they act across, and the corridor itself is the middle of the story.
+        YOU  ->  your screen  ->  what you hold
+        [ NETWORK ]  ->  the shared secret
+        what Email holds  ->  EMAIL  ->  its screen
+     Keeping the two key rows adjacent to the band is what lets a single
+     phone screen hold both halves of an exchange at once. */
+  #epYou        {order:1}
+  .msg-cell--you{order:2}
+  .slot--you    {order:3}
+  .net          {order:4}
+  .link         {order:5}
+  .slot--svc    {order:6}
+  #epSvc        {order:7}
+  .msg-cell--svc{order:8}
 
-  /* the network becomes a vertical corridor */
-  .net{height:104px;width:100%}
+  /* 12 inside a group, 24 between groups */
+  .net{margin-top:var(--s3)}
+  .slot--svc{margin-top:var(--s3)}
+
+  /* ---------- endpoint: glyph and name on one line ---------- */
+  .ep{
+    height:auto;flex:none;
+    flex-direction:row;align-items:center;justify-content:flex-start;
+    gap:var(--s3);
+  }
+  .device{width:var(--dev);height:var(--dev);flex:none;border-radius:var(--r2)}
+  .device svg{width:24px;height:24px}
+  .ep-label{
+    position:static;text-align:left;
+    font-size:12px;letter-spacing:.14em;color:var(--ink);
+  }
+  .ep--idle .ep-label{color:var(--faint)}
+
+  /* ---------- keys: the owner is named, then what that owner holds ---------- */
+  .slot{
+    flex:none;
+    flex-direction:column;align-items:flex-start;
+    gap:var(--s2);min-height:0;
+  }
+  .holds-label{
+    display:block;
+    font-family:var(--mono);font-size:12px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--faint);line-height:1.35;
+  }
+  .slot-tokens{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2)}
+  /* EMAIL's row is authored right-to-left so it mirrors YOU across the
+     desktop centre line; stacked vertically that mirror reads as
+     inconsistency, so flip it back and both sides scan the same way */
+  .slot--svc .slot-tokens{flex-direction:row-reverse;justify-content:flex-end}
+  .token{font-size:13px;padding:7px 9px;white-space:normal}
+  /* no owner label until that owner actually holds something */
+  .slot:not(:has(.token.show)){display:none}
+
+  /* ---------- screens ---------- */
+  .msg-cell{flex:none;min-height:0}
+  .msg-cell > *{justify-self:stretch}
+  .card{width:100%;max-width:none;padding:var(--cardpad)}
+  /* four levels of padding is the most this composition can carry; the card
+     gives up its last 4px so the message inside stays readable at 320 */
+  .card-from{font-size:13px;margin-bottom:var(--s3)}
+  .card-body{font-size:14px;line-height:1.5}
+  .msg-cell--svc:not(:has(.card.on)){display:none}
+  .netrow,.approw{min-height:48px;font-size:14px}
+  .pane-note{font-size:14px;line-height:1.5}
+
+  /* long values never set the width of the page */
+  .mono,.card-body{overflow-wrap:anywhere;max-width:100%}
+
+  /* ---------- the network: a contained band, everything in flow ---------- */
+  .net{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    grid-template-rows:auto auto;
+    column-gap:var(--s3);row-gap:var(--s3);
+    height:auto;width:100%;flex:none;
+    padding:var(--s3) 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .mid-label{
+    display:block;position:static;grid-column:1;grid-row:1;align-self:center;
+    font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--faint);
+  }
+  .wifi{
+    position:static;grid-column:2;grid-row:1;
+    justify-self:start;align-self:center;
+    transform:rotate(90deg) scaleX(-1);
+    padding:0;background:none;
+  }
+  .wifi svg{width:20px;height:20px}
+
+  /* the one place absolute positioning survives — and it is measured
+     against this box, which is a normal grid child with a known height */
+  .corridor{
+    display:block;position:relative;
+    grid-column:1 / -1;grid-row:2;
+    width:100%;min-height:56px;
+  }
   .wire{
-    left:50%;right:auto;top:-8px;bottom:-8px;height:auto;width:0;
+    left:50%;right:auto;top:0;bottom:0;height:auto;width:0;
     border-top:0;border-left:1px dashed var(--line-2);
   }
   .track{left:50%;right:auto;top:0;bottom:0;width:0;height:100%}
-  .flyer{left:50%;top:0}
+  .flyer{left:50%;top:0;transform:translate(-50%,0)}
+  /* a copy in transit between the two containers is parked on the stage,
+     which clips nothing, so it can cross the module boundary */
+  .flyer.detached{position:absolute;left:0;top:0;z-index:6}
   .flyer--up .chip,.flyer--down .chip{margin:0}
-  .pulse{width:2px;height:48px;transform:translate(-50%,0)}
-  .chip{box-shadow:0 0 0 6px var(--bg),0 1px 3px rgba(0,0,0,.5);font-size:11px;padding:4px 6px}
-
-  .wifi{
-    left:50%;top:-4px;
-    transform:translateX(-50%) rotate(90deg) scaleX(-1);
-    padding:var(--s1) 0;
+  .pulse{width:2px;height:40px;transform:translate(-50%,0)}
+  .chip{
+    font-size:13px;padding:var(--s2) var(--s3);
+    box-shadow:0 0 0 6px var(--bg),0 1px 3px rgba(0,0,0,.5);
+    max-width:calc(100vw - (var(--pad) * 2) - var(--s6));
   }
 
-  /* one representative neighbour, beside the corridor */
-  .observer{
-    left:auto;right:0;top:0;
-    transform:none;
-    align-items:flex-end;text-align:right;gap:2px;
+  /* One representative neighbour. It lives in the environment box, below
+     the demonstration, anchored in flow — it is never dragged into the
+     module and it cannot overlap anything. */
+  .context .observer{
+    position:static;transform:none;
+    max-width:none;width:100%;
+    flex-direction:row;align-items:center;justify-content:space-between;
+    gap:var(--s3);text-align:left;
+    padding:var(--s3);
+    border:1px dashed var(--line);border-radius:var(--r2);
   }
+  /* a row of nothing in eight states out of nine is worse than the shift
+     when it arrives, and it arrives announced */
+  .observer:not(.on){display:none}
+  /* a short connector so the neighbour reads as attached to the network
+     above it rather than as a card that happens to sit there */
+  .context::before{
+    content:"";align-self:center;
+    width:0;height:var(--s4);
+    border-left:1px dashed var(--line-2);
+  }
+  .context:not(:has(.observer.on))::before{display:none}
   .obs-label-full{display:none}
   .obs-label-mini{display:inline}
   .obs-head svg:nth-child(2){display:none}
+  .observer .obs-label{font-size:12px}
+  .observer .obs-sees{font-size:13px;min-width:0;max-width:100%}
+  .observer .obs-sees .mono{min-width:0;overflow-wrap:anywhere}
 
-  /* the shared secret is named on the corridor, never sent along it */
-  .link{align-self:end;justify-self:center;pointer-events:none;z-index:2;padding:0}
+  /* the shared secret is named beneath the corridor, never sent along it */
+  .link{
+    position:static;flex:none;
+    align-self:center;justify-self:auto;max-width:100%;
+    padding:0;align-items:center;text-align:center;
+  }
   .link-line{display:none}
-  .link-label{background:var(--bg);padding:2px var(--s2);border-radius:var(--r1);font-size:9px}
+  .link-label{font-size:12px;background:none;padding:0;line-height:1.4}
 
-  /* story stays the biggest voice */
-  .story{flex-direction:row;gap:var(--s3)}
-  .story-icon{width:28px;height:28px}
-  .story-icon svg{width:26px;height:26px}
-  .story.payoff .story-icon{width:32px;height:32px}
-  .story.payoff .story-icon svg{width:30px;height:30px}
-  .status{font-size:clamp(18px,3.4vw + 6px,21px)}
-  .status.payoff{font-size:clamp(20px,4vw + 6px,23px)}
-  .cue{font-size:13px}
+  /* ---------- colour key: without it yellow and green are decoration ---------- */
+  .legend{
+    display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;
+    gap:var(--s2) var(--s5);
+    padding-top:var(--s3);
+  }
+  .leg{gap:var(--s2)}
+  .leg-name{min-width:0;font-size:12px;letter-spacing:.1em}
+  .leg-items{display:none}
+  .leg-note{font-size:13px;padding-left:var(--s2)}
+  .leg--dh{display:none}
 
-  /* the action anchor becomes a bottom bar in the same place every time */
+  /* ---------- touch ---------- */
   .actions{
     position:fixed;left:0;right:0;bottom:0;z-index:5;
-    padding:var(--s2) var(--s4) calc(var(--s2) + env(safe-area-inset-bottom));
+    width:100%;max-width:480px;margin:0 auto;
+    padding:var(--s3) var(--pad) calc(var(--s3) + env(safe-area-inset-bottom));
     background:var(--bg);border-top:1px solid var(--line);
-    gap:var(--s2);
+    gap:var(--s3);
   }
-  .cta{flex:1;min-width:0;min-height:50px}
-  .replay{flex:none;padding:0 var(--s2)}
+  .cta{flex:1;min-width:0;min-height:48px;font-size:15px}
+  .replay{flex:none;min-height:48px;padding:0 var(--s3)}
 
-  .netrow{min-height:46px}
-  .card-body{font-size:13px}
-
-  /* vertical story: toward YOU is up, toward EMAIL is down */
+  /* ---------- vertical motion: toward YOU is up, toward EMAIL is down ---------- */
   @keyframes ic-left{from{opacity:0;transform:translateY(11px)}to{opacity:1;transform:none}}
   @keyframes ic-right{from{opacity:0;transform:translateY(-11px)}to{opacity:1;transform:none}}
   @keyframes ic-from-left{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
   @keyframes ic-from-right{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   @keyframes ic-shift{from{transform:translateY(-6px)}to{transform:translateY(3px)}}
+  /* the two sides fold their values together along the axis they face */
+  @keyframes merge-r{0%{transform:none}55%{transform:translateY(9px)}100%{transform:none}}
+  @keyframes merge-l{0%{transform:none}55%{transform:translateY(-9px)}100%{transform:none}}
 }
 
-@media (max-width:768px) and (max-height:900px){
-  :root{--dev:56px}
-  .net{height:84px}
-  .device svg{width:30px;height:30px}
-  .lanes{row-gap:var(--s2)}
-  .card{padding:var(--s2) var(--s3)}
-  .stage{gap:var(--s2)}
-  .status{font-size:clamp(18px,3.2vw + 6px,19px)}
-  .status.payoff{font-size:clamp(19px,3.6vw + 6px,21px)}
+/* narrow phones: gutters tighten, nothing else changes */
+@media (max-width:374px){
+  :root{--pad:16px;--cardpad:12px}
+  .status{font-size:20px}
+  .netrow,.approw{font-size:13px}
 }
 
+/* short phones: trim the chrome, never the reading size */
 @media (max-width:768px) and (max-height:820px){
-  :root{--dev:52px}
-  .frame{gap:var(--s2);padding:var(--s3) var(--s3) calc(92px + env(safe-area-inset-bottom))}
-  .net{height:76px}
-  .lanes{row-gap:6px}
-  .card{padding:var(--s2)}
-  .story-icon{width:24px;height:24px}
-  .story-icon svg{width:23px;height:23px}
-  .moment{min-height:86px}
-  .sub{display:none}
-  .approw,.netrow{min-height:44px}
-  .card-from{margin-bottom:var(--s1)}
-  .card-key{height:13px;margin-bottom:2px}
-  .net{height:68px}
+  .moment{min-height:84px}
+  .corridor{min-height:60px}
+  .frame{gap:var(--s3)}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -681,6 +869,12 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
       <span class="concept-sub" id="conceptSub">Different keys.</span>
     </div>
 
+    <!-- Outer environment: the broader system the exchange happens inside.
+         Holds the interaction module and any secondary devices. On desktop
+         it is display:contents, so the grid below is untouched. -->
+    <div class="env">
+
+    <div class="module">
     <div class="lanes">
 
       <!-- ============ YOU ============ -->
@@ -696,8 +890,7 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
 
       <!-- ============ NETWORK ============ -->
       <div class="net">
-        <div class="wire" id="wire"></div>
-
+        <span class="mid-label" aria-hidden="true">NETWORK</span>
         <div class="wifi" id="wifi" aria-hidden="true">
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
             <path class="arc" d="M7 15.5a6.6 6.6 0 0 1 0-7"/>
@@ -705,6 +898,9 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
             <path class="arc" d="M15 19.6a14.4 14.4 0 0 1 0-15.2"/>
           </svg>
         </div>
+
+        <div class="corridor">
+        <div class="wire" id="wire"></div>
 
         <div class="track" id="track">
           <div class="flyer" id="flyIdPublic">
@@ -731,6 +927,7 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
           <div class="flyer flyer--branch" id="flyBranch">
             <span class="chip mono">8F A2 91 C7 4E…</span>
           </div>
+        </div>
         </div>
 
         <div class="observer" id="observer">
@@ -768,10 +965,13 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
 
       <!-- ---------- row 2: keys ---------- -->
       <div class="slot slot--you">
+        <span class="holds-label">You hold</span>
+        <span class="slot-tokens">
         <span class="token token--public" id="youIdPublic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Email’s public key</span>
         <span class="token token--private" id="youDhPrivate"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg>Private value</span>
         <span class="token token--public" id="youDhPublic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Public value</span>
         <span class="token token--session" id="youSession"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="3.2"/><path d="M11.2 12H20M17 12v3M14 12v2.2"/></svg>Session key</span>
+        </span>
       </div>
 
       <div class="link" id="link">
@@ -780,12 +980,15 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
       </div>
 
       <div class="slot slot--svc">
+        <span class="holds-label">Email holds</span>
+        <span class="slot-tokens">
         <span class="token token--session" id="svcSession"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="3.2"/><path d="M11.2 12H20M17 12v3M14 12v2.2"/></svg>Session key</span>
         <span class="token token--public" id="svcDhPublic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Public value</span>
         <span class="token token--private" id="svcDhPrivate"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg>Private value</span>
         <span class="token token--public" id="svcIdPublic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 7.5-1.9"/></svg>Public key</span>
         <span class="anchor" id="svcAnchor">
           <span class="token token--private" id="svcIdPrivate"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg>Private key</span>
+        </span>
         </span>
       </div>
 
@@ -862,6 +1065,17 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
 
     </div>
 
+    <!-- Surrounding context. Devices that are not part of the demonstration
+         itself live here, outside the interaction module, in their own
+         container so they can never overlap it. Empty (and hidden) on
+         desktop, where the observer sits inside the network band; on mobile
+         the observer is moved in here by placeContext(). -->
+    </div>
+
+    <aside class="context" id="context" aria-label="Other devices on this network"></aside>
+
+    </div>
+
   </main>
 
     <div class="actions">
@@ -925,6 +1139,7 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
   /* ---------- primitives ---------- */
   var el = {
     tabs: Array.prototype.slice.call(document.querySelectorAll(".step")),
+    lanes: document.querySelector(".lanes"),
     stage: $("stage"), moment: $("moment"),
     concept: $("concept"), conceptName: $("conceptName"), conceptSub: $("conceptSub"),
     status: $("status"), cue: $("cue"), story: $("story"), storyIcon: $("storyIcon"),
@@ -933,6 +1148,8 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
     flyIdPublic: $("flyIdPublic"), flySig: $("flySig"), flyDhOut: $("flyDhOut"), flyDhIn: $("flyDhIn"),
     flyPacket: $("flyPacket"), flyBranch: $("flyBranch"),
     observer: $("observer"), obsSees: $("obsSees"),
+    context: $("context"), corridor: document.querySelector(".corridor"),
+    net: document.querySelector(".net"),
     youIdPublic: $("youIdPublic"), youDhPrivate: $("youDhPrivate"),
     youDhPublic: $("youDhPublic"), youSession: $("youSession"),
     svcIdPublic: $("svcIdPublic"), svcIdPrivate: $("svcIdPrivate"), svcAnchor: $("svcAnchor"),
@@ -1062,6 +1279,75 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
     "Without the key, the data stays scrambled.": 1,
     "Email opened. Protected the whole way.": 1
   };
+
+  /* ------------------------------------------------------------------
+     Mobile keeps one step in view at a time. The narration already names
+     the object each beat is about; this maps that same sentence to the
+     part of the vertical stage it describes, and eases the stage to it so
+     the words and the thing they describe are never on different screens.
+     Desktop shows everything at once and never calls this.
+     ------------------------------------------------------------------ */
+  var FOCUS = {
+    "You need Wi-Fi.": "#panel",
+    "Selected. No password needed.": "#panel",
+    "Joining CoffeeShop_WiFi…": "#panel",
+    "Joined — no password needed.": "#panel",
+    "The network lets you in, not out.": ".net",
+    "Getting internet access…": "#panel",
+    "You’re online.": "#panel",
+    "Other devices share this network.": ".net",
+    "Opening Email…": "#panel",
+    "Establishing a secure connection…": ".net",
+    "Email shares its public key.": ".net",
+    "Email keeps its private key.": ".slot--svc",
+    "Email signs with the private key.": ".slot--svc",
+    "Your copy of the public key checks it. It really is Email.": ".slot--you",
+    "Public can be shared. Private stays private.": ".net",
+    "You create a private value.": ".slot--you",
+    "Email creates a private value.": ".slot--svc",
+    "You exchange public values.": ".net",
+    "Private values never leave.": ".net",
+    "Both sides derive the same secret.": ".net",
+    "Same secret. Never sent.": ".net",
+    "Shared secret established.": ".net",
+    "Switching to symmetric encryption.": ".net",
+    "Symmetric session keys ready.": ".net",
+    "Your message is readable here.": "#panel",
+    "Encrypting message…": "#panel",
+    "Sending encrypted data…": ".net",
+    "Decrypting…": ".msg-cell--svc",
+    "Email opened. Protected the whole way.": ".msg-cell--svc",
+    "Another device is listening on this network.": ".corridor",
+    "Other devices only see encrypted data.": ".corridor",
+    "Without the key, the data stays scrambled.": ".corridor"
+  };
+  /* The observer is a secondary device, not part of the demonstration.
+     Desktop shows it inside the network band, where there is room beside
+     the wire. Mobile moves it out of the module entirely, into its own
+     container below, so the module holds only the two endpoints actually
+     exchanging keys. Same element, same state, different host. */
+  function placeContext(){
+    var host = vertical.matches ? el.context : el.net;
+    if (el.observer.parentNode !== host) host.appendChild(el.observer);
+  }
+
+  var focusTimer = null;
+  function focusOn(sel){
+    if (!sel || !el.lanes || !vertical.matches) return;
+    var node = document.querySelector(sel);
+    if (!node || !node.offsetParent || !el.lanes.contains(node)) return;
+    clearTimeout(focusTimer);
+    focusTimer = setTimeout(function(){
+      var box = el.lanes.getBoundingClientRect();
+      var it  = node.getBoundingClientRect();
+      var to  = el.lanes.scrollTop + (it.top - box.top) - (box.height - it.height) / 2;
+      to = Math.max(0, Math.min(el.lanes.scrollHeight - el.lanes.clientHeight, to));
+      if (Math.abs(to - el.lanes.scrollTop) < 8) return;
+      try { el.lanes.scrollTo({ top: to, behavior: RM ? "auto" : "smooth" }); }
+      catch (e){ el.lanes.scrollTop = to; }
+    }, 140);
+  }
+
   function setStatus(text, now){
     var same = el.status.textContent === text;
     if (!same || !el.storyIcon.firstChild){
@@ -1069,6 +1355,7 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
       el.story.classList.toggle("payoff", !!PAYOFF[text]);
       setIcon(STORY_ICON[text]);
     }
+    focusOn(FOCUS[text]);
     if (same) return;
     if (now){ el.status.textContent = text; el.status.classList.remove("swap"); return; }
     el.status.classList.add("swap");
@@ -1168,20 +1455,52 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
   function hideFly(node){
     node.style.transition = "opacity 180ms linear";
     node.style.opacity = "0";
+    if (node.dataset.home === "track"){
+      delete node.dataset.home;
+      /* send it home only once it has finished fading, and clear the
+         stage-space transform on the way — left behind, it would stretch
+         the module's scroll height by the length of its own journey */
+      var home = function(){
+        if (node.dataset.home) return;
+        node.classList.remove("detached");
+        node.style.transition = "none";
+        node.style.transform = "";
+        el.track.appendChild(node);
+      };
+      if (RM) home(); else setTimeout(home, 220);
+    }
   }
   /* a copy of what is on the wire peels off toward the other devices */
   /* a copy of what is already on the wire peels off toward the neighbour */
   function branch(node, done){
-    var from, to;
+    var from, to, ms = 520;
+
     if (vertical.matches){
-      var y = Math.round(el.track.clientHeight / 2 - node.offsetHeight / 2);
-      from = "translate(-50%," + y + "px)";
-      to   = "translate(calc(-50% + 46px),10px)";
+      /* The observer lives outside the module now, so the copy has to cross
+         a container boundary. Parking the chip on the stage — which clips
+         nothing — lets it fly from the middle of the corridor to the device
+         waiting below, instead of the secondary device being dragged into
+         the animation area to meet it. */
+      var sr = el.stage.getBoundingClientRect();
+      var cr = el.corridor.getBoundingClientRect();
+      var tr = el.observer.getBoundingClientRect();
+      if (node.parentNode !== el.stage){
+        node.dataset.home = "track";
+        el.stage.appendChild(node);
+      }
+      node.classList.add("detached");
+      var w = node.offsetWidth, h = node.offsetHeight;
+      from = "translate(" + Math.round(cr.left + cr.width / 2 - sr.left - w / 2) + "px," +
+                            Math.round(cr.top  + cr.height / 2 - sr.top  - h / 2) + "px)";
+      to   = "translate(" + Math.round(tr.left + tr.width / 2 - sr.left - w / 2) + "px," +
+                            Math.round(tr.top  + tr.height / 2 - sr.top  - h / 2) + "px)";
+      ms = 620;
     } else {
       var x = Math.round(el.track.clientWidth / 2 - node.offsetWidth / 2);
       from = "translate(" + x + "px,-50%)";
       to   = "translate(" + x + "px,calc(-50% - 28px))";
     }
+
     node.style.transition = "none";
     node.style.opacity = "0";
     node.style.transform = from;
@@ -1192,11 +1511,12 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
       if (done) done();
       return;
     }
-    node.style.transition = "transform 520ms var(--ease), opacity 200ms linear";
+    node.style.transition = "transform " + ms + "ms var(--ease), opacity 200ms linear";
     node.style.opacity = "1";
     node.style.transform = to;
-    if (done) at(520, done);
+    if (done) at(ms, done);
   }
+
 
   var GLYPHS = "0123456789ABCDEF ";
   function scramble(node, target, ms, cb){
@@ -1577,12 +1897,13 @@ button.netrow[aria-pressed="true"] .netmeta{color:var(--muted)}
   });
 
   var rz;
-  vertical.addEventListener("change", function(){ if (current) go(current, true); });
+  vertical.addEventListener("change", function(){ placeContext(); if (current) go(current, true); });
   window.addEventListener("resize", function(){
     clearTimeout(rz);
     rz = setTimeout(function(){ if (current) go(current, true); }, 220);
   });
 
+  placeContext();
   go("find-network");
 })();
 </script>

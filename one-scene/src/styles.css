@@ -1,0 +1,296 @@
+/* ============================================================================
+   One Scene, One Camera — stylesheet
+   The scene is styled by class, so a stroke weight or a palette change is one
+   line here rather than a hunt through JSX.
+   ========================================================================== */
+
+:root{
+  --chrome:372px;   /* header + nav + breathing room */
+  --ar:1.43;
+
+  /* --- page chrome: theme-aware --- */
+  --page:#f3ece0;
+  --page-2:#e8ddc9;
+  --text:#241b12;
+  --text-2:#5d5344;
+  --text-3:#8a7f6d;
+  --edge:#cdbfa6;
+
+  /* --- the room: ONE palette in both themes (see the note below) --- */
+  --outline:#2c2118;
+  --bg-line:#c3a87f;
+  --wall:#f4e5c9;
+  --wall-2:#e9d5b0;
+  --floor:#e5d2ae;
+  --floor-2:#d8c096;
+  --furn:#d9a15c;
+  --furn-shade:#b57f3d;
+  --glass:#fbf6ea;
+  --surface:#fffdf6;
+
+  /* --- semantic hues: every one has exactly one job --- */
+  --you:#4b74d4;
+  --you-soft:#ccd8f5;
+  --fr:#18a37c;
+  --fr-soft:#c4e8dc;
+  --key:#f4b32c;
+  --key-soft:#fbe6b6;
+  --danger:#c0392b;
+  --danger-soft:#f2cdc8;
+
+  --sans:"Nunito",ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --display:"Baloo 2","Nunito",ui-sans-serif,-apple-system,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  --cam-ease:cubic-bezier(.62,0,.3,1);
+  --cam-ms:1000ms;
+}
+
+/* A deliberate single-theme illustration. The scene is a lit room, like a game
+   screen; inverting it would make the four semantic hues mean something
+   different at night. Only the page chrome follows the viewer's theme. */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#15120e;
+    --page-2:#1e1a14;
+    --text:#f0e9dd;
+    --text-2:#b3a894;
+    --text-3:#8a7f6d;
+    --edge:#3a3227;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#15120e;
+  --page-2:#1e1a14;
+  --text:#f0e9dd;
+  --text-2:#b3a894;
+  --text-3:#8a7f6d;
+  --edge:#3a3227;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--page);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:15.5px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+svg{display:block}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:focus-visible{outline:3px solid var(--you);outline-offset:3px;border-radius:6px}
+
+/* ---------------------------------------------------------------- shell -- */
+.page{max-width:1180px;margin:0 auto;padding:32px 20px 132px}
+@media (min-width:880px){ .page{padding:40px 32px 140px} }
+@media (max-width:879px){ :root{--chrome:330px} }
+
+.head{display:flex;flex-direction:column;gap:16px;margin-bottom:32px}
+@media (min-width:880px){ .head{margin-bottom:40px} }
+
+.eyebrow{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--text-3);
+}
+.h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(25px,4.6vw,36px);line-height:1.14;
+  letter-spacing:-.01em;margin:0;
+  text-wrap:balance;
+}
+.lede{
+  font-size:15.5px;line-height:1.62;color:var(--text-2);
+  max-width:62ch;margin:0;
+}
+.lede b{color:var(--text);font-weight:700}
+
+/* --- beat pips --- */
+.pips{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.pip{
+  display:flex;align-items:center;gap:9px;
+  min-width:38px;color:var(--text-3);
+  font-family:var(--display);font-weight:700;font-size:13px;
+  letter-spacing:.09em;text-transform:uppercase;
+  transition:color .3s ease;
+}
+.pip .dot{
+  width:11px;height:11px;border-radius:50%;
+  border:2.5px solid var(--edge);background:transparent;
+  transition:background .3s ease,border-color .3s ease,transform .3s ease;
+}
+.pip[data-on="done"] .dot{background:var(--text-3);border-color:var(--text-3)}
+.pip[data-on="now"]{color:var(--text)}
+.pip[data-on="now"] .dot{background:var(--key);border-color:var(--outline);transform:scale(1.28)}
+.pip .lbl{display:none}
+@media (min-width:640px){ .pip .lbl{display:inline} }
+
+/* ---------------------------------------------------------------- stage -- */
+/* The scene is sized so the whole composition is visible at once: the height
+   available after the page chrome, multiplied by the staging's aspect ratio.
+   --ar is supplied per staging, so switching worlds re-sizes the stage too. */
+.stage{
+  position:relative;
+  width:100%;
+  max-width:calc((100dvh - var(--chrome)) * var(--ar));
+  margin:0 auto;
+  border:2.5px solid var(--outline);
+  border-radius:18px;
+  overflow:hidden;
+  background:var(--wall);
+  box-shadow:0 3px 0 var(--outline);
+}
+.stage svg{width:100%;height:auto;display:block}
+
+/* The camera. One transform on one group.
+   CSS transforms on SVG need REAL UNITS — translate(28,-528) is valid SVG
+   attribute syntax and invalid CSS, and the whole declaration is dropped
+   silently. transform-box/origin make the maths match SVG user space. */
+.cam{
+  transform-box:view-box;
+  transform-origin:0 0;
+  transition:transform var(--cam-ms) var(--cam-ease);
+}
+
+/* Counter-scaled group: constant device size no matter the zoom. Pivots on its
+   own box, and runs the same curve as the camera so they move as one thing. */
+.hold{
+  transform-box:fill-box;
+  transform-origin:50% 50%;
+  transition:transform var(--cam-ms) var(--cam-ease);
+}
+
+/* --- focus falloff: zoom alone is not emphasis --- */
+.actor{transition:opacity .55s ease}
+.actor.far{opacity:.32}
+.actor.near{opacity:1}
+
+/* ---------------------------------------------------------- drawing kit -- */
+.ln{fill:none;stroke:var(--outline);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.ln-thin{fill:none;stroke:var(--outline);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.bg-ln{fill:none;stroke:var(--bg-line);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sh{fill:var(--outline);opacity:.1}
+.tile{fill:none;stroke:var(--bg-line);stroke-width:1.2;opacity:.28}
+
+.wall-fill{fill:var(--wall-2)}
+.floor-fill{fill:var(--floor)}
+.furn{fill:var(--furn)}
+.furn-2{fill:var(--furn-shade)}
+.glass{fill:var(--glass)}
+.paper{fill:var(--surface)}
+.ink{fill:var(--outline)}
+
+.f-you{fill:var(--you)}
+.f-fr{fill:var(--fr)}
+.f-key{fill:var(--key)}
+.f-danger{fill:var(--danger)}
+.f-you-s{fill:var(--you-soft)}
+.f-fr-s{fill:var(--fr-soft)}
+.f-key-s{fill:var(--key-soft)}
+.f-neutral{fill:var(--surface)}
+
+/* --- type inside the scene --- */
+.nameplate{
+  font-family:var(--display);font-weight:800;font-size:17px;
+  fill:var(--outline);text-anchor:middle;letter-spacing:.02em;
+}
+.cipher{font-family:var(--mono);font-weight:500;font-size:11px;fill:var(--outline)}
+.dlg-text{font-family:var(--display);font-weight:700;font-size:15.5px;fill:var(--outline)}
+.dlg-tag{
+  font-family:var(--display);font-weight:800;font-size:11.5px;
+  letter-spacing:.14em;text-transform:uppercase;
+}
+.chip-text{font-family:var(--display);font-weight:700;font-size:14px;fill:var(--outline)}
+.chip-halo{
+  font-family:var(--display);font-weight:700;font-size:14px;
+  fill:none;stroke:var(--surface);stroke-width:7;stroke-linejoin:round;
+}
+
+/* --------------------------------------------------- connector grammar --- */
+/* Four kinds of line, four treatments. A treatment is never reused for a
+   different meaning. */
+.link{fill:none;stroke:var(--outline);stroke-width:2.4;opacity:.2;stroke-linecap:round}
+.ghostpath{fill:none;stroke:none}
+
+.flow{fill:none;stroke-width:4.5;stroke-linecap:round;opacity:.95}
+.flow.tone-you{stroke:var(--you)}
+.flow.tone-fr{stroke:var(--fr)}
+.flow.tone-key{stroke:var(--key)}
+.flow.tone-danger{stroke:var(--danger)}
+.flow.fwd{stroke-dasharray:40 3000;animation:flowFwd 1.5s linear infinite}
+.flow.rev{stroke-dasharray:40 3000;animation:flowRev 1.5s linear infinite}
+@keyframes flowFwd{from{stroke-dashoffset:3040}to{stroke-dashoffset:0}}
+@keyframes flowRev{from{stroke-dashoffset:-3040}to{stroke-dashoffset:0}}
+
+.sight{
+  fill:none;stroke:var(--danger);stroke-width:2.6;
+  stroke-dasharray:6 8;stroke-linecap:round;opacity:.85;
+}
+.leader line{stroke:var(--outline);opacity:.5}
+.leader circle{fill:none;stroke:var(--outline);opacity:.5}
+.leader{fill:none;stroke-linecap:round}
+
+.arw{stroke:none}
+.arw-you{fill:var(--you)}
+.arw-fr{fill:var(--fr)}
+.arw-key{fill:var(--key)}
+.arw-danger{fill:var(--danger)}
+
+/* --- observer alert state --- */
+.eye{opacity:0;transition:opacity .4s ease}
+.eye.on{opacity:1}
+.atk-screen{transition:fill .4s ease}
+
+/* --------------------------------------------------------------- below --- */
+.read{
+  margin-top:32px;display:flex;flex-direction:column;gap:12px;
+  max-width:64ch;
+}
+@media (min-width:880px){ .read{margin-top:40px} }
+.q{font-family:var(--display);font-weight:700;font-size:18px;line-height:1.3;margin:0}
+.a{margin:0;color:var(--text-2);font-size:15.5px;line-height:1.62}
+.a code{
+  font-family:var(--mono);font-size:.88em;
+  background:var(--page-2);padding:1px 5px;border-radius:4px;
+}
+
+/* --------------------------------------------------------------- nav ----- */
+.nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:20;
+  background:var(--page);
+  border-top:2.5px solid var(--outline);
+  padding:16px 20px calc(16px + env(safe-area-inset-bottom));
+}
+.nav-in{
+  max-width:1180px;margin:0 auto;
+  display:flex;align-items:center;gap:24px;
+}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  height:50px;padding:0 22px;
+  font-family:var(--display);font-weight:800;font-size:15.5px;
+  border:2.5px solid var(--outline);border-radius:12px;
+  background:var(--surface);color:var(--outline);
+  box-shadow:3px 3px 0 var(--outline);
+  transition:transform .12s ease,box-shadow .12s ease,opacity .2s ease;
+}
+.btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--outline)}
+.btn.primary{background:var(--key)}
+.btn:disabled{opacity:.35;box-shadow:none;transform:none;cursor:default}
+.btn .ct{font-family:var(--mono);font-weight:500;font-size:12px;opacity:.7}
+.nav .spacer{flex:1}
+
+@media (max-width:879px){
+  .nav-in{gap:12px}
+  .btn{flex:1;padding:0 14px;font-size:15px}
+  .btn.replay{flex:none;padding:0 14px}
+  .nav .spacer{display:none}
+}
+
+/* --------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion:reduce){
+  .cam,.hold,.actor{transition-duration:1ms}
+  .flow.fwd,.flow.rev{animation:none;stroke-dasharray:none}
+  .btn{transition:none}
+}
