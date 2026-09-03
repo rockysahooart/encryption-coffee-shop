@@ -58,27 +58,17 @@
   --cam-ms:1000ms;
 }
 
-/* A deliberate single-theme illustration. The scene is a lit room, like a game
-   screen; inverting it would make the four semantic hues mean something
-   different at night. Only the page chrome follows the viewer's theme. */
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --page:#15120e;
-    --page-2:#1e1a14;
-    --text:#f0e9dd;
-    --text-2:#b3a894;
-    --text-3:#8a7f6d;
-    --edge:#3a3227;
-  }
-}
-:root[data-theme="dark"]{
-  --page:#15120e;
-  --page-2:#1e1a14;
-  --text:#f0e9dd;
-  --text-2:#b3a894;
-  --text-3:#8a7f6d;
-  --edge:#3a3227;
-}
+/* ------------------------------------------------------------------------
+   A deliberate single-theme design, declared rather than omitted.
+
+   The scene is a lit room — a warm neutral family carrying four semantic
+   hues. Inverting it would make those hues mean something different at
+   night, so the illustration is fixed. A page chrome that followed the
+   viewer's OS instead would wrap a permanently cream room in near-black,
+   and the two halves would visibly disagree. So the chrome is fixed too,
+   and every colour below is painted explicitly so the page holds its own
+   ground on either host.
+   ------------------------------------------------------------------------ */
 
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
