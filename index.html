@@ -43,15 +43,15 @@
   --ink-3:#65807a;
 
   /* --- meaning: one job per hue --- */
-  --maya:#ff8a3d;        /* Maya: the warm red-orange of her jacket */
-  --leo:#4d9fff;         /* Leo: the blue of his varsity jacket */
-  --evan:#a855f7;        /* Evan the person: black and purple */
+  --alice:#ff8a3d;        /* Alice: the warm red-orange of her jacket */
+  --bob:#4d9fff;         /* Bob: the blue of his varsity jacket */
+  --eve:#a855f7;        /* Eve the person: black and purple */
   --key:#42f08c;         /* the system: the shared key and encryption */
   --priv:#ffd24a;        /* the private key — the one thing that never moves */
   --danger:#ff4d7e;      /* observation itself — the eye, the sightline */
 
-  --maya-soft:#3d2312;
-  --leo-soft:#152a4a;
+  --alice-soft:#3d2312;
+  --bob-soft:#152a4a;
   --key-soft:#123a28;
   --priv-soft:#3a2c0c;
   --danger-soft:#3d1626;
@@ -292,12 +292,12 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .paper{fill:var(--surface)}
 .ink{fill:var(--outline)}
 
-.f-you{fill:var(--maya)}
-.f-fr{fill:var(--leo)}
+.f-you{fill:var(--alice)}
+.f-fr{fill:var(--bob)}
 .f-key{fill:var(--key)}
 .f-danger{fill:var(--danger)}
-.f-you-s{fill:var(--maya-soft)}
-.f-fr-s{fill:var(--leo-soft)}
+.f-you-s{fill:var(--alice-soft)}
+.f-fr-s{fill:var(--bob-soft)}
 .f-key-s{fill:var(--key-soft)}
 .f-priv{fill:var(--priv)}
 .f-priv-s{fill:var(--priv-soft)}
@@ -319,7 +319,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   font-family:var(--sans);font-weight:500;font-size:11.5px;
   fill:var(--ink-3);text-anchor:middle;letter-spacing:.02em;
 }
-.statelabel.danger{fill:var(--evan);opacity:.9}
+.statelabel.danger{fill:var(--eve);opacity:.9}
 /* the icon never carries the meaning alone */
 /* On-screen message text. Centred in the bubble and sized so it survives the
    close-up the camera moves for, without outgrowing the glass. */
@@ -371,14 +371,14 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
    read what is crossing the room. */
 .fly-shade{fill:var(--void);opacity:.82}
 .fly-panel{fill:var(--surface);stroke-width:1.5}
-.fly-panel.t-you{stroke:var(--maya)}
-.fly-panel.t-fr{stroke:var(--leo)}
+.fly-panel.t-you{stroke:var(--alice)}
+.fly-panel.t-fr{stroke:var(--bob)}
 .fly-panel.t-key{stroke:var(--key)}
 .fly-panel.t-danger{stroke:var(--danger)}
 .fly-panel.t-neutral{stroke:var(--edge)}
 .fly-ico{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.fly-ico.t-you{stroke:var(--maya)}
-.fly-ico.t-fr{stroke:var(--leo)}
+.fly-ico.t-you{stroke:var(--alice)}
+.fly-ico.t-fr{stroke:var(--bob)}
 .fly-ico.t-key{stroke:var(--key)}
 .fly-ico.t-neutral{stroke:var(--ink-2)}
 .fly-label{font-family:var(--sans);font-weight:600;font-size:13px;fill:var(--ink)}
@@ -397,7 +397,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .morphing{transform-box:fill-box;transform-origin:50% 50%;animation:morphpass 620ms var(--cam-ease)}
 
 /* --------------------------------------------------------- the intruder --- */
-/* Evan sits in the same room and is drawn in the same system, but every
+/* Eve sits in the same room and is drawn in the same system, but every
    choice pushes the other way: angular instead of round, shadowed instead of
    lit, and a screen that looks like it is reading rather than working. */
 .actor.hostile .ln{stroke:#b98aa0}
@@ -417,7 +417,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 /* He sits in a darker pocket of the room, under-lit in his own colour, with
    his workstation ringed in the colour of surveillance. */
 .sh-hostile{opacity:.72}
-.underlight{fill:var(--evan);opacity:.07;filter:blur(10px)}
+.underlight{fill:var(--eve);opacity:.07;filter:blur(10px)}
 .ring-hostile{stroke:var(--danger);opacity:.85;
   filter:drop-shadow(0 0 6px var(--glow-danger))}
 .fig-hostile{filter:brightness(.86) saturate(.92) contrast(1.08)}
@@ -427,8 +427,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .ghostpath{fill:none;stroke:none}
 
 .flow{fill:none;stroke-width:3.4;stroke-linecap:round;opacity:.95}
-.flow.tone-you{stroke:var(--maya);filter:drop-shadow(0 0 5px rgba(255,138,61,.45))}
-.flow.tone-fr{stroke:var(--leo);filter:drop-shadow(0 0 5px rgba(77,159,255,.45))}
+.flow.tone-you{stroke:var(--alice);filter:drop-shadow(0 0 5px rgba(255,138,61,.45))}
+.flow.tone-fr{stroke:var(--bob);filter:drop-shadow(0 0 5px rgba(77,159,255,.45))}
 .flow.tone-key{stroke:var(--key);filter:drop-shadow(0 0 5px var(--glow-key))}
 .flow.tone-danger{stroke:var(--danger)}
 /* An empty wire: lit, and carrying nothing. */
@@ -445,8 +445,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 }
 
 .arw{stroke:none}
-.arw-you{fill:var(--maya)}
-.arw-fr{fill:var(--leo)}
+.arw-you{fill:var(--alice)}
+.arw-fr{fill:var(--bob)}
 .arw-key{fill:var(--key)}
 .arw-danger{fill:var(--danger)}
 
@@ -490,7 +490,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .cam.spot .packets,
 .cam.spot .flow{opacity:1;filter:none}
 /* The subject of a spotlight is exempt from every other fade, including the
-   shot's own focus falloff — a card about Maya must never leave Maya dim. */
+   shot's own focus falloff — a card about Alice must never leave Alice dim. */
 .cam.spot.spot-pair .actor.a-you,.cam.spot.spot-pair .actor.a-fr,
 .cam.spot.spot-you  .actor.a-you,
 .cam.spot.spot-fr   .actor.a-fr,
@@ -559,10 +559,10 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .kf-route{fill:none;stroke:var(--outline);stroke-width:2;opacity:.28;stroke-dasharray:5 8}
 .kf-arrow{fill:none;stroke:var(--key);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .kf-card{fill:var(--surface);stroke-width:1.6}
-.kf-card.t-you{stroke:var(--maya)}
+.kf-card.t-you{stroke:var(--alice)}
 .kf-card-t{font-family:var(--sans);font-weight:600;font-size:15px;fill:var(--ink);text-anchor:middle}
 .kf-ico{fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.kf-ico.t-you{stroke:var(--maya)}
+.kf-ico.t-you{stroke:var(--alice)}
 /* The combining mark in the intertitle. Never an arithmetic operator:
    the whole lesson depends on this step not looking reversible. */
 .kf-plus{font-family:var(--mono);font-weight:600;font-size:15px;fill:var(--key);text-anchor:middle}
@@ -954,12 +954,28 @@ details.read summary:hover{color:var(--ink-2)}
 /* The cell measures itself so the phone can be sized by whichever of the two
    dimensions runs out first. Sized by height alone it grew wider than its own
    column and pushed its composer off the bottom of the screen. */
-.insp-phone{display:grid;place-items:center;min-height:0;min-width:0;
-  overflow:hidden;container-type:size}
+/* ============================================ THE SURROUND COMPOSITION =====
+   Alice, the phone, Bob — in that order, left to right — with Eve above the
+   two of them. The device keeps the middle cell and its locked geometry; the
+   people take the margin either side, which is space the phone never used.
+   The relationship is read from the arrangement, not from a caption. */
+.insp-phone{
+  position:relative;
+  display:grid;
+  grid-template-columns:clamp(58px,11%,94px) minmax(0,1fr) clamp(58px,11%,94px);
+  grid-template-rows:auto minmax(0,1fr) auto;
+  align-items:stretch;justify-items:stretch;
+  gap:4px 10px;
+  min-height:0;min-width:0;overflow:hidden;
+}
+.sur-eve{grid-column:1/-1;grid-row:1;place-self:center}
+.sur-alice{grid-column:1;grid-row:2;place-self:center}
+.sur-bob {grid-column:3;grid-row:2;place-self:center}
 .insp-side{display:grid;grid-template-rows:minmax(96px,1fr) auto;gap:16px;min-height:0}
 
 /* ------------------------------------------------------------- the phone -- */
-.ip{height:100%;max-height:100%;min-height:0;width:100%;min-width:0;
+.ip{grid-column:2;grid-row:2;place-self:stretch;container-type:size;
+  width:auto;height:auto;min-height:0;min-width:0;
   display:flex;justify-content:center;align-items:center;
   transition:opacity .4s ease,transform .5s var(--cam-ease)}
 /* ===================================================== iPHONE 17 PRO ======
@@ -1014,10 +1030,29 @@ details.read summary:hover{color:var(--ink-2)}
   aspect-ratio:var(--ip17-ratio);
   border-radius:calc(var(--ipw) * var(--ip17-radius));
   padding:calc(var(--ipw) * var(--ip17-bez-y)) calc(var(--ipw) * var(--ip17-bez-x));
-  background:#10171a;
+  /* The band. One light source, upper left: the rim catches it along the top
+     and the far edge, and falls away down the near side. Flat before, which
+     read as a grey rectangle with a hole in it. */
+  background:
+    linear-gradient(158deg,#26333a 0%,#151e22 14%,#0d1416 46%,
+                    #0c1214 60%,#18232a 92%,#2b3941 100%);
   border:0;
-  box-shadow:0 30px 70px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.07);
+  box-shadow:
+    0 34px 74px rgba(0,0,0,.62),
+    0 6px 18px rgba(0,0,0,.4),
+    inset 0 0 0 1px rgba(255,255,255,.16),
+    inset 0 1.2px 0 rgba(255,255,255,.22),
+    inset 0 -1.2px 0 rgba(255,255,255,.08);
   display:flex;
+}
+/* the dark gap between band and glass, so the screen reads as set INTO the
+   body rather than painted onto it */
+.ip-body::after{
+  content:"";position:absolute;pointer-events:none;
+  inset:calc(var(--ipw) * var(--ip17-bez-y) - 1.5px)
+        calc(var(--ipw) * var(--ip17-bez-x) - 1.5px);
+  border-radius:calc(var(--ipw) * var(--ip17-scr-radius) + 1.5px);
+  box-shadow:0 0 0 1.5px rgba(0,0,0,.85);
 }
 .ip-island{
   position:absolute;left:50%;transform:translateX(-50%);
@@ -1025,16 +1060,18 @@ details.read summary:hover{color:var(--ink-2)}
   width:calc(var(--ipw) * var(--ip17-isl-w));
   height:calc(var(--ipw) * var(--ip17-isl-h));
   border-radius:calc(var(--ipw) * var(--ip17-isl-h) / 2);
-  background:#05080a;z-index:3;
+  background:#040708;z-index:3;
+  box-shadow:inset 0 1px 1px rgba(0,0,0,.9),0 0 0 .5px rgba(255,255,255,.06);
 }
 /* min-height:0 all the way down, or the phone cannot shrink below the
    intrinsic height of its own contents and the aspect ratio drives the body
    taller than the row it sits in. */
 .ip-screen{
+  --ipad:max(11px,calc(14 * var(--ipu)));
   flex:1;display:flex;flex-direction:column;min-height:0;
   border-radius:calc(var(--ipw) * var(--ip17-scr-radius));overflow:hidden;
   background:linear-gradient(180deg,#0a1214,#070d0f);
-  box-shadow:inset 0 0 0 1px rgba(147,185,173,.09);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
 }
 .ip-nav{
   flex:none;display:grid;grid-template-columns:24px 1fr 24px;align-items:center;
@@ -1053,7 +1090,7 @@ details.read summary:hover{color:var(--ink-2)}
   flex:1 1 0;min-height:0;overflow-y:auto;
   display:flex;flex-direction:column;justify-content:flex-end;
   gap:max(7px,calc(10 * var(--ipu)));
-  padding:max(10px,calc(16 * var(--ipu))) max(9px,calc(14 * var(--ipu)));
+  padding:max(10px,calc(16 * var(--ipu))) var(--ipad);
 }
 .bub{
   max-width:78%;align-self:flex-start;
@@ -1074,38 +1111,62 @@ details.read summary:hover{color:var(--ink-2)}
 }
 .bub.cipher{
   font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;
-  background:#231a26;color:var(--evan);
+  background:#231a26;color:var(--eve);
 }
 @keyframes bubin{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
 
 .ip-bar{
+  /* One inset all the way round, so the field is not further from the left
+     wall than the button is from the right. The row grows downward from the
+     field, so the button holds the baseline. */
   flex:none;display:flex;align-items:flex-end;
-  gap:max(7px,calc(9 * var(--ipu)));
-  padding:max(8px,calc(10 * var(--ipu))) max(9px,calc(12 * var(--ipu)))
-          max(10px,calc(16 * var(--ipu)));
-  border-top:1px solid rgba(147,185,173,.1);
+  gap:max(8px,calc(10 * var(--ipu)));
+  padding:var(--ipad);
+  border-top:1px solid rgba(255,255,255,.07);
 }
 /* 44px is the floor on every screen: a tap target is a property of the finger,
    not of the mockup, so it never scales below comfortable. 16px is the floor
    on the text because iOS zooms a focused field with anything smaller. */
 .ip-in{
+  /* The vertical padding is DERIVED from the height and the line box, so one
+     line of text sits dead centre in the pill instead of riding high in it —
+     which is what made the placeholder look like it had fallen to the top.
+     44px tall, 1.3 line-height at 16px = 20.8px of text, so 11.6px each side. */
+  --iph:max(44px,calc(44 * var(--ipu)));
+  --ipfs:max(16px,calc(17 * var(--ipu)));
   flex:1;resize:none;min-width:0;
-  min-height:max(44px,calc(44 * var(--ipu)));max-height:110px;
-  padding:max(10px,calc(12 * var(--ipu))) max(11px,calc(14 * var(--ipu)));
-  border-radius:999px;
-  background:#111b1e;border:1px solid var(--edge);color:var(--ink);
-  font-family:var(--sans);font-size:max(16px,calc(17 * var(--ipu)));line-height:1.3;
+  height:var(--iph);min-height:var(--iph);max-height:110px;
+  padding:calc((var(--iph) - var(--ipfs) * 1.3) / 2) max(15px,calc(18 * var(--ipu)));
+  border-radius:calc(var(--iph) / 2);
+  background:#0e181b;
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.45);
+  color:var(--ink);
+  font-family:var(--sans);font-size:var(--ipfs);line-height:1.3;
+  transition:border-color .25s ease,box-shadow .25s ease;
 }
 /* the prompt is a whole sentence in a narrow field: it sets its own size so
    it stays on one line instead of being cut off halfway through */
-.ip-in::placeholder{color:var(--ink-3);font-size:max(12px,calc(14 * var(--ipu)))}
-.ip-in:focus{outline:none;border-color:var(--key)}
+/* the prompt sits on the SAME line box as typed text, so it cannot drift off
+   centre relative to it — size it in em, not in its own absolute px */
+.ip-in::placeholder{color:var(--ink-3);font-size:.84em;line-height:inherit}
+/* while the prompt is showing there is nothing to scroll to, and a scrollbar
+   inside the one control the interaction depends on is not a state worth
+   having. Growth resumes the moment there is real text. */
+.ip-in:placeholder-shown{overflow:hidden}
+.ip-in:focus{outline:none;border-color:rgba(66,240,140,.55);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.45),0 0 0 3px rgba(66,240,140,.12)}
 .ip-send{
+  /* exactly the field's height, so the two read as one row */
   flex:none;border-radius:50%;
   width:max(44px,calc(44 * var(--ipu)));height:max(44px,calc(44 * var(--ipu)));
   background:var(--key);color:#06110b;display:grid;place-items:center;
-  transition:opacity .2s ease,transform .2s ease;
+  box-shadow:0 2px 8px rgba(66,240,140,.22);
+  transition:opacity .2s ease,transform .2s ease,box-shadow .2s ease;
 }
+/* the glyph is optically centred, not box centred: a triangle pointing right
+   sits left of centre unless it is nudged */
+.ip-send svg{transform:translateX(3.5%)}
 .ip-send svg{fill:currentColor}
 .ip-send:disabled{opacity:.3;cursor:default}
 .ip-send:not(:disabled):hover{transform:scale(1.06)}
@@ -1138,8 +1199,8 @@ details.read summary:hover{color:var(--ink-2)}
 .mini-p .sh{opacity:.35}
 .mini-lid{fill:#39434a;stroke:#93b9ad;stroke-width:1.4}
 .mini-name{font-family:var(--sans);font-size:10px;font-weight:600;fill:var(--ink-2);text-anchor:middle}
-.mini-p.evil .mini-lid{stroke:var(--evan)}
-.mini-p.evil .mini-name{fill:var(--evan)}
+.mini-p.evil .mini-lid{stroke:var(--eve)}
+.mini-p.evil .mini-name{fill:var(--eve)}
 .mini-p.hot .mini-name{fill:var(--ink)}
 .mini-p.hot .mini-lid{stroke:var(--key);filter:drop-shadow(0 0 6px var(--glow-key))}
 .mini-pay rect{fill:var(--surface);stroke:var(--key);stroke-width:1.2}
@@ -1307,13 +1368,12 @@ details.read summary:hover{color:var(--ink-2)}
   letter-spacing:-.022em;
 }
 .insp-say.is-big span{font-size:16.5px;color:var(--ink)}
-  to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 @keyframes sayin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* the affordance, said once, next to the thing it describes. Quiet while the
    field is empty, lit the moment there is something worth sending. */
 .ip-hint{
-  flex:none;padding:0 max(11px,calc(16 * var(--ipu))) max(5px,calc(6 * var(--ipu)));
+  flex:none;padding:0 var(--ipad) max(5px,calc(7 * var(--ipu)));
   font-family:var(--mono);font-size:max(9.5px,calc(11 * var(--ipu)));
   letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
   transition:color .3s ease;
@@ -1328,7 +1388,7 @@ details.read summary:hover{color:var(--ink-2)}
      Mode. On desktop the process panel says it better and at more length. */
   display:none;
   flex:none;align-items:baseline;gap:8px;min-width:0;
-  margin:0 max(9px,calc(12 * var(--ipu))) max(5px,calc(7 * var(--ipu)));
+  margin:0 var(--ipad) max(5px,calc(7 * var(--ipu)));
   padding:max(5px,calc(7 * var(--ipu))) max(9px,calc(11 * var(--ipu)));
   border-radius:calc(12 * var(--ipu));
   background:rgba(10,18,20,.85);
@@ -1356,7 +1416,7 @@ details.read summary:hover{color:var(--ink-2)}
 .mini-ico.priv{fill:var(--priv)}
 .mini-ico.pub{font-size:11px;fill:var(--key)}
 .mini-ico.key{font-size:15px}
-.mini-ico.seen{font-size:11px;fill:var(--evan);letter-spacing:1px}
+.mini-ico.seen{font-size:11px;fill:var(--eve);letter-spacing:1px}
 .mini-lid.keyed{stroke:var(--key);filter:drop-shadow(0 0 7px var(--glow-key))}
 .mini-sub{font-family:var(--sans);font-size:8.5px;fill:var(--ink-3);text-anchor:middle}
 .mini-sub.lit{fill:var(--key);font-weight:600}
@@ -1472,14 +1532,14 @@ details.read summary:hover{color:var(--ink-2)}
 .nc-upper {left:50%;top:7%;transform:translateX(-50%);text-align:center;max-width:min(560px,78%)}
 .nc-upper.swap{transform:translateX(-50%) translateY(6px)}
 /* beside the observer: he sits centre-top, so his air is the lower third */
-.nc-evan  {left:50%;bottom:8%;transform:translateX(-50%);text-align:center;max-width:min(520px,76%)}
-.nc-evan.swap{transform:translateX(-50%) translateY(6px)}
+.nc-eve  {left:50%;bottom:8%;transform:translateX(-50%);text-align:center;max-width:min(520px,76%)}
+.nc-eve.swap{transform:translateX(-50%) translateY(6px)}
 
 @media (max-width:899px){
   /* On a narrow screen there is no "beside": every zone collapses to the safe
      band at the foot of the picture, full width, and larger rather than
      smaller — the one thing it must never do is sit on the action. */
-  .nc,.nc-center,.nc-lower,.nc-left,.nc-right,.nc-upper,.nc-evan{
+  .nc,.nc-center,.nc-lower,.nc-left,.nc-right,.nc-upper,.nc-eve{
     left:12px;right:12px;bottom:12px;top:auto;
     max-width:none;transform:none;text-align:left;
     padding:16px 18px 18px;
@@ -1488,7 +1548,7 @@ details.read summary:hover{color:var(--ink-2)}
   .nc p{font-size:17px;line-height:1.38}
   .nc-term{font-size:10.5px}
   /* when the camera is low in the frame, the caption moves to the top instead */
-  .nc-upper,.nc-evan{top:12px;bottom:auto}
+  .nc-upper,.nc-eve{top:12px;bottom:auto}
 }
 
 /* --------------------------------------------- the café camera, inside -- */
@@ -1500,15 +1560,9 @@ details.read summary:hover{color:var(--ink-2)}
 /* the observer, working */
 .mini-tap{fill:none;stroke:var(--danger);stroke-width:2;stroke-dasharray:4 5;
   animation:watchrun 1.2s linear infinite;filter:drop-shadow(0 0 5px var(--glow-danger))}
-.mini-grab path{fill:none;stroke:var(--danger);stroke-width:2.4;stroke-linecap:round;
-  animation:grabin 420ms var(--cam-ease)}
 @keyframes grabin{from{opacity:0;transform:scaleX(1.5)}to{opacity:1;transform:none}}
-.mini-grab{transform-box:fill-box;transform-origin:50% 50%}
-.mini-p.busy image{filter:drop-shadow(0 0 7px var(--glow-danger))}
 .mini-ct{font-family:var(--mono);font-size:7px;fill:var(--danger);text-anchor:middle}
-.page.still .mini-tap,.page.still .mini-grab path{animation:none}
-
-/* ------------------------------------------ the process, as a pipeline --- */
+.page.still .mini-tap,.page.still /* ------------------------------------------ the process, as a pipeline --- */
 /* the pipeline grows when a stage is live, so the panel clips rather than
    letting an enlarged box ride up over its own title */
 /* The pipeline has to survive short viewports. It compresses first, and if a
@@ -1587,7 +1641,6 @@ details.read summary:hover{color:var(--ink-2)}
   .insp-end button{flex:1}
   .pipe-io.big .pipe-v{font-size:17px}
 }
-}
 
 /* ------------------------------------------- the algorithm's other inputs -- */
 /* The message is one input. A viewer who thinks it is the only one has the
@@ -1606,7 +1659,7 @@ details.read summary:hover{color:var(--ink-2)}
 .pipe-box.warm{box-shadow:inset 0 0 0 1px rgba(66,240,140,.22)}
 .pipe-box.warm .pipe-alg{color:var(--key)}
 
-/* ------------------------------------------------- what Evan comes away with */
+/* ------------------------------------------------- what Eve comes away with */
 .mini-steal rect{fill:rgba(38,10,22,.96);stroke:var(--danger);stroke-width:1.6}
 .mini-steal-c{font-family:var(--mono);font-size:9px;fill:var(--danger);text-anchor:middle}
 .mini-steal{animation:stealin 420ms var(--cam-ease)}
@@ -1645,8 +1698,12 @@ details.read summary:hover{color:var(--ink-2)}
    that is already legible somewhere else on screen — in the phone itself. */
 @media (min-width:900px) and (max-width:1000px) and (max-height:770px){
   .insp-side{grid-template-rows:minmax(112px,1fr) auto}
-  .pipe-io.in,.pipe .pipe-flow:first-of-type{display:none}
-  .pan-proc .pan-t::after{content:" \00b7 out"}
+  /* The raw message row is the one thing in the pipeline that is already
+     legible elsewhere on screen — in the phone itself — so on a small desktop
+     window it is the row that goes, and the mathematics keeps its space.
+     (This rule used to name .pipe-io, which stopped existing when the panel
+     was rebuilt around the formulas; it had been silently dead since.) */
+  .pipe > .st:first-child,.pipe > .st-flow:first-of-type{display:none}
 }
 @media (min-width:900px) and (max-height:790px){
   .pipe-io.big .pipe-v{font-size:14px}
@@ -1853,7 +1910,7 @@ details.read summary:hover{color:var(--ink-2)}
   .ctl{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
   .ctl-g{display:grid;grid-template-columns:1fr 1fr;gap:3px 6px;min-width:0}
   .ctl-l{grid-column:1/-1;font-size:9px;letter-spacing:.1em;margin:0}
-  .ctl-g .mode{padding:11px 6px;font-size:12.5px;min-height:44px;flex:none}
+  .ctl-g .mode{padding:0 6px;font-size:12.5px;min-height:44px;flex:none}
   .mode-what{display:none}
   .insp.a-ecdh.f-keys .insp-phone{display:grid}
   .insp.a-ecdh.f-keys .insp-side{display:none}
@@ -1878,15 +1935,15 @@ details.read summary:hover{color:var(--ink-2)}
   .pan-keys{overflow:hidden}
   .ka{justify-content:center;gap:12px}
   .ka-pair,.ka-join,.ka-out{transition:opacity .35s ease}
-  .kb-priv .ka-join,.kb-pub .ka-join,.kb-travel1 .ka-join,.kb-evanPub .ka-join,
-  .kb-priv .ka-out,.kb-pub .ka-out,.kb-travel1 .ka-out,.kb-evanPub .ka-out,
+  .kb-priv .ka-join,.kb-pub .ka-join,.kb-travel1 .ka-join,.kb-evePub .ka-join,
+  .kb-priv .ka-out,.kb-pub .ka-out,.kb-travel1 .ka-out,.kb-evePub .ka-out,
   .kb-combine .ka-pair,.kb-same .ka-pair,.kb-combine .ka-out,
   .kb-ecdh .ka-pair{display:none}
   /* the two devices read side by side again once they are the only thing here */
-  .kb-priv .ka-pair,.kb-pub .ka-pair,.kb-travel1 .ka-pair,.kb-evanPub .ka-pair{
+  .kb-priv .ka-pair,.kb-pub .ka-pair,.kb-travel1 .ka-pair,.kb-evePub .ka-pair{
     grid-template-columns:1fr auto 1fr;gap:8px}
   .kb-priv .ka-cross,.kb-pub .ka-cross,.kb-travel1 .ka-cross,
-  .kb-evanPub .ka-cross{flex-direction:column;gap:3px}
+  .kb-evePub .ka-cross{flex-direction:column;gap:3px}
   .ka-cross-k{max-width:68px}
   .ka-two{grid-template-columns:1fr;gap:1px}
   .ka-replay{margin-top:6px}
@@ -1904,6 +1961,726 @@ details.read summary:hover{color:var(--ink-2)}
   .pipe{gap:3px}
   .fx{font-size:15px}
   .st.on .fx{font-size:clamp(17px,1.5vw,21px)}
+}
+
+/* ================================================== THE CROSSING ===========
+   One motion from Alice to Bob that never stops. As the packet passes the
+   midpoint a copy is struck off it and falls to Eve while the original keeps
+   going — so the viewer reads "he got a copy of that" rather than "delivery
+   was interrupted while somebody explained him". The two objects are drawn
+   identically on purpose: it is the same data, not a different one. */
+.mini-pay.fly{animation:payCross 3500ms linear forwards}
+@keyframes payCross{
+  0%   {transform:translate(66px,104px); opacity:0}
+  6%   {transform:translate(66px,62px);  opacity:1}
+  50%  {transform:translate(200px,62px)}
+  94%  {transform:translate(334px,62px); opacity:1}
+  100% {transform:translate(334px,104px);opacity:1}
+}
+/* struck at 1750ms — the exact moment the original is over his head */
+.mini-dup.drop{
+  animation:dupSplit 1150ms cubic-bezier(.2,.9,.28,1) 1700ms both;
+}
+@keyframes dupSplit{
+  0%   {transform:translate(200px,64px)  scale(.96);opacity:0}
+  16%  {transform:translate(200px,80px)  scale(.88);opacity:1}
+  55%  {transform:translate(200px,102px) scale(.81);opacity:1}
+  100% {transform:translate(200px,105px) scale(.8); opacity:1}
+}
+.mini-dup rect{fill:var(--surface);stroke:var(--eve);stroke-width:1.2}
+.mini-dup .mini-pay-l{fill:var(--eve)}
+.mini-dup .mini-pay-c{fill:var(--danger)}
+.mini-dup.at{opacity:1}
+/* the flash at the instant it divides */
+.mini-split{
+  fill:none;stroke:var(--key);stroke-width:2;opacity:0;
+  animation:splitRing 900ms ease-out 1700ms both;
+}
+@keyframes splitRing{
+  0%  {opacity:.95;r:6;stroke-width:2.4}
+  100%{opacity:0;  r:30;stroke-width:.4}
+}
+.page.still .mini-pay.fly,.page.still .mini-dup.drop,.page.still .mini-split{animation:none}
+
+/* he keeps it — it just stops competing once the story is with Bob */
+.mini-dup{transition:opacity .6s ease}
+.mini-dup.dim{opacity:.4}
+
+/* ---------------------------------------------- the people, as furniture -- */
+.sur-eve,.sur-side{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  min-width:0;pointer-events:none;z-index:1;
+  animation:surin 560ms var(--cam-ease) 160ms both;
+}
+@keyframes surin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.sur-eve{padding-bottom:2px}
+.sur-face{
+  width:clamp(38px,100%,58px);height:auto;display:block;
+  image-rendering:pixelated;filter:saturate(.92);
+  transition:filter .5s ease;
+}
+.sur-face.lit{filter:saturate(1) drop-shadow(0 0 10px rgba(66,240,140,.3))}
+.sur-eve .sur-face{width:clamp(34px,100%,48px)}
+.sur-who{
+  font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.01em;
+  color:var(--ink-2);white-space:nowrap;
+}
+.sur-who.evil{color:var(--eve)}
+.sur-note{
+  font-family:var(--sans);font-size:11px;line-height:1.3;text-align:center;
+  color:var(--ink-3);max-width:11ch;
+}
+.sur-side{width:100%}
+.sur-eve{width:min(100%,128px)}
+
+/* the eye: open, tracking, occasionally blinking */
+.sur-eye{position:relative;width:clamp(30px,100%,44px)}
+.eye-l{fill:rgba(40,12,30,.55);stroke:var(--eve);stroke-width:1.6}
+.eye-i{fill:rgba(0,0,0,.55);stroke:var(--eve);stroke-width:1.1;
+  animation:eyeTrack 5.2s ease-in-out infinite}
+.eye-p{fill:var(--eve);animation:eyeTrack 5.2s ease-in-out infinite}
+.eye-lid{fill:var(--void);opacity:0;animation:eyeBlink 5.2s ease-in-out infinite}
+@keyframes eyeTrack{0%,100%{transform:translateX(-3.2px)}42%,62%{transform:translateX(3.2px)}}
+@keyframes eyeBlink{0%,92%,100%{opacity:0}95%,97%{opacity:1}}
+
+/* the direction, stated once, under the device */
+.sur-dir{
+  grid-column:1/-1;grid-row:3;justify-self:stretch;
+  display:flex;align-items:center;gap:7px;
+  padding:0 2px 1px;opacity:.45;transition:opacity .4s ease;pointer-events:none;
+}
+.sur-dir.on{opacity:1}
+.sur-dir i{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--edge),transparent)}
+.sur-dir.on i{background:linear-gradient(90deg,transparent,var(--key),transparent)}
+.sur-dir span{
+  font-family:var(--sans);font-size:11px;font-weight:700;white-space:nowrap;
+  color:var(--ink-3);
+}
+.sur-dir.on span{color:var(--key)}
+
+/* ------------------------------------- the crossing, between the two of them */
+.sur-wire{position:absolute;inset:0;z-index:2;pointer-events:none}
+.sur-pay,.sur-dup{
+  position:absolute;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;gap:2px;align-items:center;
+  padding:6px 10px;border-radius:9px;white-space:nowrap;
+  background:rgba(9,17,15,.97);
+  box-shadow:inset 0 0 0 1.2px var(--key),0 6px 20px rgba(0,0,0,.55);
+}
+.sur-dup{
+  background:rgba(26,8,20,.97);
+  box-shadow:inset 0 0 0 1.2px var(--eve),0 6px 20px rgba(0,0,0,.55);
+}
+.sur-pay-l{font-family:var(--sans);font-size:10.5px;font-weight:700;color:var(--ink)}
+.sur-dup .sur-pay-l{color:var(--eve)}
+.sur-pay-c{font-family:var(--mono);font-size:11px;color:var(--key);letter-spacing:.02em}
+.sur-dup .sur-pay-c{color:var(--danger)}
+
+.sur-pay{left:9%;top:54%}
+.sur-pay.fly{animation:surCross 3500ms linear forwards}
+.sur-pay.at{left:91%;top:54%}
+@keyframes surCross{
+  0%  {left:9%; opacity:0}
+  6%  {left:12%;opacity:1}
+  100%{left:91%;opacity:1}
+}
+.sur-dup{left:50%;top:54%}
+.sur-dup.split{animation:surSplit 1250ms cubic-bezier(.2,.9,.28,1) 1700ms both}
+.sur-dup.at{left:50%;top:10%}
+@keyframes surSplit{
+  0%  {top:54%;opacity:0;transform:translate(-50%,-50%) scale(.96)}
+  16% {top:44%;opacity:1;transform:translate(-50%,-50%) scale(.9)}
+  100%{top:10%;opacity:1;transform:translate(-50%,-50%) scale(.84)}
+}
+.sur-dup{transition:opacity .6s ease}
+.sur-dup.dim{opacity:.45}
+
+/* ======================================== THE SURROUND, AUTHORED FOR PHONE ==
+   Same relationship, recomposed rather than removed. The watcher becomes a
+   single strip across the top instead of a stacked column, which is sixty
+   pixels of height handed straight back to the device; Alice and Bob keep
+   their places either side, and the direction stays a thin band underneath. */
+@media (max-width:899px){
+  .insp-phone{
+    grid-template-columns:clamp(52px,15%,72px) minmax(0,1fr) clamp(52px,15%,72px);
+    gap:3px 6px;
+  }
+  /* the watcher, laid on its side */
+  .sur-eve{
+    flex-direction:row;align-items:center;justify-content:center;gap:7px;
+    width:100%;max-width:none;
+    padding:4px 9px;border-radius:999px;
+    background:rgba(28,10,22,.5);
+    box-shadow:inset 0 0 0 1px rgba(168,85,247,.22);
+  }
+  .sur-eve .sur-eye{width:26px;flex:none}
+  .sur-eve .sur-face{width:30px;flex:none}
+  .sur-eve .sur-who{font-size:12px}
+  .sur-eve .sur-note{
+    font-size:11px;max-width:none;text-align:left;line-height:1.2;
+    border-left:1px solid rgba(168,85,247,.3);padding-left:7px;
+  }
+  /* the two who are talking */
+  .sur-side .sur-face{width:min(100%,46px)}
+  .sur-who{font-size:11.5px}
+  .sur-side .sur-note{font-size:10.5px;max-width:9ch;line-height:1.25}
+  .sur-dir span{font-size:10.5px}
+  .sur-dir{padding-top:1px}
+  /* the payload boxes shrink with the space, but never below readable */
+  .sur-pay,.sur-dup{padding:5px 8px;border-radius:8px}
+  .sur-pay-l{font-size:10px}
+  .sur-pay-c{font-size:10.5px}
+}
+/* the narrowest phones: the watcher keeps its strip, the labels give way */
+@media (max-width:389px){
+  .sur-eve .sur-note{display:none}
+  .sur-side .sur-note{display:none}
+  .insp-phone{grid-template-columns:clamp(48px,14%,62px) minmax(0,1fr) clamp(48px,14%,62px)}
+}
+
+/* =================================================== MOBILE LEGIBILITY =====
+   Nothing on a phone is set below 11px. The sizes below were inherited from a
+   desktop composition where the same labels sat at twice the physical size. */
+@media (max-width:899px){
+  .ctl-l{font-size:11px;letter-spacing:.1em}
+  .pan-t{font-size:11px;letter-spacing:.12em}
+  .ip-hint{font-size:max(11px,calc(11 * var(--ipu)))}
+  .ip-live-k{font-size:max(11px,calc(10 * var(--ipu)))}
+  .ip-live-v{font-size:max(11px,calc(12 * var(--ipu)))}
+  .ka-k,.st-k,.st-sub,.ka-note,.ka-two-w{font-size:11px}
+  .raw{font-size:max(11px,calc(.62 * var(--fxs,17px)))}
+  .st-sub .raw{font-size:11px}
+  /* a tap target is a property of the finger, not of the layout */
+  .ka-replay{min-height:44px;padding:10px 18px;font-size:12.5px}
+  /* the narration gives back a line on the narrowest screens rather than
+     taking it from the device */
+  .insp-say{padding:11px 14px 12px;gap:3px}
+  .insp-say strong{font-size:16.5px;line-height:1.22}
+  .insp-say span{font-size:13px;line-height:1.3}
+}
+@media (max-width:389px){
+  .insp-say strong{font-size:15.5px}
+  .insp-say span{font-size:12.5px}
+  .ctl-l{font-size:10.5px}
+}
+/* the café miniature is drawn in viewBox units, so its labels have to be
+   sized up to land at a readable number of real pixels on a small screen */
+@media (max-width:899px){
+  .mini-name{font-size:13px}
+  .mini-pay-l{font-size:11px}
+  .mini-pay-c,.mini-ct,.mini-steal-c{font-size:11px}
+  .mini-sub{font-size:11px}
+  .nameplate{font-size:13px}
+  .statelabel{font-size:11px}
+}
+
+/* ================================================ STATE WITHOUT COLOUR =====
+   Live vs Network and ECDH vs AES-GCM must not be carried by fill alone. Each
+   control gets a mark that is present or absent, so the active one is legible
+   in greyscale, to a colour-blind reader, and to a screen reader alike. */
+.mode{display:flex;align-items:center;justify-content:center;gap:7px}
+.mode::before{
+  content:"";flex:none;width:10px;height:10px;border-radius:50%;
+  box-shadow:inset 0 0 0 1.5px currentColor;opacity:.55;
+  transition:opacity .25s ease,box-shadow .25s ease;
+}
+.mode.on::before{opacity:1;box-shadow:inset 0 0 0 5px currentColor}
+@media (max-width:899px){
+  .mode{gap:6px;padding-left:8px;padding-right:8px}
+  .mode::before{width:9px;height:9px}
+}
+@media (max-width:340px){ .mode{gap:5px} .mode::before{width:8px;height:8px} }
+
+/* ==================================================== REDUCED MOTION =======
+   The instruction is to remove the movement, not the story. Killing these
+   animations outright left the packet at its opening keyframe — invisible, at
+   Alice, with no copy — so a viewer who asks for less motion was shown no
+   interception at all. Each one now resolves to its END state instead. */
+@media (prefers-reduced-motion:reduce){
+  .mini-pay.fly{animation:none;transform:translate(334px,104px);opacity:1}
+  .mini-dup.drop{animation:none;transform:translate(200px,105px) scale(.8);opacity:1}
+  .mini-split{animation:none;opacity:0}
+  .sur-pay.fly{animation:none;left:91%;opacity:1}
+  .sur-dup.split{animation:none;top:13%;opacity:1;
+    transform:translate(-50%,-50%) scale(.84)}
+  .mini-pub.a,.mini-pub.b{animation:none;opacity:0}
+  .minicam{transition:none}
+  .eye-i,.eye-p,.eye-lid,.rail-scan,.sur-dir i{animation:none}
+  .st-flow.run i,.rail-flow.on i{animation:none;opacity:.8}
+  .st,.ka-cell,.ka-join,.sur-pay,.sur-dup{transition:none}
+  .sur-eve,.sur-side{animation:none;opacity:1;transform:none}
+}
+
+/* the miniature's labels are drawn in viewBox units; on a phone the whole
+   drawing renders at roughly half scale, so they are sized up to land at a
+   readable number of real pixels rather than at six */
+@media (max-width:899px){
+  .mini-name{font-size:21px}
+  .nameplate{font-size:26px}
+  .statelabel{font-size:15px}
+  .mini-pay-l{font-size:19px}
+  .mini-pay-c,.mini-ct,.mini-steal-c{font-size:19px}
+  .mini-sub{font-size:18px}
+  .mini-no{font-size:17px}
+  .ka-cross-k{font-size:11px}
+  /* the widest expression in the agreement gets room rather than a clip */
+  .ka-join .fx{white-space:normal;text-align:center}
+}
+@media (max-width:389px){
+  .fx{font-size:14px}
+  .ka-join .fx{font-size:15px}
+}
+
+/* The key-agreement panel is not a device with people around it — it takes
+   the whole cell. Left on the surround's three-column grid it landed in the
+   58px side column and collapsed to a twenty-pixel strip. */
+.insp-phone.insp-keys{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:minmax(0,1fr);
+  gap:0;
+}
+/* the public-key labels in flight are viewBox text too */
+@media (max-width:899px){
+  .mini-pub text{font-size:14px}
+  .statelabel{display:none}
+  .mini-ico{font-size:20px}
+  .mini-ico.pub{font-size:17px}
+  .mini-ico.seen{font-size:17px}
+  .sur-pay-l{font-size:11px}
+}
+
+/* ------------------------------------------------- the smallest phones ---- */
+/* At 320 the side columns and the watcher strip are the only places left to
+   find room, so they give it up rather than the device or the type. */
+@media (max-width:340px){
+  .insp{gap:8px;padding:10px 10px 12px}
+  .insp-phone{grid-template-columns:44px minmax(0,1fr) 44px;gap:2px 4px}
+  .sur-side .sur-face{width:min(100%,40px)}
+  .sur-eve{padding:3px 7px;gap:5px}
+  .sur-eve .sur-eye{width:22px}
+  .sur-eve .sur-face{width:26px}
+  .sur-dir{display:none}
+  .ctl{gap:6px}
+  .insp-say{padding:9px 12px 10px}
+}
+@media (max-width:899px){ .mini-pub text{font-size:18px} }
+
+/* ===================================== THE SEND, IN THE ROOM ALREADY SHOWN ==
+   On a phone the surround IS the network view. Rather than cutting away to a
+   separate miniature, the payload crosses the very space the viewer has been
+   looking at: out of Alice's side, over the device, duplicating at Eve above
+   the midpoint, and on to Bob — with both outcomes in one frame. */
+@media (max-width:899px){
+  .insp.a-aes:not(.composing).f-cafe .insp-phone{display:grid}
+  .insp.a-aes:not(.composing).f-cafe .insp-side{display:none}
+  .insp.a-aes:not(.composing).f-cafe .ip{opacity:.55;transition:opacity .5s ease}
+}
+/* on a desktop the café panel tells this, so the surround stays still */
+@media (min-width:900px){ .sur-wire{display:none} }
+
+/* The packet is centred on its own position, so its half-width has to fit
+   inside the travel range or it hangs off the edge at each end. It becomes a
+   compact object on a phone and travels between 16% and 84%. */
+@media (max-width:899px){
+  .sur-pay,.sur-dup{max-width:44%;padding:5px 7px}
+  .sur-pay-l{white-space:normal;line-height:1.2;text-align:center}
+  .sur-pay-c{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sur-pay{left:16%}
+  .sur-pay.at{left:84%}
+  @keyframes surCross{
+    0%  {left:16%;opacity:0}
+    6%  {left:19%;opacity:1}
+    100%{left:84%;opacity:1}
+  }
+}
+@media (max-width:340px){
+  .sur-pay,.sur-dup{max-width:52%;padding:4px 6px}
+  .sur-pay-l{font-size:10.5px}
+  .sur-pay-c{font-size:11px}
+  .sur-pay{left:26%}
+  .sur-pay.at{left:74%}
+  @keyframes surCross{
+    0%  {left:26%;opacity:0}
+    6%  {left:29%;opacity:1}
+    100%{left:74%;opacity:1}
+  }
+}
+/* five steps in a 360px column: the boxes tighten so the ciphertext — the
+   payoff of the whole panel — is never the thing that falls off the bottom */
+@media (max-width:389px){
+  .st{padding:4px 9px;gap:1px}
+  .st-flow{height:5px}
+  .pipe{gap:1px}
+  .st-sub{line-height:1.2}
+  /* the IV note earns its place on a wider screen; here the row it sits under
+     already names the IV, so the reminder goes rather than the ciphertext */
+  .st-fx .st-sub{display:none}
+}
+/* the packets are foreground objects: they sit in front of a dimmed device
+   with a ground of their own, not as translucent labels over its screen */
+.sur-pay,.sur-dup{backdrop-filter:blur(2px)}
+@media (prefers-reduced-motion:reduce){
+  .sur-dup.split{top:10%}
+}
+
+/* The control band sizes to its labels rather than to an even split: forced
+   into equal halves, "AES-GCM" plus its state mark was wider than the column
+   it was given and lost its first letter off the left edge. */
+@media (max-width:899px){
+  .ctl{grid-template-columns:auto auto;justify-content:space-between;gap:8px 10px}
+  .ctl-g{grid-template-columns:auto auto;gap:3px 5px}
+  .mode{min-width:0;white-space:nowrap;font-size:12px;padding:11px 10px}
+}
+@media (max-width:389px){
+  .ctl{gap:6px}
+  .mode{font-size:11.5px;padding:11px 8px;gap:5px}
+  .mode::before{width:8px;height:8px}
+}
+@media (max-width:340px){
+  .ctl{grid-template-columns:1fr;justify-content:stretch;gap:5px}
+  .ctl-g{grid-template-columns:auto 1fr 1fr;align-items:center;gap:0 5px}
+  .ctl-l{grid-column:1;margin-right:3px}
+  .mode{font-size:11px;padding:10px 6px;gap:4px}
+}
+/* the send hint holds one line on a narrow device rather than stacking */
+@media (max-width:899px){
+  .ip-hint{letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:clip}
+}
+@media (max-width:389px){ .ip-hint{letter-spacing:.02em} }
+
+/* ======================================== MOBILE: A DETERMINISTIC COMPOSITION
+   Reserved zones, one spacing scale, and bands whose height does not depend on
+   what happens to be inside them. The composition held different shapes in
+   different states — the narration alone moved 150px between beats, which
+   dragged the band above it and resized the device with it. Every dimension
+   below is fixed by the layout, not by content. */
+@media (max-width:899px){
+  :root{ --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; }
+
+  .insp{
+    gap:var(--s3);
+    padding:var(--s3) var(--s4) var(--s4);
+  }
+  /* --- band one: controls, one fixed height, geometry never changes ------ */
+  .ctl{min-height:64px;align-content:center;gap:var(--s2) var(--s3)}
+  .ctl-g{gap:var(--s1) var(--s2)}
+  .mode{height:44px;padding:0 var(--s3);gap:var(--s2)}
+
+  /* --- band three: narration, tall enough for its longest line ---------- */
+  .insp-say{
+    min-height:92px;padding:var(--s3) var(--s4);gap:var(--s1);
+    justify-content:center;
+  }
+
+  /* --- band two: the exchange, in three reserved rows ------------------- */
+  .insp-phone{
+    --zone-eve:52px;
+    --zone-dir:20px;
+    --lane:calc(var(--zone-eve) + 46px);
+    grid-template-columns:clamp(56px,16%,74px) minmax(0,1fr) clamp(56px,16%,74px);
+    grid-template-rows:var(--zone-eve) minmax(0,1fr) var(--zone-dir);
+    gap:var(--s2) var(--s2);
+  }
+
+  /* Eve's band: one pill, fixed height, whose right half changes content —
+     her status while she is watching, the captured bytes once she has them.
+     Nothing is layered over anything, so nothing can collide with the device. */
+  .sur-eve{
+    height:var(--zone-eve);width:100%;
+    display:flex;flex-direction:row;align-items:center;
+    justify-content:flex-start;gap:var(--s2);
+    padding:0 var(--s3);border-radius:calc(var(--zone-eve) / 2);
+    background:rgba(28,10,22,.5);
+    box-shadow:inset 0 0 0 1px rgba(168,85,247,.22);
+    overflow:hidden;
+  }
+  .sur-eve .sur-eye{width:26px;flex:none}
+  .sur-eve .sur-face{width:30px;flex:none}
+  .sur-eve .sur-who{font-size:12px;flex:none}
+  .sur-eve .sur-note{
+    flex:1;min-width:0;font-size:11px;text-align:left;line-height:1.2;
+    max-width:none;border-left:1px solid rgba(168,85,247,.28);
+    padding-left:var(--s2);
+  }
+  .sur-got{
+    flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;
+    border-left:1px solid rgba(168,85,247,.28);padding-left:var(--s2);
+    animation:gotin 420ms var(--cam-ease) both;
+  }
+  @keyframes gotin{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
+  .sur-got-k{
+    font-family:var(--sans);font-size:10px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--evan);line-height:1.1;
+  }
+  .sur-got-v{
+    font-family:var(--mono);font-size:11px;color:var(--danger);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.25;
+  }
+
+  /* Alice and Bob: equal zones, equal spacing from the device, labels on a
+     shared baseline rule rather than each finding its own */
+  .sur-side{
+    width:100%;display:flex;flex-direction:column;align-items:center;
+    gap:var(--s1);
+  }
+  .sur-side .sur-face{width:min(100%,46px)}
+  .sur-side .sur-who{font-size:11.5px;line-height:1.2}
+  .sur-side .sur-note{font-size:10.5px;line-height:1.2;max-width:9ch;min-height:1.2em}
+
+  /* --- the motion lane: a fixed line the payload travels along, above the
+         two characters so it can never sit on either of them -------------- */
+  .sur-pay{top:var(--lane);left:14%}
+  .sur-pay.at{top:var(--lane);left:86%}
+  .sur-dup{top:var(--lane);left:50%}
+  @keyframes surCross{
+    0%  {left:14%;opacity:0}
+    6%  {left:17%;opacity:1}
+    100%{left:86%;opacity:1}
+  }
+  /* the copy rises out of the lane and hands off to Eve's band */
+  .sur-dup.split{animation:surSplit 1150ms cubic-bezier(.3,0,.25,1) 1700ms both}
+  @keyframes surSplit{
+    0%  {top:var(--lane);opacity:0;transform:translate(-50%,-50%) scale(.96)}
+    14% {top:calc(var(--lane) - 10px);opacity:1;transform:translate(-50%,-50%) scale(.9)}
+    82% {top:26px;opacity:1;transform:translate(-50%,-50%) scale(.8)}
+    100%{top:26px;opacity:0;transform:translate(-50%,-50%) scale(.74)}
+  }
+  .sur-dir{padding:0;align-self:center}
+}
+@media (max-width:389px){
+  .insp-phone{--zone-eve:48px;--lane:calc(var(--zone-eve) + 40px)}
+  .sur-eve .sur-note,.sur-got-k{font-size:10.5px}
+  .insp-say{min-height:84px}
+}
+
+/* Rows pinned by name rather than left to auto-placement. When a state hid
+   one child, everything after it shuffled up a row — which is why the
+   narration moved 120px between beats and dragged the device's height with
+   it. The action row is reserved at all times and replaces the bottom
+   padding, so it costs nothing when empty. */
+@media (max-width:899px){
+  .insp{
+    grid-template-rows:auto minmax(0,1fr) auto 48px;
+    padding-bottom:0;
+  }
+  .ctl{grid-row:1;grid-column:1/-1}
+  .insp-phone,.insp-side{grid-row:2;grid-column:1/-1}
+  .insp-say{grid-row:3;grid-column:1/-1}
+  .insp-end{
+    grid-row:4;grid-column:1/-1;align-self:center;
+    position:static;display:flex;gap:var(--s3);justify-content:stretch;
+  }
+  .insp-end button{flex:1;min-height:44px;padding:0 var(--s4);border-radius:999px}
+  .insp-again,.insp-next{padding-top:0;padding-bottom:0}
+}
+
+/* Desktop is untouched: the resolution chips are a phone-only device, and the
+   notes they replace stay exactly as they were on a wide screen. */
+@media (min-width:900px){ .sur-got{display:none} }
+
+@media (max-width:899px){
+  /* each side resolves what it received into its OWN zone, so nothing is left
+     parked over the device once the motion is finished */
+  .has-got .sur-note{display:none}
+  .sur-side .sur-got{
+    display:flex;flex-direction:column;align-items:center;gap:1px;
+    border:0;padding:2px var(--s1) 0;
+    animation:gotin 420ms var(--cam-ease) both;
+  }
+  .sur-side .sur-got-k{
+    font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-3);line-height:1.1;
+  }
+  .sur-side .sur-got.ok .sur-got-k{color:var(--key)}
+  .sur-side .sur-got-v{
+    font-size:10.5px;color:var(--key);max-width:100%;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  /* the fixed narration band: a set height, so no line length can move the
+     composition above it */
+  .insp{grid-template-rows:auto minmax(0,1fr) 100px 48px}
+  .insp-say{min-height:0;height:100%;overflow:hidden}
+  .insp-say strong{
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .insp-say span{
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  /* and the payload fades out as it lands, handing off to Bob's zone */
+  .sur-pay.fly{animation:surCross 3500ms linear forwards}
+  @keyframes surCross{
+    0%  {left:14%;opacity:0}
+    6%  {left:17%;opacity:1}
+    88% {left:80%;opacity:1}
+    100%{left:86%;opacity:0}
+  }
+}
+@media (max-width:389px){ .insp{grid-template-rows:auto minmax(0,1fr) 92px 44px} }
+/* Alice's and Bob's zones are a fixed size, so the chip that appears when the
+   packet lands cannot change the shape of the column it sits in */
+@media (max-width:899px){
+  .sur-side{height:112px;justify-content:flex-start}
+  .sur-side .sur-note,.sur-side .sur-got{min-height:26px;justify-content:flex-start}
+}
+@media (max-width:389px){ .sur-side{height:104px} }
+
+/* ===================================== ONE SPACING SCALE, APPLIED ON PHONE ==
+   Every gap and pad below was an arbitrary value inherited from the desktop
+   composition. Related things sit at 4 or 8; groups separate at 12, 16 or 24. */
+@media (max-width:899px){
+  .mode{padding-top:0;padding-bottom:0}
+  .pan{padding:var(--s3) var(--s3);gap:var(--s2)}
+  .insp-say{padding:var(--s4)}
+  .ka-cell{padding:var(--s2) var(--s3);gap:var(--s1)}
+  .ka-join{padding:var(--s3);gap:var(--s2)}
+  .ka-two{gap:2px var(--s2)}
+  .ka-replay{padding-left:var(--s4);padding-right:var(--s4)}
+  .ka{gap:var(--s3)}
+
+  /* --------------------------------------------- inside the phone ------- */
+  /* One safe inset from the bezel, one rhythm between bubbles, and a fixed
+     place for the delivered line so the thread does not re-flow at the end. */
+  .ip-thread{
+    padding:var(--s3) var(--s3) var(--s2);
+    gap:var(--s2);
+  }
+  .bub{max-width:80%;padding:var(--s2) var(--s3)}
+  .bub + .bub{margin-top:0}
+  /* a sent message answering a received one gets the larger gap, because it
+     is a different speaker rather than a continuation */
+  .bub.mine + .bub:not(.mine),.bub:not(.mine) + .bub.mine{margin-top:var(--s1)}
+  .ip-hold{margin-top:var(--s2)}
+  .ip-bar.done{
+    padding:var(--s3);min-height:44px;display:flex;align-items:center;
+    justify-content:center;
+  }
+  .ip-live{margin:0 var(--s3) var(--s2);padding:var(--s2) var(--s3)}
+  .ip-hint{padding:0 var(--s3) var(--s2)}
+  .ip-bar{padding:var(--s3)}
+
+  /* --------------------------------------- inside the message panel ----- */
+  /* One interval between every stage, and every label, formula and value on
+     the same left edge, so the five steps read as one pipeline. */
+  .pipe{gap:0}
+  .st{padding:var(--s2) var(--s3);gap:2px;align-items:stretch}
+  .st,.st-k,.st-v,.st-sub,.xr,.st .fx,.st .raw{text-align:left}
+  .st-fx{align-items:stretch}
+  .xr{justify-content:flex-start}
+  .st-flow{height:var(--s3);margin:0}
+  /* the last stage keeps the same interval above it as the others, and the
+     panel does not leave a pocket of dead space under the ciphertext */
+  .pan-proc{justify-content:flex-start}
+  .pipe{flex:0 0 auto}
+}
+/* last word on the two that earlier phone rules were still setting by hand */
+@media (max-width:899px){
+  .insp-say,.insp-say.is-big{padding:var(--s4)}
+  .mode{padding:0 var(--s3)}
+}
+@media (max-width:389px){ .mode{padding:0 var(--s2)} }
+@media (max-width:340px){ .mode{padding:0 6px} }
+/* The desktop focus treatment scales the device by 1.5% to push it back. On a
+   phone that reads as the device changing size between states — it was the
+   whole of the residual drift — so here emphasis is carried by opacity alone
+   and the phone never moves. */
+@media (max-width:899px){
+  .insp .ip{transform:none !important}
+}
+
+/* ------------------------------------------ narrow phones, final overrides -- */
+/* Below 390 the four labels plus their state marks are wider than the row, so
+   each group puts its name above its own pair instead of beside it. Same two
+   groups, same 44px targets, half the horizontal appetite. */
+@media (max-width:389px){
+  .ctl{grid-template-columns:1fr 1fr;justify-content:stretch;gap:var(--s2)}
+  .ctl-g{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:var(--s1) var(--s1)}
+  .ctl-l{grid-column:1/-1;margin:0}
+  .mode{padding:0 var(--s1);font-size:11.5px;gap:var(--s1);min-width:0}
+  .mode::before{width:8px;height:8px}
+}
+/* and the payload's lane narrows with them — declared last so it wins over
+   the wider phone rule above */
+@media (max-width:340px){
+  .ctl{grid-template-columns:1fr 1fr}
+  .mode{font-size:11px}
+  .sur-pay{left:26%}
+  @keyframes surCross{
+    0%  {left:26%;opacity:0}
+    6%  {left:30%;opacity:1}
+    88% {left:70%;opacity:1}
+    100%{left:74%;opacity:0}
+  }
+  @keyframes surSplit{
+    0%  {top:var(--lane);opacity:0;transform:translate(-50%,-50%) scale(.96)}
+    14% {top:calc(var(--lane) - 10px);opacity:1;transform:translate(-50%,-50%) scale(.9)}
+    82% {top:24px;opacity:1;transform:translate(-50%,-50%) scale(.8)}
+    100%{top:24px;opacity:0;transform:translate(-50%,-50%) scale(.74)}
+  }
+}
+/* three leftovers the audit caught: the resolution chip's label was set below
+   the mobile floor, the end buttons lost their height when their padding was
+   zeroed, and the control label still needed a little more room at 344 */
+@media (max-width:899px){
+  .sur-side .sur-got-k,.sur-got-k{font-size:11px}
+  .insp-end button,.insp-again,.insp-next{height:44px;min-height:44px}
+}
+@media (max-width:389px){
+  .mode{font-size:11px;gap:3px;letter-spacing:-.01em}
+  .mode::before{width:7px;height:7px}
+  .sur-side .sur-got-k{font-size:11px;letter-spacing:0}
+}
+.mode-short{display:none}
+@media (max-width:389px){
+  .mode-long{display:none}
+  .mode-short{display:inline}
+  .mode{font-size:11.5px;gap:var(--s1)}
+  .mode::before{width:8px;height:8px}
+}
+
+/* The action row was costing 48px of height in every state so that it could
+   exist in one. The two buttons now share the narration band instead: at the
+   final beat the narration is two short lines, so they sit beneath it inside
+   the same fixed 100px, and every other state keeps that height for the
+   device. */
+@media (max-width:899px){
+  .insp{grid-template-rows:auto minmax(0,1fr) 100px}
+  .insp-end{
+    grid-row:3;grid-column:1/-1;align-self:end;z-index:5;
+    padding:0 var(--s4) var(--s3);
+  }
+  .insp:not(.composing).f-phone .insp-say{padding-bottom:56px}
+  .insp:not(.composing).f-phone .insp-say strong{-webkit-line-clamp:1}
+  .insp:not(.composing).f-phone .insp-say span{-webkit-line-clamp:1}
+}
+@media (max-width:389px){ .insp{grid-template-rows:auto minmax(0,1fr) 92px} }
+
+/* Below 390 the margins give the device back its width. The characters keep a
+   48px column — still a readable figure, not an icon — and the outer padding
+   and column gaps come down a step on the scale. */
+@media (max-width:389px){
+  .insp{padding:var(--s3)}
+  .insp-phone{
+    grid-template-columns:clamp(46px,14%,60px) minmax(0,1fr) clamp(46px,14%,60px);
+    gap:var(--s2) 6px;
+  }
+  .sur-side .sur-face{width:min(100%,42px)}
+  .sur-side .sur-who{font-size:11px}
+  .sur-side .sur-note,.sur-side .sur-got-v{font-size:10.5px}
+  /* and the pipeline loses its last loose interval rather than its ciphertext */
+  .st{padding:var(--s1) var(--s2)}
+  .st-flow{height:var(--s2)}
+  .pan{padding:var(--s2) var(--s3)}
+}
+/* the side chips have a 48–56px column, which "RECEIVED" in caps does not fit;
+   sentence case at the same size reads as well and stays inside its zone */
+@media (max-width:899px){
+  .sur-side .sur-got-k{
+    text-transform:none;letter-spacing:0;font-size:11px;
+    max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
 }
 
 </style>
@@ -2263,7 +3040,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
            frame centres there and the block fills it. */
         work: [180, 492, 2.95],
         workFr: [820, 492, 2.95],
-        /* Loose enough to hold Maya, Leo and Evan, tight enough that the number
+        /* Loose enough to hold Alice, Bob and Eve, tight enough that the number
            on each screen is still a number and not a smudge. */
         trio: [500, 420, 1.16]
       },
@@ -2360,39 +3137,39 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     };
     const ACTS = [
       { label: "The caf\xE9", beats: [1], title: "Three people, one Wi-Fi." },
-      { label: "The message", beats: [2], title: "Send Leo something private." }
+      { label: "The message", beats: [2], title: "Send Bob something private." }
     ];
     const NOTE = {
       /* --- chapter one: the room, and what "insecure" actually means --------- */
-      wifi: { s: "Three people on one caf\xE9 Wi-Fi. Maya wants to send Leo a private message. Evan can see what crosses the network." },
-      needSecret: { s: "So Maya and Leo need something Evan does not have." },
+      wifi: { s: "Three people on one caf\xE9 Wi-Fi. Alice wants to send Bob a private message. Eve can see what crosses the network." },
+      needSecret: { s: "So Alice and Bob need something Eve does not have." },
       nowUse: { s: "Now they can use it." },
-      pairWant: { s: "Maya wants to send Leo a private message." },
-      evanHere: { s: "Someone else is in the caf\xE9." },
-      evanWatch: { s: "Evan is watching them." },
-      evanBoth: { s: "He is on the same Wi-Fi they are." },
+      pairWant: { s: "Alice wants to send Bob a private message." },
+      eveHere: { s: "Someone else is in the caf\xE9." },
+      eveWatch: { s: "Eve is watching them." },
+      eveBoth: { s: "He is on the same Wi-Fi they are." },
       oneNetwork: { s: "Everything any of them sends goes through this one router." },
       howPrivate: { s: "So how do they talk privately?" },
-      pushMaya: { s: "Maya opens the message she actually wanted to send." },
-      landed: { s: "Leo read it. Evan saw the same traffic and did not." },
-      whatEvan: { s: "So what does the person watching the network actually have?" },
+      pushAlice: { s: "Alice opens the message she actually wanted to send." },
+      landed: { s: "Bob read it. Eve saw the same traffic and did not." },
+      whatEve: { s: "So what does the person watching the network actually have?" },
       router: { s: "Everything anyone sends here passes through this router." },
-      plainDemo: { s: "Maya sends a plain note across it, with no protection." },
-      plainSeen: { s: "Evan reads the same sentence off the wire. Nothing was broken into." },
+      plainDemo: { s: "Alice sends a plain note across it, with no protection." },
+      plainSeen: { s: "Eve reads the same sentence off the wire. Nothing was broken into." },
       startsNow: { s: "So nothing can be sent in the open. This is where the protection starts." },
       same: {
         t: "Public starting value",
         s: "Both laptops begin from the same number. It was never a secret."
       },
-      evanNet: { s: "Evan is on the same network, so he has that number too." },
+      eveNet: { s: "Eve is on the same network, so he has that number too." },
       /* --- chapter one, part two: the two numbers that never move ------------ */
-      pickMaya: { s: "Maya needs a private number. Choose one for her." },
-      pickLeo: { s: "Leo needs his own. Choose a different one." },
-      keepMaya: { t: "Private key", s: "Stays on this device." },
-      keepLeo: { t: "Private key", s: "A different one, and it stays on his." },
+      pickAlice: { s: "Alice needs a private number. Choose one for her." },
+      pickBob: { s: "Bob needs his own. Choose a different one." },
+      keepAlice: { t: "Private key", s: "Stays on this device." },
+      keepBob: { t: "Private key", s: "A different one, and it stays on his." },
       neither: { s: "The wire lights up, and neither private number goes down it." },
       /* --- chapter two: the transformation ---------------------------------- */
-      twoNums: { s: "Maya\u2019s laptop now holds two numbers: the public one, and her own." },
+      twoNums: { s: "Alice\u2019s laptop now holds two numbers: the public one, and her own." },
       feedIn: {
         t: "One-way math",
         s: "Both of them go into the same calculation. Watch what it does."
@@ -2400,71 +3177,71 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       running: { s: "It runs forwards in one step. Backwards, there is no step to take." },
       made: { t: "Public key", s: "Safe to share." },
       staysGoes: { s: "Her private number never moved. Only the new number will travel." },
-      travel: { s: "Maya\u2019s public value crosses the Wi-Fi to Leo." },
-      leoToo: { s: "Leo runs the same calculation, with his own private number." },
-      leoMade: { s: "A different private number, so a different public value." },
+      travel: { s: "Alice\u2019s public value crosses the Wi-Fi to Bob." },
+      bobToo: { s: "Bob runs the same calculation, with his own private number." },
+      bobMade: { s: "A different private number, so a different public value." },
       backTrip: { s: "His public value makes the same trip the other way." },
       swapped: { s: "Each of them now holds the other\u2019s public value." },
-      /* --- chapter two, part two: why Evan is stuck ------------------------- */
-      evanSees: { s: "Evan reads both public values off the network. He is meant to." },
-      evanHas: { s: "This is everything Evan has: the starting value and both public values." },
-      evanTry: { s: "To read the conversation he needs a private number. He can only guess." },
+      /* --- chapter two, part two: why Eve is stuck ------------------------- */
+      eveSees: { s: "Eve reads both public values off the network. He is meant to." },
+      eveHas: { s: "This is everything Eve has: the starting value and both public values." },
+      eveTry: { s: "To read the conversation he needs a private number. He can only guess." },
       tryOne: { s: "Three tried, three wrong. And nothing about them says which to try next." },
       bigger: { s: "The real search is far larger than this. Each candidate has to be run and checked." },
-      evanNot: {
+      eveNot: {
         t: "Why this holds",
         s: "Forward is one step. Backward is a search, and nothing tells him which number to try first."
       },
-      stillNot: { s: "Evan has every public number that crossed the Wi-Fi. None of them gives him these." },
+      stillNot: { s: "Eve has every public number that crossed the Wi-Fi. None of them gives him these." },
       /* --- chapter two, part three: the same block, the other way round ----- */
-      mixMaya: { s: "Now Maya feeds Leo\u2019s public value into the same calculation." },
+      mixAlice: { s: "Now Alice feeds Bob\u2019s public value into the same calculation." },
       gotIt: { s: "Out comes a number she has not seen before." },
-      mixLeo: { s: "Leo does exactly the same, with Maya\u2019s public value and his own." },
+      mixBob: { s: "Bob does exactly the same, with Alice\u2019s public value and his own." },
       sameKey: {
         t: "Shared secret",
         s: "The same number, on both machines, and it never crossed the network."
       },
-      compare: { s: "Maya has it. Leo has it. Evan watched the whole exchange and does not." },
+      compare: { s: "Alice has it. Bob has it. Eve watched the whole exchange and does not." },
       tally: { s: "Two machines with the secret. One observer without it." },
       named: {
         t: "Diffie\u2013Hellman key exchange",
         s: "That is the method you just watched, and the reason the secret never had to travel."
       },
       /* --- chapter three: the message --------------------------------------- */
-      pickMsg: { s: "Now the secret has a job. Choose what Maya sends." },
-      write: { s: "Maya writes the message she actually wants to send." },
+      pickMsg: { s: "Now the secret has a job. Choose what Alice sends." },
+      write: { s: "Alice writes the message she actually wants to send." },
       sym: {
         t: "Symmetric encryption",
         s: "The shared secret does a second job: it scrambles the message."
       },
       scram: { s: "The text stops being text." },
       lock: { s: "It is protected before it leaves the device." },
-      notice: { s: "Evan notices the packet crossing the wire." },
+      notice: { s: "Eve notices the packet crossing the wire." },
       tapped: { s: "He takes hold of it. This is the whole question." },
-      evanMeh: { s: "He has the transmission. Without the secret, that is all he has." },
-      arrives: { s: "The packet reaches Leo, still scrambled." },
-      open: { s: "Leo still has the same secret, so the words come back." },
+      eveMeh: { s: "He has the transmission. Without the secret, that is all he has." },
+      arrives: { s: "The packet reaches Bob, still scrambled." },
+      open: { s: "Bob still has the same secret, so the words come back." },
       threeWays: { s: "The same traffic crossed the same network." },
       close: { s: "ECDH gave them the same key. AES-GCM protected the message." }
     };
     const SAY = {
       router: "Everyone on this Wi-Fi can read what crosses it. That is normal, and it is the problem.",
-      evanHere: "Evan is on the same network. He can see the starting value \u2014 it was never secret.",
-      mayaKeep: "This number stays on my laptop. It never crosses the Wi-Fi.",
-      leoKeep: "Mine is a different number, and it stays on my laptop too.",
-      mayaMake: "I combine my private value with the public starting value using one-way math. The result is safe to share.",
-      leoMake: "Same calculation, my own private number, a different result.",
-      evanPlain: "I did not break into her laptop. I read what she sent across the shared network.",
-      evanOpen: "Evan can read everything sent openly across the Wi-Fi. Seeing public values is expected.",
-      evanLack: "I have both public values. They are not enough to work out the private numbers behind them.",
-      mayaMix: "Now I run Leo\u2019s public value through it, with my private number.",
-      leoMix: "And I run Maya\u2019s public value through it, with mine.",
-      evanNo: "Evan never had a private number, so he cannot reach the same result.",
-      mayaMsg: "Meet me outside at 5.",
-      mayaEnc: "I scramble it with the secret Leo and I both worked out, before it leaves my laptop.",
-      evanTap: "I can intercept the transmission, but I cannot read it.",
-      evanUseless: "Without the shared secret, this is useless to me.",
-      leoOpen: "The same secret runs the process backwards."
+      eveHere: "Eve is on the same network. He can see the starting value \u2014 it was never secret.",
+      aliceKeep: "This number stays on my laptop. It never crosses the Wi-Fi.",
+      bobKeep: "Mine is a different number, and it stays on my laptop too.",
+      aliceMake: "I combine my private value with the public starting value using one-way math. The result is safe to share.",
+      bobMake: "Same calculation, my own private number, a different result.",
+      evePlain: "I did not break into her laptop. I read what she sent across the shared network.",
+      eveOpen: "Eve can read everything sent openly across the Wi-Fi. Seeing public values is expected.",
+      eveLack: "I have both public values. They are not enough to work out the private numbers behind them.",
+      aliceMix: "Now I run Bob\u2019s public value through it, with my private number.",
+      bobMix: "And I run Alice\u2019s public value through it, with mine.",
+      eveNo: "Eve never had a private number, so he cannot reach the same result.",
+      aliceMsg: "Meet me outside at 5.",
+      aliceEnc: "I scramble it with the secret Bob and I both worked out, before it leaves my laptop.",
+      eveTap: "I can intercept the transmission, but I cannot read it.",
+      eveUseless: "Without the shared secret, this is useless to me.",
+      bobOpen: "The same secret runs the process backwards."
     };
     const MSGS = [
       { plain: ["Meet me", "outside at 5"], enc: ["8X#q2Lm", "!4KzR7pQv9x2"] },
@@ -2476,7 +3253,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         throw new Error(`cipher length mismatch: "${ln}" vs "${m.enc[i]}"`);
     }));
     const WIRE = MSGS[0];
-    const CLOSER = "Maya and Leo have never met. They are strangers on the same caf\xE9 Wi-Fi, and so is Evan, who can read everything that crosses it. Both laptops start from the same public number. Each of them then picks a private number and keeps it \u2014 those two numbers never leave the machines they were chosen on. Each feeds their private number and the public one through a calculation that is quick to run forwards and impractical to run backwards, and sends only the result. Evan sees both results. He cannot work back from them to either private number, so when Maya combines Leo\u2019s result with her private number, and Leo combines Maya\u2019s with his, they land on the same secret that was never sent. Maya scrambles her message with it before it leaves her laptop. Evan reads the packet off the wire and gets nothing but characters; Leo, holding the same secret, gets the sentence back.";
+    const CLOSER = "Alice and Bob have never met. They are strangers on the same caf\xE9 Wi-Fi, and so is Eve, who can read everything that crosses it. Both laptops start from the same public number. Each of them then picks a private number and keeps it \u2014 those two numbers never leave the machines they were chosen on. Each feeds their private number and the public one through a calculation that is quick to run forwards and impractical to run backwards, and sends only the result. Eve sees both results. He cannot work back from them to either private number, so when Alice combines Bob\u2019s result with her private number, and Bob combines Alice\u2019s with his, they land on the same secret that was never sent. Alice scrambles her message with it before it leaves her laptop. Eve reads the packet off the wire and gets nothing but characters; Bob, holding the same secret, gets the sentence back.";
     const SPRITE = {
       you: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAElCAMAAACWK11EAAAAqFBMVEXy1a9dIx6bKR338OHTsZyhaF7gTiDHbkSxm5KiTizhmF0pICVjWFTxlzLdOh+th3f9zXBxRC1aPESGOEU0Nkc4QzinfYH+wTkAAAAOCQsrGBjLc0JJKCMaERTVOyE6IiGPFxbFazuxJRr76czlSCTQNh05IB7aQiRvNSXwVCd0FBVMJBuTRSnKcT2uWDK6ZTlNFxSHOiWmHBcsCgrIqJbFLBtsDA9tKRpakpYYAAAAOHRSTlP///////////////////////////////8A//////////////////////////////////////////Wap1EAADdmSURBVHja1Z2JYtrI0qiR2AzYOJ5zzn8jgZDAIBTEIpAx7/9mt7beJIFx4mRmeiaO9+ijlq6urq5uff+bR17keT5NwzSMf+n3tP52kBBA8hBAwn83CCCkBYCE/3KQvAhTkAioVvxrJH8zSO55UzPifylIDs+eT22QX9CvPwgCTwoWDS5qKtaB7qoGMgqj6J8PkofpVIOUCDKtgoRh8I+XCJg0+qg8FYngDKJQYnr7rwDJPDKJFB9ZJDKtDAQNR1HwjwbJthkOL03jmNxTEBJIntKIcRBIHAXBPxgkvxAHaA+BkA5NkQBEFAMHk7Bq/ZNBwBhYIPjwMdtCCOLAuZBx0ioIfPhPlEhBIB6qFjxzGBFIjj4MxaG0ywYJ1fjHgXiEAooEEglCYJmS00IAVC0Qy78CpECn5XkIEsZKtcjxsp1rzfqHg1CcDn84zk2ZQXmsVBCQIQiiKApp+uTvuNNU/hwITYbp1BZGip8CnQodEHovFhBy0X8rSM5Lv9ABiesgrFSpAYnMd6QCco+C/UaQvApCc6F+zJgeMI1jFyQyILlo4N8NUhQQ34bWQjA1qkVPP2U4x87RQCD+hWkfNO4fIZGLvJiKg1aBqbz0KlJEA4mvq9b0HyCRPKMgcZqyK51SggEfld7NMglY8ClFHCgG7dEknkwpxOT55W8BgSchjhhA8BkpGEkZBHVGQLTeEAj4qzRWAKJU7J7/PonEIYOgREDrg9SWCFpKEwhJBL9ombmZZf4eEPiHBWRKILGjWggCc7xSLcZgieC6S08f+EUSyT8HZNoAMnUkAt+EIClLZGqDhH8viEev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",
       fr: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAECCAMAAACMgmjKAAAAqFBMVEXVZC6gUCnw06rtmVBXLR/Or5YqHyL48d5hW1/tmi+nmZEpXJdvRy6RdGMbMlijiXOWNx3heET7yWssSXJTb49th6AGPIShydm2hDdEPEFyyOZ8qsk4gruNtM54g3j/wjmQf4CvwLcAAAAJBwolWZj758kwGRX8q2pOJxtsNiP9s3EpYqQWExYVOGwNFysZSYgxJyklXaFVLCEQKE8aQnkcU5X2l1b6pzOAaKsuAAAAOHRSTlP/////////////////////////////////////////////AP///////////////////////////24PXI0AAC5cSURBVHja7Z0Le9pKsq4REm1AF0xwsldmz545J8JCgBA3gf//Pzv1VfVNIN9i7Kw5z+61ktgJYL2qa1dXt3q//uQoy5t9VO9/Qf4XxI3o8P8HyHK5/FuDvOE2l2WwBMbfWiJR+armF2WZLHn8zUFee0lRRMu/P8gbPFEZlctlkiTLv7NqLQ9vMXIeSVkUf08QVpaiW0wylsvosLTjPxEkMiCH/wSQiGy4+9qiqIjKqNAw/xEgL6tWRDgCEf2NQfgCO68tCO7x/33ghFGWh0N+wx/euyUEg7irO0QHGQRBFPSP9/8BIFF0CXI4GIW6vwcIUbQlUub53w8kugYpy5dBSgLJteGQV7v6wLJ8T5Z/I5DIKE3igViJBHZcSiQvIhmX16zf+cUgfKlyu5NCFb7VeAyBgT3Q/S/04NDCHrkrJBVfDoJrTLRq5Yr/7gpkaTlIGsSQc1jht8krrhygfNIXghQMIpeqcmg+3U62magDJNIgJA768mBxl5E1NP1CVXw5yNKCFLkx4edASgdiAn03SKG+XiLJNUj5HAgFlmVEGIokUhQORJt95IWkL5dIsXQ2om/1wbMRc2WB87w6YaGJiSW9d+/QIF8eR2TGJwmu05lDeYi0IhlNc6/wNOjey1w87VPvi5a3k0i0vAAhez9IiaHlsOQVlL4QGxQJ0bIL5J1R/2YgkQ9yEBCyhuhiKmVRI/nrCBL5oyB0kbaaQyCRBmF3FGkQbQZlF4gOIdC4TtUqvgrETyGMakECuE5hQNkKkiLVijpAiBxWjcQ4uL8C+bKkMfB+oDEK8UTla6MdQoy7lVz5oK3o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",
@@ -2501,10 +3278,10 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           height: bottom + 74,
           rx: "9"
         }
-      ), /* @__PURE__ */ React.createElement("text", { className: "rev-h", x: "-101", y: "-60" }, "Everything Evan can see"), [
+      ), /* @__PURE__ */ React.createElement("text", { className: "rev-h", x: "-101", y: "-60" }, "Everything Eve can see"), [
         ["public starting value", start],
-        ["Maya\u2019s public value", pubA],
-        ["Leo\u2019s public value", pubB]
+        ["Alice\u2019s public value", pubA],
+        ["Bob\u2019s public value", pubB]
       ].map(([lbl, v], i) => /* @__PURE__ */ React.createElement("g", { key: lbl }, /* @__PURE__ */ React.createElement("text", { className: "rev-lbl", x: "-101", y: -44 + i * 14 }, lbl), /* @__PURE__ */ React.createElement("text", { className: "rev-eq", x: "101", y: -44 + i * 14 }, v))), /* @__PURE__ */ React.createElement("path", { className: "rev-rule", d: "M-101 -10 H101" }), phase >= 2 && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("text", { className: "rev-h", x: "-101", y: "4" }, "Trying private numbers, one at a time"), tries.map(([cand, got], i) => /* @__PURE__ */ React.createElement("g", { key: cand, className: "rev-row" }, /* @__PURE__ */ React.createElement("text", { className: "rev-try", x: "-101", y: 20 + i * 14 }, "private ", cand, "? gives ", got), /* @__PURE__ */ React.createElement("text", { className: "rev-no", x: "101", y: 20 + i * 14 }, "\u2715 not " + pubA)))), wide && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("g", { className: "rev-field" }, Array.from({ length: 42 }).map((_, i) => /* @__PURE__ */ React.createElement(
         "rect",
         {
@@ -2869,11 +3646,11 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       return lines;
     }
     const TAG_FILL = {
-      you: "var(--maya)",
-      fr: "var(--leo)",
+      you: "var(--alice)",
+      fr: "var(--bob)",
       key: "var(--key)",
       priv: "var(--priv)",
-      danger: "var(--evan)",
+      danger: "var(--eve)",
       neutral: "var(--ink-2)"
     };
     const Callout = ({ def, at, inv, narrow }) => {
@@ -2890,7 +3667,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       const tagH = def.tag ? 20 : 0;
       const h = wire ? 122 : Math.round(lines.length * lh + padY * 2 + tagH);
       return /* @__PURE__ */ React.createElement("g", { transform: `translate(${ax},${ay})` }, /* @__PURE__ */ React.createElement("g", { className: "hold", style: { transform: `scale(${inv})` } }, wire ? (
-        /* What Evan actually pulled off the wire. Same chrome as every other
+        /* What Eve actually pulled off the wire. Same chrome as every other
            card, so it reads as part of the narration rather than an effect;
            the content is the point. */
         /* @__PURE__ */ React.createElement("g", { "data-audit": "DIALOG", className: "tapcard" }, /* @__PURE__ */ React.createElement("rect", { className: "paper", x: -w / 2, y: -h / 2, width: w, height: h, rx: "10" }), /* @__PURE__ */ React.createElement(
@@ -2973,7 +3750,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           transform: "translate(-70,-8)",
           dangerouslySetInnerHTML: { __html: ICO.packet }
         }
-      ), /* @__PURE__ */ React.createElement("text", { className: "kf-card-t", x: "-46", y: "5" }, "Maya\u2019s public value")), /* @__PURE__ */ React.createElement("path", { className: "kf-arrow", d: "M96 -4 h34 m0 0 -7 -6 m7 6 -7 6" })),
+      ), /* @__PURE__ */ React.createElement("text", { className: "kf-card-t", x: "-46", y: "5" }, "Alice\u2019s public value")), /* @__PURE__ */ React.createElement("path", { className: "kf-arrow", d: "M96 -4 h34 m0 0 -7 -6 m7 6 -7 6" })),
       /* the mixing, twice, in parallel */
       combine: /* @__PURE__ */ React.createElement("svg", { viewBox: "-190 -60 380 120", className: "kf-art" }, /* @__PURE__ */ React.createElement(Lid, { x: -96 }, /* @__PURE__ */ React.createElement("g", { transform: "translate(-19,0) scale(.9)" }, /* @__PURE__ */ React.createElement(Glyph, { kind: "lock", tone: "you" })), /* @__PURE__ */ React.createElement("text", { className: "kf-plus", x: "0", y: "5" }, "\u0192"), /* @__PURE__ */ React.createElement("g", { transform: "translate(21,0) scale(.72)" }, /* @__PURE__ */ React.createElement(Glyph, { kind: "packet", tone: "fr" }))), /* @__PURE__ */ React.createElement(Lid, { x: 96 }, /* @__PURE__ */ React.createElement("g", { transform: "translate(-19,0) scale(.9)" }, /* @__PURE__ */ React.createElement(Glyph, { kind: "lock", tone: "fr" })), /* @__PURE__ */ React.createElement("text", { className: "kf-plus", x: "0", y: "5" }, "\u0192"), /* @__PURE__ */ React.createElement("g", { transform: "translate(21,0) scale(.72)" }, /* @__PURE__ */ React.createElement(Glyph, { kind: "packet", tone: "you" })))),
       /* resolution: the same object, twice, glowing */
@@ -2992,7 +3769,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         soft: true
       },
       tapWire: {
-        text: "Evan can tap the wire \u2014 but he only gets encrypted text.",
+        text: "Eve can tap the wire \u2014 but he only gets encrypted text.",
         ms: 1700,
         on: "atk"
       },
@@ -3219,11 +3996,11 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       if (!SUB) return null;
       const TE = new TextEncoder();
       const pair = () => SUB.generateKey({ name: "ECDH", namedCurve: "P-256" }, true, ["deriveBits"]);
-      const [maya, leo] = await Promise.all([pair(), pair()]);
+      const [alice, bob] = await Promise.all([pair(), pair()]);
       const bits = (mine, theirs) => SUB.deriveBits({ name: "ECDH", public: theirs }, mine, 256);
       const [Zm, Zl] = await Promise.all([
-        bits(maya.privateKey, leo.publicKey),
-        bits(leo.privateKey, maya.publicKey)
+        bits(alice.privateKey, bob.publicKey),
+        bits(bob.privateKey, alice.publicKey)
       ]);
       const hk = async (raw) => {
         const base = await SUB.importKey("raw", raw, "HKDF", false, ["deriveBits"]);
@@ -3244,7 +4021,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       const jwkD = async (k) => B64U((await SUB.exportKey("jwk", k.privateKey)).d);
       const rawQ = async (k) => new Uint8Array(await SUB.exportKey("raw", k.publicKey));
       const [dM, dL, Qm, Ql] = await Promise.all(
-        [jwkD(maya), jwkD(leo), rawQ(maya), rawQ(leo)]
+        [jwkD(alice), jwkD(bob), rawQ(alice), rawQ(bob)]
       );
       const u8 = (b) => new Uint8Array(b);
       return {
@@ -3281,7 +4058,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             ivHex: HEX(iv, 6)
           };
         },
-        /* Leo decrypts with the key HIS side derived, never Maya's. */
+        /* Bob decrypts with the key HIS side derived, never Alice's. */
         async decrypt(packet) {
           const out = await SUB.decrypt({ name: "AES-GCM", iv: packet.iv }, keyL, packet.buf);
           return new TextDecoder().decode(out);
@@ -3289,7 +4066,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       };
     }
     const shorten = (s, n) => s.length <= n ? s : s.slice(0, n) + "\u2026";
-    const PhoneFrame = ({ who, title, children, quiet }) => /* @__PURE__ */ React.createElement("div", { className: "ip" + (quiet ? " quiet" : "") + (who === "fr" ? " ip-leo" : "") }, /* @__PURE__ */ React.createElement("div", { className: "ip-body" }, /* @__PURE__ */ React.createElement("div", { className: "ip-island" }), /* @__PURE__ */ React.createElement("div", { className: "ip-screen" }, /* @__PURE__ */ React.createElement("div", { className: "ip-nav" }, /* @__PURE__ */ React.createElement("span", { className: "ip-back" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "ip-who" }, title), /* @__PURE__ */ React.createElement("span", { className: "ip-dot" })), children)));
+    const PhoneFrame = ({ who, title, children, quiet }) => /* @__PURE__ */ React.createElement("div", { className: "ip" + (quiet ? " quiet" : "") + (who === "fr" ? " ip-bob" : "") }, /* @__PURE__ */ React.createElement("div", { className: "ip-body" }, /* @__PURE__ */ React.createElement("div", { className: "ip-island" }), /* @__PURE__ */ React.createElement("div", { className: "ip-screen" }, /* @__PURE__ */ React.createElement("div", { className: "ip-nav" }, /* @__PURE__ */ React.createElement("span", { className: "ip-back" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "ip-who" }, title), /* @__PURE__ */ React.createElement("span", { className: "ip-dot" })), children)));
     const Bubble = ({ text, mine, cipher }) => /* @__PURE__ */ React.createElement("div", { className: "bub" + (mine ? " mine" : "") + (cipher ? " cipher" : "") }, String(text).split("\n").map((l, i) => /* @__PURE__ */ React.createElement("span", { key: i }, l || "\xA0")));
     const MCAM = {
       idle: [200, 104, 1],
@@ -3299,29 +4076,27 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       pub: [78, 136, 1.85],
       pubLabel: [200, 140, 1.35],
       travel1: [200, 98, 1],
-      evanPub: [200, 72, 1.45],
+      evePub: [200, 72, 1.45],
       combine: [200, 138, 1.12],
       same: [200, 138, 1.08],
       ecdh: [200, 110, 1.05],
       encrypting: [78, 136, 1.7],
       handoff: [90, 118, 1.45],
-      travel2: [200, 96, 1],
-      evan: [200, 82, 1.7],
-      evanFail: [200, 88, 1.85],
-      arrive: [322, 136, 1.7],
-      toLeo: [322, 136, 1.7],
-      decrypting: [322, 136, 1.7],
+      wire: [200, 88, 1],
+      landed: [200, 92, 1.12],
+      toBob: [318, 126, 1.4],
+      decrypting: [318, 126, 1.4],
       done: [200, 118, 1.05]
     };
     const MiniCafe = ({ stage, ct, ready, wide }) => {
       const P2 = [
-        { who: "you", x: 66, y: 148, name: "Maya", sprite: SPRITE.you },
-        { who: "atk", x: 200, y: 88, name: "Evan", sprite: SPRITE.atk },
-        { who: "fr", x: 334, y: 148, name: "Leo", sprite: SPRITE.fr }
+        { who: "you", x: 66, y: 148, name: "Alice", sprite: SPRITE.you },
+        { who: "atk", x: 200, y: 88, name: "Eve", sprite: SPRITE.atk },
+        { who: "fr", x: 334, y: 148, name: "Bob", sprite: SPRITE.fr }
       ];
       const S = {
-        priv: ["priv", "privLabel", "pub", "pubLabel", "travel1", "evanPub", "combine"].includes(stage),
-        pub: ["pub", "pubLabel", "travel1", "evanPub", "combine"].includes(stage),
+        priv: ["priv", "privLabel", "pub", "pubLabel", "travel1", "evePub", "combine"].includes(stage),
+        pub: ["pub", "pubLabel", "travel1", "evePub", "combine"].includes(stage),
         swap: stage === "combine",
         key: [
           "same",
@@ -3330,21 +4105,23 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           "encrypting",
           "handoff",
           "travel2",
-          "evan",
+          "eve",
           "arrive",
-          "toLeo",
+          "toBob",
           "decrypting",
           "done"
         ].includes(stage) || ready,
-        pubFly: stage === "travel1" || stage === "evanPub",
-        ctFly: ["handoff", "travel2", "evan", "evanFail", "arrive", "toLeo", "decrypting", "done"].includes(stage)
+        pubFly: stage === "travel1" || stage === "evePub",
+        ctFly: ["handoff", "wire", "landed", "toBob", "decrypting", "done"].includes(stage)
       };
-      const u = stage === "handoff" ? 0.04 : stage === "travel2" ? 0.4 : stage === "evan" || stage === "evanFail" ? 0.5 : ["arrive", "toLeo", "decrypting", "done"].includes(stage) ? 1 : 0;
+      const crossing = stage === "wire";
+      const u = stage === "handoff" ? 0.04 : ["landed", "toBob", "decrypting", "done"].includes(stage) ? 1 : 0;
       const px = 66 + (334 - 66) * u;
+      const copied = ["wire", "landed", "toBob", "decrypting", "done"].includes(stage);
       const live = S.pubFly || S.ctFly;
-      const hot = ["evan", "evanFail", "evanPub"].includes(stage) ? "atk" : ["arrive", "toLeo", "decrypting"].includes(stage) ? "fr" : ["priv", "pub", "encrypting", "handoff"].includes(stage) ? "you" : null;
+      const hot = stage === "evePub" ? "atk" : ["landed", "toBob", "decrypting"].includes(stage) ? "fr" : ["priv", "pub", "encrypting", "handoff"].includes(stage) ? "you" : null;
       const [cx, cy, k] = wide ? MCAM.idle : MCAM[stage] || MCAM.idle;
-      const tapping = ["evan", "evanFail", "evanPub"].includes(stage);
+      const tapping = ["wire", "landed", "evePub"].includes(stage);
       return /* @__PURE__ */ React.createElement("svg", { className: "mini", viewBox: "0 0 400 200", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement(
         "g",
         {
@@ -3357,13 +4134,12 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           "g",
           {
             className: "mini-router" + (k > 1.2 ? " tight" : ""),
-            transform: "translate(200,26) scale(.5)"
+            transform: "translate(200,36) scale(.5)"
           },
           /* @__PURE__ */ React.createElement(Router, { x: 0, y: 0, live, inv: 2 / k })
         ),
         tapping && /* @__PURE__ */ React.createElement("path", { className: "mini-tap", d: "M200 108 V62" }),
-        tapping && stage !== "evanPub" && /* @__PURE__ */ React.createElement("g", { className: "mini-grab", transform: `translate(${px},62)` }, /* @__PURE__ */ React.createElement("path", { d: "M-78 -22 h-8 v44 h8 M78 -22 h8 v44 h-8" })),
-        stage === "evanFail" && /* @__PURE__ */ React.createElement("g", { className: "mini-steal", transform: "translate(200,62)" }, /* @__PURE__ */ React.createElement("rect", { x: "-60", y: "-13", width: "120", height: "26", rx: "6" }), /* @__PURE__ */ React.createElement("text", { className: "mini-steal-c", y: "5" }, shorten(ct || "", 17))),
+        crossing && /* @__PURE__ */ React.createElement("circle", { className: "mini-split", cx: "200", cy: "62", r: "7" }),
         P2.map((p) => {
           const mine = p.who !== "atk";
           return /* @__PURE__ */ React.createElement(
@@ -3399,28 +4175,47 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             /* @__PURE__ */ React.createElement("g", { className: "mini-scr" }, mine && S.priv && !S.key && /* @__PURE__ */ React.createElement("text", { className: "mini-ico priv", x: S.pub ? -13 : 0, y: "27" }, "\u{1F512}"), mine && S.pub && !S.key && /* @__PURE__ */ React.createElement("text", { className: "mini-ico pub", x: "13", y: "26" }, "\u25CF"), mine && S.key && /* @__PURE__ */ React.createElement("text", { className: "mini-ico key", y: "27" }, "\u{1F511}"), !mine && S.ctFly && /* @__PURE__ */ React.createElement(
               "text",
               {
-                className: "mini-ct" + (stage === "evanFail" ? " got" : ""),
+                className: "mini-ct" + (stage === "eveFail" ? " got" : ""),
                 y: "25"
               },
               shorten(ct || "", 9)
-            ), !mine && stage === "evanFail" && /* @__PURE__ */ React.createElement("text", { className: "mini-no", y: "34" }, "unreadable"), !mine && !S.ctFly && S.pub && /* @__PURE__ */ React.createElement("text", { className: "mini-ico seen", y: "26" }, "\u25CF\u25CF")),
+            ), !mine && stage === "eveFail" && /* @__PURE__ */ React.createElement("text", { className: "mini-no", y: "34" }, "unreadable"), !mine && !S.ctFly && S.pub && /* @__PURE__ */ React.createElement("text", { className: "mini-ico seen", y: "26" }, "\u25CF\u25CF")),
             /* @__PURE__ */ React.createElement("text", { className: "mini-name", y: "52" }, p.name),
-            mine && S.swap && /* @__PURE__ */ React.createElement("text", { className: "mini-sub", y: "64" }, p.who === "you" ? "kept + Leo\u2019s" : "kept + Maya\u2019s"),
+            mine && S.swap && /* @__PURE__ */ React.createElement("text", { className: "mini-sub", y: "64" }, p.who === "you" ? "kept + Bob\u2019s" : "kept + Alice\u2019s"),
             mine && stage === "same" && /* @__PURE__ */ React.createElement("text", { className: "mini-sub lit", y: "64" }, "same secret")
           );
         }),
-        S.pubFly && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("g", { className: "mini-pub a" }, /* @__PURE__ */ React.createElement("rect", { x: "-34", y: "-11", width: "68", height: "22", rx: "6" }), /* @__PURE__ */ React.createElement("text", { y: "4" }, "Maya\u2019s public key")), /* @__PURE__ */ React.createElement("g", { className: "mini-pub b" }, /* @__PURE__ */ React.createElement("rect", { x: "-34", y: "-11", width: "68", height: "22", rx: "6" }), /* @__PURE__ */ React.createElement("text", { y: "4" }, "Leo\u2019s public key"))),
-        S.ctFly && /* @__PURE__ */ React.createElement("g", { className: "mini-pay", transform: `translate(${px},62)` }, /* @__PURE__ */ React.createElement("rect", { x: "-72", y: "-17", width: "144", height: "34", rx: "7" }), /* @__PURE__ */ React.createElement("text", { className: "mini-pay-l", y: "-4" }, "Encrypted message \xB7 Maya \u2192 Leo"), /* @__PURE__ */ React.createElement("text", { className: "mini-pay-c", y: "9" }, shorten(ct || "", 22)))
+        S.pubFly && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("g", { className: "mini-pub a" }, /* @__PURE__ */ React.createElement("rect", { x: "-34", y: "-11", width: "68", height: "22", rx: "6" }), /* @__PURE__ */ React.createElement("text", { y: "4" }, "Alice\u2019s public key")), /* @__PURE__ */ React.createElement("g", { className: "mini-pub b" }, /* @__PURE__ */ React.createElement("rect", { x: "-34", y: "-11", width: "68", height: "22", rx: "6" }), /* @__PURE__ */ React.createElement("text", { y: "4" }, "Bob\u2019s public key"))),
+        S.ctFly && /* @__PURE__ */ React.createElement(
+          "g",
+          {
+            className: "mini-pay" + (crossing ? " fly" : ""),
+            transform: crossing ? void 0 : `translate(${px},62)`
+          },
+          /* @__PURE__ */ React.createElement("rect", { x: "-72", y: "-17", width: "144", height: "34", rx: "7" }),
+          /* @__PURE__ */ React.createElement("text", { className: "mini-pay-l", y: "-4" }, "Encrypted message \xB7 Alice \u2192 Bob"),
+          /* @__PURE__ */ React.createElement("text", { className: "mini-pay-c", y: "9" }, shorten(ct || "", 22))
+        ),
+        copied && /* @__PURE__ */ React.createElement(
+          "g",
+          {
+            className: "mini-dup" + (crossing ? " drop" : " at") + (["toBob", "decrypting", "done"].includes(stage) ? " dim" : ""),
+            transform: crossing ? void 0 : "translate(200,104)"
+          },
+          /* @__PURE__ */ React.createElement("rect", { x: "-72", y: "-17", width: "144", height: "34", rx: "7" }),
+          /* @__PURE__ */ React.createElement("text", { className: "mini-pay-l", y: "-4" }, crossing ? "Copy \xB7 intercepted" : "Eve\u2019s copy \xB7 unreadable"),
+          /* @__PURE__ */ React.createElement("text", { className: "mini-pay-c", y: "9" }, shorten(ct || "", 22))
+        )
       ));
     };
     const Fx = ({ children }) => /* @__PURE__ */ React.createElement("span", { className: "fx" }, children);
     const Raw = ({ children }) => /* @__PURE__ */ React.createElement("span", { className: "raw" }, children);
-    const EORD = ["priv", "pub", "travel1", "evanPub", "combine", "same", "ecdh"];
+    const EORD = ["priv", "pub", "travel1", "evePub", "combine", "same", "ecdh"];
     const upTo = (beat, name) => EORD.indexOf(beat) >= EORD.indexOf(name);
     const KeyAgreement = ({ s, beat, quiet, onReplay }) => {
       if (!s) return /* @__PURE__ */ React.createElement("section", { className: "pan pan-keys" }, /* @__PURE__ */ React.createElement("h3", { className: "pan-t" }, "Key agreement"), /* @__PURE__ */ React.createElement("p", { className: "pan-empty" }, "Establishing this session\u2026"));
       const Side = ({ tag, name, d, Q }) => /* @__PURE__ */ React.createElement("div", { className: "ka-side" }, /* @__PURE__ */ React.createElement("span", { className: "ka-who" }, name), /* @__PURE__ */ React.createElement("div", { className: "ka-cell" + (beat === "priv" ? " on" : "") }, /* @__PURE__ */ React.createElement("span", { className: "ka-k" }, "Private \xB7 stays on this device"), /* @__PURE__ */ React.createElement(Fx, null, "d", /* @__PURE__ */ React.createElement("sub", null, tag)), /* @__PURE__ */ React.createElement(Raw, null, BYTES(d, 6))), /* @__PURE__ */ React.createElement("div", { className: "ka-cell" + (upTo(beat, "pub") ? " lit" : "") + (beat === "pub" ? " on" : "") }, /* @__PURE__ */ React.createElement("span", { className: "ka-k" }, "Public \xB7 safe to send"), /* @__PURE__ */ React.createElement(Fx, null, "Q", /* @__PURE__ */ React.createElement("sub", null, tag), " = d", /* @__PURE__ */ React.createElement("sub", null, tag), "G"), /* @__PURE__ */ React.createElement(Raw, null, upTo(beat, "pub") ? BYTES(Q, 6) : "\u2014")));
-      return /* @__PURE__ */ React.createElement("section", { className: "pan pan-keys kb-" + beat + (quiet ? " quiet" : "") }, /* @__PURE__ */ React.createElement("h3", { className: "pan-t" }, "Key agreement \xB7 this session"), /* @__PURE__ */ React.createElement("div", { className: "ka" }, /* @__PURE__ */ React.createElement("div", { className: "ka-pair" }, /* @__PURE__ */ React.createElement(Side, { tag: "m", name: "Maya", d: s.dM, Q: s.Qm }), /* @__PURE__ */ React.createElement("div", { className: "ka-cross" + (upTo(beat, "travel1") ? " on" : "") }, /* @__PURE__ */ React.createElement("span", { className: "ka-arrow" }, "\u2192"), /* @__PURE__ */ React.createElement("span", { className: "ka-cross-k" }, "public keys cross"), /* @__PURE__ */ React.createElement("span", { className: "ka-arrow" }, "\u2190")), /* @__PURE__ */ React.createElement(Side, { tag: "l", name: "Leo", d: s.dL, Q: s.Ql })), /* @__PURE__ */ React.createElement("div", { className: "ka-join" + (upTo(beat, "same") ? " lit" : "") + (beat === "same" ? " on" : "") }, /* @__PURE__ */ React.createElement(Fx, null, "Z = d", /* @__PURE__ */ React.createElement("sub", null, "m"), "Q", /* @__PURE__ */ React.createElement("sub", null, "l"), " = d", /* @__PURE__ */ React.createElement("sub", null, "l"), "Q", /* @__PURE__ */ React.createElement("sub", null, "m")), /* @__PURE__ */ React.createElement("div", { className: "ka-two" }, /* @__PURE__ */ React.createElement("span", { className: "ka-two-w" }, "Maya computes"), /* @__PURE__ */ React.createElement(Raw, null, upTo(beat, "same") ? BYTES(s.Z, 6) : "\u2014"), /* @__PURE__ */ React.createElement("span", { className: "ka-two-w" }, "Leo computes"), /* @__PURE__ */ React.createElement(Raw, null, upTo(beat, "same") ? BYTES(s.Zl, 6) : "\u2014")), upTo(beat, "same") && s.zSame && /* @__PURE__ */ React.createElement("span", { className: "ka-same" }, "Same value. It never crossed the network.")), /* @__PURE__ */ React.createElement("div", { className: "ka-cell ka-out" + (upTo(beat, "ecdh") ? " lit" : "") + (beat === "ecdh" ? " on" : "") }, /* @__PURE__ */ React.createElement("span", { className: "ka-k" }, "Usable key material"), /* @__PURE__ */ React.createElement(Fx, null, "K = HKDF(Z)"), /* @__PURE__ */ React.createElement(Raw, null, upTo(beat, "ecdh") ? BYTES(s.K, 8) : "\u2014"), upTo(beat, "ecdh") && /* @__PURE__ */ React.createElement("span", { className: "ka-note" }, "This is the key AES-GCM uses on your message."))), onReplay && /* @__PURE__ */ React.createElement("button", { className: "ka-replay", onClick: onReplay }, "Replay the agreement"));
+      return /* @__PURE__ */ React.createElement("section", { className: "pan pan-keys kb-" + beat + (quiet ? " quiet" : "") }, /* @__PURE__ */ React.createElement("h3", { className: "pan-t" }, "Key agreement \xB7 this session"), /* @__PURE__ */ React.createElement("div", { className: "ka" }, /* @__PURE__ */ React.createElement("div", { className: "ka-pair" }, /* @__PURE__ */ React.createElement(Side, { tag: "m", name: "Alice", d: s.dM, Q: s.Qm }), /* @__PURE__ */ React.createElement("div", { className: "ka-cross" + (upTo(beat, "travel1") ? " on" : "") }, /* @__PURE__ */ React.createElement("span", { className: "ka-arrow" }, "\u2192"), /* @__PURE__ */ React.createElement("span", { className: "ka-cross-k" }, "public keys cross"), /* @__PURE__ */ React.createElement("span", { className: "ka-arrow" }, "\u2190")), /* @__PURE__ */ React.createElement(Side, { tag: "l", name: "Bob", d: s.dL, Q: s.Ql })), /* @__PURE__ */ React.createElement("div", { className: "ka-join" + (upTo(beat, "same") ? " lit" : "") + (beat === "same" ? " on" : "") }, /* @__PURE__ */ React.createElement(Fx, null, "Z = d", /* @__PURE__ */ React.createElement("sub", null, "m"), "Q", /* @__PURE__ */ React.createElement("sub", null, "l"), " = d", /* @__PURE__ */ React.createElement("sub", null, "l"), "Q", /* @__PURE__ */ React.createElement("sub", null, "m")), /* @__PURE__ */ React.createElement("div", { className: "ka-two" }, /* @__PURE__ */ React.createElement("span", { className: "ka-two-w" }, "Alice computes"), /* @__PURE__ */ React.createElement(Raw, null, upTo(beat, "same") ? BYTES(s.Z, 6) : "\u2014"), /* @__PURE__ */ React.createElement("span", { className: "ka-two-w" }, "Bob computes"), /* @__PURE__ */ React.createElement(Raw, null, upTo(beat, "same") ? BYTES(s.Zl, 6) : "\u2014")), upTo(beat, "same") && s.zSame && /* @__PURE__ */ React.createElement("span", { className: "ka-same" }, "Same value. It never crossed the network.")), /* @__PURE__ */ React.createElement("div", { className: "ka-cell ka-out" + (upTo(beat, "ecdh") ? " lit" : "") + (beat === "ecdh" ? " on" : "") }, /* @__PURE__ */ React.createElement("span", { className: "ka-k" }, "Usable key material"), /* @__PURE__ */ React.createElement(Fx, null, "K = HKDF(Z)"), /* @__PURE__ */ React.createElement(Raw, null, upTo(beat, "ecdh") ? BYTES(s.K, 8) : "\u2014"), upTo(beat, "ecdh") && /* @__PURE__ */ React.createElement("span", { className: "ka-note" }, "This is the key AES-GCM uses on your message."))), onReplay && /* @__PURE__ */ React.createElement("button", { className: "ka-replay", onClick: onReplay }, "Replay the agreement"));
     };
     const Process = ({ stage, plain, ct, got, quiet, iv, live, pk, act }) => {
       const enc = stage === "encrypting", dec = stage === "decrypting";
@@ -3437,15 +4232,17 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         "Whatever you type is encrypted as you type it.",
         "phone"
       ],
+      /* true wherever it is read: on a desktop the formula panel is beside the
+         phone, on a phone the encrypted line sits inside it */
       typing: [
-        "Watch your own bytes go through the formula",
-        "The ciphertext below is the real output, not a placeholder.",
+        "Your message is already ciphertext",
+        "Every keystroke is re-encrypted with a fresh IV \u2014 and that is the real output.",
         "proc"
       ],
       /* ---- AES-GCM, Network: same instruction, different subject ------------ */
       netIdle: [
         "Type a message and press Enter to send it",
-        "Then watch it cross the Wi-Fi, right past Evan.",
+        "Then watch it cross the Wi-Fi, right past Eve.",
         "cafe"
       ],
       netTyping: [
@@ -3465,8 +4262,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         "keys"
       ],
       e_travel1: ["The public keys are exchanged", "in the open.", "keys"],
-      e_evanPub: [
-        "Evan sees both public keys",
+      e_evePub: [
+        "Eve sees both public keys",
         "They were always meant to be public.",
         "keys"
       ],
@@ -3481,8 +4278,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       n_priv: ["Each device picks a private number", "and keeps it.", "cafe"],
       n_pub: ["and derives a public one from it", "", "cafe"],
       n_travel1: ["The public keys cross the Wi-Fi", "in the open.", "cafe"],
-      n_evanPub: [
-        "Evan gets both public keys",
+      n_evePub: [
+        "Eve gets both public keys",
         "What he does not get is either private value.",
         "cafe"
       ],
@@ -3494,23 +4291,25 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       ],
       n_ecdh: [
         "Watching the exchange is not enough",
-        "Evan has the public keys and still cannot reach the secret.",
+        "Eve has the public keys and still cannot reach the secret.",
         "big"
       ],
       /* ---- AES-GCM, Network: the send ------------------------------------- */
       encrypting: ["AES-GCM is rewriting the message", "with the key ECDH established.", "proc"],
       handoff: ["That output is what travels", "", "proc"],
-      travel2: ["Now watch what crosses the network", "Only the encrypted version travels.", "cafe"],
-      evan: ["Evan intercepted it.", "He pulled the packet straight off the wire.", "big"],
-      evanFail: ["This is all he got.", "", "big"],
-      arrive: ["The same packet reaches Leo", "", "cafe"],
-      toLeo: ["Leo has the matching key", "", "cafe"],
+      wire: ["Across the Wi-Fi, in one go", "Watch the middle.", "cafe"],
+      landed: [
+        "Bob got it. Eve copied it.",
+        "The same bytes on both machines \u2014 and only one of them can read them.",
+        "big"
+      ],
+      toBob: ["Bob has the matching key", "", "cafe"],
       decrypting: [
         "The same keystream runs it backwards",
-        "P = C \u2295 S, with the S only Leo and Maya can make.",
+        "P = C \u2295 S, with the S only Bob and Alice can make.",
         "proc"
       ],
-      done: ["Leo reads what Maya typed", "Evan never did.", "phone"]
+      done: ["Bob reads what Alice typed", "Eve never did.", "phone"]
     };
     const Inspection = ({ kit, onFinish, tall }) => {
       const [text, setText] = useState("");
@@ -3539,7 +4338,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           clearTimeout(id);
         };
       }, [text, kit, stage]);
-      const side = ["toLeo", "decrypting", "done"].includes(stage) ? "fr" : "you";
+      const side = ["toBob", "decrypting", "done"].includes(stage) ? "fr" : "you";
       const [mode, setMode] = useState("live");
       const [algo, setAlgo] = useState("aes");
       const [ebeat, setEbeat] = useState("ecdh");
@@ -3565,7 +4364,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           ["priv", 2e3],
           ["pub", 2300],
           ["travel1", 2100],
-          ["evanPub", 2400],
+          ["evePub", 2400],
           ["combine", 2200],
           ["same", 2600],
           ["ecdh", 1800]
@@ -3598,12 +4397,10 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           }
           setAct(null);
           await pause(500);
-          await step("handoff", 1300);
-          await step("travel2", 1600);
-          await step("evan", 2400);
-          await step("evanFail", 2600);
-          await step("arrive", 1300);
-          await step("toLeo", 1400);
+          await step("handoff", 1100);
+          await step("wire", 3500);
+          await step("landed", 2400);
+          await step("toBob", 1300);
           setStage("decrypting");
           setAct(3);
           await pause(1400);
@@ -3629,7 +4426,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         if (!el) return;
         const fit = () => {
           el.style.height = "auto";
-          el.style.height = Math.min(el.scrollHeight, 110) + "px";
+          el.style.height = (el.value ? Math.min(el.scrollHeight, 110) : 0) + "px";
+          el.placeholder = el.clientWidth < 150 ? "Message\u2026" : el.clientWidth < 215 ? "Private message\u2026" : "Type a private message\u2026";
         };
         fit();
         window.addEventListener("resize", fit);
@@ -3647,6 +4445,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           delete window.__insp;
         };
       }, []);
+      const holds = ["landed", "toBob", "decrypting", "done"].includes(stage);
       const shown = pack || live;
       const ct = shown ? BYTES(shown.C) : "";
       const line = algo === "ecdh" ? STEP[(mode === "live" ? "e_" : "n_") + ebeat] || null : stage !== "idle" ? STEP[stage] || null : mode === "net" ? text ? STEP.netTyping : STEP.netIdle : text ? STEP.typing : STEP.ready;
@@ -3685,8 +4484,9 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           className: "mode" + (algo === "aes" ? " on" : ""),
           onClick: () => pickAlgo("aes")
         },
-        "AES-GCM"
-      )), /* @__PURE__ */ React.createElement("span", { className: "mode-what" }, algo === "ecdh" ? mode === "live" ? "How this session\u2019s key was established" : "How the key was agreed across the room" : mode === "live" ? "What happens to your message as you type" : "What happens between Maya, Evan and Leo")), algo === "ecdh" ? /* @__PURE__ */ React.createElement("div", { className: "insp-phone insp-keys" }, /* @__PURE__ */ React.createElement(
+        /* @__PURE__ */ React.createElement("span", { className: "mode-long" }, "AES-GCM"),
+        /* @__PURE__ */ React.createElement("span", { className: "mode-short" }, "AES")
+      )), /* @__PURE__ */ React.createElement("span", { className: "mode-what" }, algo === "ecdh" ? mode === "live" ? "How this session\u2019s key was established" : "How the key was agreed across the room" : mode === "live" ? "What happens to your message as you type" : "What happens between Alice, Eve and Bob")), algo === "ecdh" ? /* @__PURE__ */ React.createElement("div", { className: "insp-phone insp-keys" }, /* @__PURE__ */ React.createElement(
         KeyAgreement,
         {
           s: kit ? kit.session : null,
@@ -3694,7 +4494,16 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           quiet: focus !== "keys",
           onReplay: playEcdh
         }
-      )) : /* @__PURE__ */ React.createElement("div", { className: "insp-phone" }, /* @__PURE__ */ React.createElement("div", { className: "ip" }, /* @__PURE__ */ React.createElement("div", { className: "ip-body" }, /* @__PURE__ */ React.createElement("div", { className: "ip-island" }), /* @__PURE__ */ React.createElement("div", { className: "ip-screen" }, /* @__PURE__ */ React.createElement("div", { className: "ip-nav" }, /* @__PURE__ */ React.createElement("span", { className: "ip-back" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "ip-who" }, side === "you" ? "Leo" : "Maya"), /* @__PURE__ */ React.createElement("span", { className: "ip-dot" })), /* @__PURE__ */ React.createElement("div", { className: "ip-thread" }, side === "you" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Bubble, { text: "hey \u2014 you around?" }), stage !== "idle" && /* @__PURE__ */ React.createElement(Bubble, { mine: true, text }), stage !== "idle" && stage !== "done" && /* @__PURE__ */ React.createElement("span", { className: "ip-hold" }, ready ? "sending\u2026" : "waiting for a secure line\u2026")) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Bubble, { text: "hey \u2014 you around?", mine: true }), stage !== "done" && /* @__PURE__ */ React.createElement(Bubble, { cipher: true, text: shorten(ct, 24) }), stage === "done" && /* @__PURE__ */ React.createElement(Bubble, { text: got }))), side === "you" && stage === "idle" && text.trim() && ct && /* @__PURE__ */ React.createElement("div", { className: "ip-live" }, /* @__PURE__ */ React.createElement("span", { className: "ip-live-k" }, "Encrypted"), /* @__PURE__ */ React.createElement("span", { className: "ip-live-v" }, shorten(ct, 30))), side === "you" && stage === "idle" && /* @__PURE__ */ React.createElement("div", { className: "ip-hint" + (text.trim() ? " on" : "") }, "Press Enter to send"), side === "you" && stage === "idle" && /* @__PURE__ */ React.createElement("div", { className: "ip-bar" }, /* @__PURE__ */ React.createElement(
+      )) : /* @__PURE__ */ React.createElement("div", { className: "insp-phone" }, /* @__PURE__ */ React.createElement("div", { className: "sur-eve" + (holds ? " has-got" : ""), "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "sur-eye" }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 44 26", width: "100%" }, /* @__PURE__ */ React.createElement("path", { className: "eye-l", d: "M2 13 C10 2 34 2 42 13 C34 24 10 24 2 13 Z" }), /* @__PURE__ */ React.createElement("circle", { className: "eye-i", cx: "22", cy: "13", r: "6.6" }), /* @__PURE__ */ React.createElement("circle", { className: "eye-p", cx: "22", cy: "13", r: "2.9" }), /* @__PURE__ */ React.createElement("path", { className: "eye-lid", d: "M2 13 C10 2 34 2 42 13 Z" }))), /* @__PURE__ */ React.createElement("img", { className: "sur-face", src: SPRITE.atk, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "sur-who evil" }, "Eve"), /* @__PURE__ */ React.createElement("span", { className: "sur-note" }, "watching the Wi\u2011Fi"), holds && ct && /* @__PURE__ */ React.createElement("span", { className: "sur-got" }, /* @__PURE__ */ React.createElement("span", { className: "sur-got-k" }, "intercepted copy"), /* @__PURE__ */ React.createElement("span", { className: "sur-got-v" }, shorten(ct, 14)))), /* @__PURE__ */ React.createElement("div", { className: "sur-side sur-alice", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("img", { className: "sur-face lit", src: SPRITE.you, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "sur-who" }, "Alice"), /* @__PURE__ */ React.createElement("span", { className: "sur-note" }, stage === "idle" ? "writing" : "sent it")), /* @__PURE__ */ React.createElement("div", { className: "sur-side sur-bob" + (holds ? " has-got" : ""), "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("img", { className: "sur-face" + (stage === "done" ? " lit" : ""), src: SPRITE.fr, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "sur-who" }, "Bob"), /* @__PURE__ */ React.createElement("span", { className: "sur-note" }, stage === "done" ? "read it" : stage === "idle" ? "waiting" : "receiving"), holds && /* @__PURE__ */ React.createElement("span", { className: "sur-got ok" }, /* @__PURE__ */ React.createElement("span", { className: "sur-got-k" }, "got it"), /* @__PURE__ */ React.createElement("span", { className: "sur-got-v" }, shorten(ct, 5)))), /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          className: "sur-dir" + (text.trim() || stage !== "idle" ? " on" : ""),
+          "aria-hidden": "true"
+        },
+        /* @__PURE__ */ React.createElement("i", null),
+        /* @__PURE__ */ React.createElement("span", null, "Alice \u2192 Bob"),
+        /* @__PURE__ */ React.createElement("i", null)
+      ), ct && ["wire", "landed", "toBob", "decrypting", "done"].includes(stage) && /* @__PURE__ */ React.createElement("div", { className: "sur-wire", "aria-hidden": "true" }, stage === "wire" && /* @__PURE__ */ React.createElement("div", { className: "sur-pay fly" }, /* @__PURE__ */ React.createElement("span", { className: "sur-pay-l" }, "Encrypted \xB7 Alice \u2192 Bob"), /* @__PURE__ */ React.createElement("span", { className: "sur-pay-c" }, shorten(ct, 17))), stage === "wire" && /* @__PURE__ */ React.createElement("div", { className: "sur-dup split" }, /* @__PURE__ */ React.createElement("span", { className: "sur-pay-l" }, "Copy \xB7 intercepted"), /* @__PURE__ */ React.createElement("span", { className: "sur-pay-c" }, shorten(ct, 17)))), /* @__PURE__ */ React.createElement("div", { className: "ip" }, /* @__PURE__ */ React.createElement("div", { className: "ip-body" }, /* @__PURE__ */ React.createElement("div", { className: "ip-island" }), /* @__PURE__ */ React.createElement("div", { className: "ip-screen" }, /* @__PURE__ */ React.createElement("div", { className: "ip-nav" }, /* @__PURE__ */ React.createElement("span", { className: "ip-back" }, "\u2039"), /* @__PURE__ */ React.createElement("span", { className: "ip-who" }, side === "you" ? "Bob" : "Alice"), /* @__PURE__ */ React.createElement("span", { className: "ip-dot" })), /* @__PURE__ */ React.createElement("div", { className: "ip-thread" }, side === "you" ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Bubble, { text: "hey \u2014 you around?" }), stage !== "idle" && /* @__PURE__ */ React.createElement(Bubble, { mine: true, text }), stage !== "idle" && stage !== "done" && /* @__PURE__ */ React.createElement("span", { className: "ip-hold" }, ready ? "sending\u2026" : "waiting for a secure line\u2026")) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Bubble, { text: "hey \u2014 you around?", mine: true }), stage !== "done" && /* @__PURE__ */ React.createElement(Bubble, { cipher: true, text: shorten(ct, 24) }), stage === "done" && /* @__PURE__ */ React.createElement(Bubble, { text: got }))), side === "you" && stage === "idle" && text.trim() && ct && /* @__PURE__ */ React.createElement("div", { className: "ip-live" }, /* @__PURE__ */ React.createElement("span", { className: "ip-live-k" }, "Encrypted"), /* @__PURE__ */ React.createElement("span", { className: "ip-live-v" }, shorten(ct, 30))), side === "you" && stage === "idle" && /* @__PURE__ */ React.createElement("div", { className: "ip-hint" + (text.trim() ? " on" : "") }, "Press Enter to send"), side === "you" && stage === "idle" && /* @__PURE__ */ React.createElement("div", { className: "ip-bar" }, /* @__PURE__ */ React.createElement(
         "textarea",
         {
           className: "ip-in",
@@ -4021,13 +4830,13 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         const tokOf = (id) => TOK[id];
         const beat = {};
         const run = async () => {
-          const evanKnows = async (line, ms = 1092) => {
+          const eveKnows = async (line, ms = 1092) => {
             setShot2("atk");
-            tell(NOTE.whatEvan);
+            tell(NOTE.whatEve);
             await settle();
             if (!alive()) return;
             setSpot2("atk");
-            say({ d: { kind: "note", tag: "What Evan knows now", tone: "danger", text: line } });
+            say({ d: { kind: "note", tag: "What Eve knows now", tone: "danger", text: line } });
             await wait(ms);
             if (!alive()) return;
             say({ d: null });
@@ -4056,15 +4865,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             await wait(900);
             if (!alive()) return;
             setShot2("atk");
-            tell(NOTE.evanHere);
-            where("evan");
+            tell(NOTE.eveHere);
+            where("eve");
             await settle();
             if (!alive()) return;
             await wait(2400);
             if (!alive()) return;
             watch2(true);
             look2("you");
-            tell(NOTE.evanWatch);
+            tell(NOTE.eveWatch);
             await wait(2300);
             if (!alive()) return;
             look2("fr");
@@ -4072,7 +4881,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             if (!alive()) return;
             setShot2("wide");
             where("upper");
-            tell(NOTE.evanBoth);
+            tell(NOTE.eveBoth);
             await settle();
             if (!alive()) return;
             await wait(2600);
@@ -4101,14 +4910,14 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             observe(2600);
             await send(
               "p-netAtk",
-              { kind: "msg", tone: "danger", label: "What Evan reads off the wire", sub: "Meet me outside at 5" },
+              { kind: "msg", tone: "danger", label: "What Eve reads off the wire", sub: "Meet me outside at 5" },
               800,
               { hold: 500, settle: 700 }
             );
             if (!alive()) return;
             flowOff();
             setShot2("atk");
-            where("evan");
+            where("eve");
             tell(NOTE.plainSeen);
             await settle();
             if (!alive()) return;
@@ -4123,7 +4932,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             await wait(2400);
           };
           beat[2] = async () => {
-            lead(NOTE.pushMaya);
+            lead(NOTE.pushAlice);
             setShot2("you");
             await settle();
             if (!alive()) return;
@@ -4446,7 +5255,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               who: "a-atk",
               sprite: SPRITE.atk,
               idle: -1400,
-              name: "Evan (intruder)",
+              name: "Eve (intruder)",
               state: stateOf("atk", vis),
               inv,
               cls: near("atk"),
@@ -4508,7 +5317,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               who: "a-you",
               sprite: SPRITE.you,
               idle: 0,
-              name: "Maya",
+              name: "Alice",
               state: stateOf("you", vis),
               inv,
               cls: near("you"),
@@ -4538,7 +5347,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               who: "a-fr",
               sprite: SPRITE.fr,
               idle: -2100,
-              name: "Leo",
+              name: "Bob",
               state: stateOf("fr", vis),
               inv,
               cls: near("fr"),
@@ -4566,17 +5375,17 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           dlg && spAt && /* @__PURE__ */ React.createElement(Callout, { def: dlg, at: spAt, inv, narrow: L.tall })
         )), /* @__PURE__ */ React.createElement("div", { className: "crt bloom", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "crt lines", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "crt vig", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement(KeyFrame, { f: frame, on: frameOn }), ask && ask.kind === "inspect" && /* @__PURE__ */ React.createElement(Inspection, { kit, tall: L.tall, onFinish: answer }), !frameOn && !ledger && !inspecting && /* @__PURE__ */ React.createElement(Caption, { line: note, zone: nz, swap: noteSwap })),
         ledger && /* @__PURE__ */ React.createElement(Ledger, { line: note, rows: step === 4 ? [
-          ["Maya\u2019s private value", "still unknown", "var(--maya)"],
-          ["Leo\u2019s private value", "still unknown", "var(--leo)"],
+          ["Alice\u2019s private value", "still unknown", "var(--alice)"],
+          ["Bob\u2019s private value", "still unknown", "var(--bob)"],
           ["The shared secret", "still unknown", "var(--key)"]
         ] : step >= 6 ? [
-          ["Maya", "sent the message", "var(--maya)"],
-          ["Leo", "read the message", "var(--leo)"],
-          ["Evan", "intercepted only scrambled characters", "var(--evan)"]
+          ["Alice", "sent the message", "var(--alice)"],
+          ["Bob", "read the message", "var(--bob)"],
+          ["Eve", "intercepted only scrambled characters", "var(--eve)"]
         ] : [
-          ["Maya", "shared secret " + tok["you.key"], "var(--maya)"],
-          ["Leo", "shared secret " + tok["fr.key"], "var(--leo)"],
-          ["Evan", "?", "var(--evan)"]
+          ["Alice", "shared secret " + tok["you.key"], "var(--alice)"],
+          ["Bob", "shared secret " + tok["fr.key"], "var(--bob)"],
+          ["Eve", "?", "var(--eve)"]
         ] }),
         /* @__PURE__ */ React.createElement(
           Scrub,
