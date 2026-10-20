@@ -3,8 +3,7 @@
    carry it: a public colour everyone sees, two private ones that stay home,
    two mixtures that cross, a matching final colour that does not, a shared
    key, a protected message, Eve with traffic and no key, Bob with the original. */
-const { chromium } = require("playwright");
-const { KEYS, reach } = require("./drive");
+const { KEYS, reach, launch } = require("./drive");
 const HIDE = `.insp-say,.tk-l,.tk-h,.tk-n,.cin-who,.flm-turn,.grab-hint,
   .flm-nokey b,.flm-peek,.flm-more,.cin-ctl,.tk-note b{visibility:hidden !important}`;
 
@@ -27,7 +26,7 @@ const shot = () => {
 };
 
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   const p = await b.newPage({ viewport: { width: 393, height: 852 } });
   await reach(p);
   await p.addStyleTag({ content: HIDE });

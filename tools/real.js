@@ -5,10 +5,10 @@
    real key material, that the ciphertext swatches come from the real
    ciphertext, that the nonce is fresh per encryption, and that a tampered
    tag yields no plaintext at all. */
-const { chromium } = require("playwright");
+const { launch } = require("./drive");
 
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
   await p.goto((process.env.TARGET || "file://" + require("path").resolve(__dirname, "..", "index.html")));
   await p.waitForFunction(() => !!window.__kit, null, { timeout: 20000 });
@@ -88,7 +88,7 @@ const { chromium } = require("playwright");
   const kPix = await paint("tokey", '[data-obj="ka"] svg > rect[fill]:not([fill="none"])');
   ok(kPix === "#" + r.kA.slice(0, 6).toUpperCase(),
     "the key token is painted from the real K bytes", kPix + " vs #" + r.kA.slice(0, 6).toUpperCase());
-  const ctPix = await paint("protect", '[data-obj="pkt"] .tk-cipher svg > rect[fill]:not([fill="none"])');
+  const ctPix = await paint("protect", '[data-obj="pkt"] .tk-pack rect.pk-b');
   ok(/^#[0-9A-F]{6}$/.test(ctPix || ""), "the ciphertext strip is painted from real bytes", ctPix);
 
   /* the real values are one tap away, and they are the ones computed */

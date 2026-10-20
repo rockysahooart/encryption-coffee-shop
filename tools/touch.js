@@ -2,8 +2,7 @@
    events whose pointerType is "touch" — which is what the film's drag handler
    actually reads — and with taps rather than mouse clicks. Same scaffold as
    the mouse test on purpose: if the two differ, the difference is the input. */
-const { chromium } = require("playwright");
-const { KEYS, reach } = require("./drive");
+const { KEYS, reach, launch } = require("./drive");
 const MSG = "the table by the window";
 const ORDER = KEYS;   /* the film is the source of truth for its own order */
 
@@ -35,7 +34,7 @@ const drag = async (p) => {
 };
 
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   const p = await b.newPage({ viewport: { width: 393, height: 852 } });
   await reach(p);
   let bad = 0;

@@ -4,14 +4,13 @@
    3. is the wide composition used only for travel or comparison?
    4. on a turn, is exactly one thing active, and is everything else still?
    5. does the chosen colour stay large, in a labelled slot, after selection? */
-const { chromium } = require("playwright");
-const { KEYS, reach } = require("./drive");
+const { KEYS, reach, launch } = require("./drive");
 const CLOSE = ["pickA","mine","mixA","mixAout","sendA","mixB","mixB","combA","combAout",
   "combB","combB","type","protect","protect","arrive","open"];
 const TRAVEL = ["base","crossA","crossB","journey"];
 const COMPARE = ["reveal","asmath","tokey","tokey","chain","journey","problem"];
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   const p = await b.newPage({ viewport: { width: 393, height: 852 } });
   await reach(p);
   const keys = await p.evaluate(() => (window.__kit && window.__kit.keys) || null);

@@ -4,8 +4,7 @@
    ingredients, both final colours are the same three ingredients, and they
    therefore land on the identical hex. Also checks provenance — that no colour
    on screen came from anywhere but the four permitted sources. */
-const { chromium } = require("playwright");
-const { reach } = require("./drive");
+const { reach, launch } = require("./drive");
 const hex2 = (h) => { const v = h.replace("#", "");
   return [parseInt(v.slice(0,2),16), parseInt(v.slice(2,4),16), parseInt(v.slice(4,6),16)]; };
 const mix = (...c) => "#" + [0,1,2].map((i) =>
@@ -17,7 +16,7 @@ const fill = async (p, id) => p.evaluate((x) => {
 }, id);
 
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   const p = await b.newPage({ viewport: { width: 393, height: 852 } });
   await reach(p);
   /* the private slot is empty until the viewer chooses, so the harness has to
@@ -53,7 +52,7 @@ const fill = async (p, id) => p.evaluate((x) => {
   /* provenance: every colour on screen traces to a permitted source */
   const allowed = new Set([BASE, A, B, QA, QB, SA].map((x) => x && x.toUpperCase()));
   const strays = [];
-  for (const k of ["base","pickA","mixAout","mixB","crossA","crossB","combAout","reveal"]) {
+  for (const k of ["base","pickA","mine","pickB","mixAout","mixB","exchange","combAout","combB","reveal"]) {
     await go(k);
     const cols = await p.evaluate(() =>
       [...document.querySelectorAll('.flm-obj[data-obj] svg > [fill]:not([fill="none"])')]
@@ -66,7 +65,7 @@ const fill = async (p, id) => p.evaluate((x) => {
 
   /* the private colours never cross, the finals never cross */
   const crossed = [];
-  for (const k of ["crossA","crossB","reveal","asmath"]) {
+  for (const k of ["exchange","reveal","asmath"]) {
     await go(k);
     const lane = await p.evaluate(() =>
       [...document.querySelectorAll('.flm-lane .flm-obj[data-obj]')].map((e) => e.dataset.obj));

@@ -16,5 +16,5 @@
     "six": "node six.js",
     "all": "for f in fit hands touch walk validate story locked paint crypto a11y six; do echo \"=== $f ===\"; npm run --silent $f || true; done"
   },
-  "devDependencies": { "playwright": "^1.47.0" }
+  "devDependencies": { "playwright": "1.61.1" }
 }

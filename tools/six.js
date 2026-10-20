@@ -2,10 +2,9 @@
    dialogue · the referent it names · visible evidence · the action · the
    spatial connection between them · the visible result.
    A beat fails when the statement is true only because the sentence says so. */
-const { chromium } = require("playwright");
-const { KEYS, reach } = require("./drive");
+const { KEYS, reach, launch } = require("./drive");
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   const p = await b.newPage({ viewport: { width: 393, height: 852 } });
   await reach(p);
   const F = {};

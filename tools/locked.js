@@ -2,11 +2,10 @@
    Every phone in the film, on every frame, at every width, measured against
    the iPhone 17 Pro ratio this project locked. Content is never allowed to
    change it — which is exactly how it broke. */
-const { chromium } = require("playwright");
-const { KEYS, reach } = require("./drive");
+const { KEYS, reach, launch } = require("./drive");
 const R = 71.9 / 150;
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   let bad = 0;
   for (const [w, h] of [[1440, 900], [393, 852], [320, 700]]) {
     const p = await b.newPage({ viewport: { width: w, height: h } });

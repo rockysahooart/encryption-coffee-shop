@@ -1,8 +1,7 @@
 /* PLAYED WITH HANDS. Every teaching beat is completed by dragging the object
    onto the one place it can go — no buttons exist for them. This is the whole
    point of the pass, so it is driven with real pointer events. */
-const { chromium } = require("playwright");
-const { KEYS, reach } = require("./drive");
+const { KEYS, reach, launch } = require("./drive");
 const MSG = "the table by the window";
 const ORDER = KEYS;   /* the film is the source of truth for its own order */
 
@@ -22,7 +21,7 @@ const drag = async (p) => {
 };
 
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   const p = await b.newPage({ viewport: { width: 393, height: 852 } });
   await reach(p);
   let bad = 0;

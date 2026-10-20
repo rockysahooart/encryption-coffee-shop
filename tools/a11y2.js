@@ -1,9 +1,9 @@
 /* The film, for someone not looking at it the way I am: tap targets, a focus
    ring that is visible, state that survives colour being removed, and — for
    someone who asked for less motion — a sequence that still tells the story. */
-const { chromium } = require("playwright");
+const { launch } = require("./drive");
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   let bad = 0;
   const reach = async (p) => {
     await p.goto((process.env.TARGET || "file://" + require("path").resolve(__dirname, "..", "index.html")));
@@ -52,7 +52,7 @@ const { chromium } = require("playwright");
     };
     const g = await p.evaluate(read);
     /* Eve states what she holds on her own frames, not on everyone else's */
-    await p.evaluate(() => window.__cin("crossA"));
+    await p.evaluate(() => window.__cin("exchange"));
     /* the copies branch off partway through the crossing, so the shot has to
        be taken after the motion, not at the start of it */
     await p.waitForTimeout(3400);
@@ -75,7 +75,7 @@ const { chromium } = require("playwright");
     const p = await ctx.newPage();
     await reach(p);
     console.log("\n--- with reduced motion asked for ---");
-    await p.evaluate(() => window.__cin("crossA"));
+    await p.evaluate(() => window.__cin("exchange"));
     await p.waitForTimeout(500);
     const fly = await p.evaluate(() => [...document.querySelectorAll(".flm-lane .flm-obj")]
       .filter((e) => +getComputedStyle(e).opacity > .5).length);

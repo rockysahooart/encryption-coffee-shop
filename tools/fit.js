@@ -1,9 +1,8 @@
 /* NOTHING PAINTS OVER ANYTHING, AT ANY FRAME, AT ANY SIZE.
-   Thirty-four frames at five widths. Checks that no region overflows its row,
+   Every beat in KEYS, at five widths. Checks that no region overflows its row,
    that a value never hangs out of the stage and into the equation beneath it,
    that nothing clips its own text, and that the maths is never dimmed. */
-const { chromium } = require("playwright");
-const B = ["problem","pickA","base","mixA","mixAout","sendA","crossA","mixB","mixBout","crossB","combA","combAout","combBin","combB","reveal","secret","tokey","keys","type","protect","pktOut","journey","eveFail","arrive","open","chain"];
+const { KEYS, launch } = require("./drive");
 
 const probe = () => {
   const box = (s) => { const e = document.querySelector(s); if (!e) return null;
@@ -64,7 +63,7 @@ const probe = () => {
 };
 
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   let bad = 0;
   for (const [w, h] of [[1440, 900], [1024, 800], [393, 852], [360, 780], [320, 700]]) {
     const p = await b.newPage({ viewport: { width: w, height: h } });
@@ -79,11 +78,11 @@ const probe = () => {
     await p.waitForTimeout(400);
     console.log(`\n--- ${w}x${h} ---`);
     let n = 0;
-    for (const beat of B) {
+    for (const beat of KEYS) {
       await p.evaluate((x) => window.__cin(x), beat);
       /* the object travel is deliberate and passes outside its container while
          it is in the air; this checks the composed frame, once it has settled */
-      await p.waitForTimeout(/crossA|crossB|journey/.test(beat) ? 7600 : 1400);
+      await p.waitForTimeout(/exchange|journey/.test(beat) ? 7600 : 1400);
       const issues = await p.evaluate(probe);
       if (issues.length) { n += issues.length; console.log(`  ${beat}: ${issues.join("; ")}`); }
     }

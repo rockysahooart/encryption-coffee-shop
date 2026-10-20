@@ -3,12 +3,11 @@
    with a verb and name its target? Is the dialogue attached to the action
    rather than pinned to the bottom of the screen? Is the phone big enough to
    read? Do the swatches still read as pieces of colour with every label off? */
-const { chromium } = require("playwright");
-const { KEYS, reach } = require("./drive");
+const { KEYS, reach, launch } = require("./drive");
 const VERBS = /^(tap|drag|type|choose|send|pick)\b/i;
 
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   const p = await b.newPage({ viewport: { width: 393, height: 852 } });
   await reach(p);
   let bad = 0;

@@ -2,8 +2,7 @@
    Nine tests from the brief, plus the character-proportion lock, run at the
    mobile viewport and at desktop width. A test that cannot fail is not a
    test, so each one measures the page rather than asking it. */
-const { chromium } = require("playwright");
-const { KEYS, reach } = require("./drive");
+const { KEYS, reach, launch } = require("./drive");
 const SIZES = [[393, 852], [1440, 900]];
 const GATES = ["pickA", "mixA", "sendA", "combA", "type"];
 const SPRITE = { ".flm-a": 200 / 293, ".flm-b": 200 / 258, ".flm-net": 200 / 260 };
@@ -102,7 +101,7 @@ const probe = () => {
 };
 
 (async () => {
-  const br = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const br = await launch();
   let fails = 0;
   const bad = (m) => { fails++; console.log("     FAIL " + m); };
   for (const [w, h] of SIZES) {

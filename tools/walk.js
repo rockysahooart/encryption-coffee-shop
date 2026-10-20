@@ -1,10 +1,9 @@
 /* POST-DEPLOY WALKTHROUGH. The whole path, opening scene to Bob reading the
    message, against the exact bytes that were written to the project folder —
    verified identical by hash — at desktop width as well as phone width. */
-const { chromium } = require("playwright");
-const { reach } = require("./drive");
+const { reach, launch } = require("./drive");
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   let bad = 0;
   for (const [w, h] of [[393, 852], [1440, 900]]) {
     const p = await b.newPage({ viewport: { width: w, height: h } });

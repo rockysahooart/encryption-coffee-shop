@@ -2,7 +2,7 @@
    "Drastic zoom" is checked, not hoped for: when a character owns the beat,
    the character and their device together must occupy 50-70% of the stage
    height, and nothing unrelated may hold the focal area. */
-const { chromium } = require("playwright");
+const { launch } = require("./drive");
 const SUBJ = { a: ".flm-a", b: ".flm-b", eve: ".flm-net" };
 
 const probe = () => {
@@ -28,7 +28,7 @@ const probe = () => {
 };
 
 (async () => {
-  const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const b = await launch();
   let bad = 0;
   for (const [w, h] of [[393, 852], [1440, 900]]) {
     const p = await b.newPage({ viewport: { width: w, height: h } });
