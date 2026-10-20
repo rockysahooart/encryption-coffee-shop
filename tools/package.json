@@ -1,0 +1,20 @@
+{
+  "name": "encryption-coffee-shop-tools",
+  "private": true,
+  "description": "Headless validation harnesses for the explainer. Each script drives the built index.html in Chromium and asserts something about the running page.",
+  "scripts": {
+    "fit": "node fit.js",
+    "hands": "node hands.js",
+    "touch": "node touch.js",
+    "walk": "node walk.js",
+    "validate": "node validate44.js",
+    "story": "node silent3.js",
+    "locked": "node locked.js",
+    "paint": "node paint.js",
+    "crypto": "node real.js",
+    "a11y": "node a11y2.js",
+    "six": "node six.js",
+    "all": "for f in fit hands touch walk validate story locked paint crypto a11y six; do echo \"=== $f ===\"; npm run --silent $f || true; done"
+  },
+  "devDependencies": { "playwright": "^1.47.0" }
+}

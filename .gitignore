@@ -1,4 +1,13 @@
-
 # Cowork scratch output, not part of the site
 Claude outputs/
 .DS_Store
+
+# build intermediate: app.tsx compiles to this, then it is inlined into index.html
+src/app.js
+src/storyboard.html
+
+# harness dependencies
+tools/node_modules/
+
+# an empty nested clone left over from an earlier attempt; not part of the site
+encryption-coffee-explainer/
