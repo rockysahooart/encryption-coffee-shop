@@ -1,4 +1,4 @@
-/* THE DEPLOYMENT SMOKE SUITE. Runs the five harnesses that together cover
+/* THE DEPLOYMENT SMOKE SUITE. Runs the six harnesses that together cover
    every beat, every gate, both pointer types, both viewports, console errors
    and Bob reading the message back, in parallel, and compares what they
    report against baseline.json.
@@ -17,11 +17,12 @@ const { spawn, execSync } = require("child_process");
 const fs = require("fs"), path = require("path");
 
 const HARNESSES = [
-  ["hands",      "five gates by mouse, all 22 beats in order, Bob reads the typed message"],
-  ["touch",      "five gates by touch, all 22 beats in order, Bob reads the typed message"],
+  ["hands",      "five gates by mouse, all 25 beats in order, Bob reads the typed message"],
+  ["touch",      "five gates by touch, all 25 beats in order, Bob reads the typed message"],
   ["walk",       "happy path at 393 and 1440, no console errors"],
   ["fit",        "every beat at 1440, 1024, 393, 360 and 320: nothing overflows or overlaps"],
   ["validate44", "every beat at 393 and 1440: the nine frame tests, containment, character scales"],
+  ["labels",     "every frame shows its storyboard label (0a–10c), and the label touches nothing"],
 ];
 const BASE = JSON.parse(fs.readFileSync(path.join(__dirname, "baseline.json"), "utf8")).known;
 const OUT = path.join(__dirname, ".smoke");

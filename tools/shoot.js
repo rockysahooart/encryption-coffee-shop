@@ -12,7 +12,7 @@ const fs = require("fs"), path = require("path");
 
 const beats = process.argv.slice(2).length ? process.argv.slice(2) : KEYS;
 const widths = (process.env.WIDTHS || "393x852,1440x900").split(",").map((s) => s.split("x").map(Number));
-const settle = (k) => /exchange|journey/.test(k) ? 7600 : /mixAout|mixB|combAout|combB|protect/.test(k) ? 7000 : 2400;
+const settle = (k) => /exchange|journey|pubvals/.test(k) ? 7600 : /mixAout|mixB|combAout|combB|protect/.test(k) ? 7000 : 2400;
 
 (async () => {
   for (const k of beats) if (!KEYS.includes(k)) throw new Error(`"${k}" is not a beat; see KEYS in drive.js`);

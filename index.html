@@ -5938,6 +5938,130 @@ details.read summary:hover{color:var(--ink-2)}
 .flm.xchg .flm-vault > .tk::after{left:4%;right:4%}
 .flm.xchg .flm-ph-scr *{max-width:100%;min-width:0}
 .flm.xchg .flm-vault{width:100%}
+
+/* ============================================================================
+   PASS 48 — the storyboard is the specification
+   Figma: "Encryption Coffee Shop — iPhone Interactive Storyboard". Frame labels
+   (1a, 4c, …) are shared with the review marker below; the table is in
+   CLAUDE.md. Composition changes are scoped to a module at least 560px wide;
+   the narrow layout keeps its measured sizes.
+   ========================================================================= */
+
+/* 0. THE REVIEW LABEL. A marker for talking about frames, not part of the
+      lesson: in the module's corner padding, out of the layout, inert. */
+.ref-label{
+  position:absolute;top:2px;left:8px;z-index:60;margin:0;padding:0;
+  font-family:var(--mono,ui-monospace,monospace);font-size:10px;line-height:10px;
+  font-weight:500;letter-spacing:.06em;color:rgba(231,239,233,.66);
+  pointer-events:none;user-select:none;white-space:nowrap;
+  background:none;border:0;box-shadow:none;animation:none;transition:none;
+}
+
+/* 1. SYMBOLS ON THE SAME PLATES (6b, 7a): d stays, Q travels, Z is made */
+.tk-sym{fill:var(--ink);font-family:var(--mono,ui-monospace,monospace);
+  font-size:11px;font-weight:500;letter-spacing:.02em}
+.flm.sym .tk-box{filter:none}
+
+/* 2. THE RESET (6a): each colour becomes the symbol it stood for, between
+      the two phones, which step back */
+.flm.bridging .flm-slot :is(.flm-ph,.cin-face,.cin-who){opacity:.36;transition:opacity .6s var(--ease)}
+.flm-xmap{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:8;
+  display:grid;gap:14px;pointer-events:none}
+.flm-xmap-r{display:grid;grid-template-columns:auto auto auto minmax(0,1fr);
+  align-items:center;gap:12px;animation:xmapIn 700ms var(--ease) both}
+@keyframes xmapIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.flm-xmap-c{display:block;width:min(56px,9cqw);height:min(34px,5.5cqw);border-radius:var(--r-s);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}
+.flm-xmap-a{color:var(--ink-3);font-weight:400}
+.flm-xmap-s{min-width:min(46px,8cqw);height:min(34px,5.5cqw);display:grid;place-items:center;
+  border-radius:var(--r-s);background:#1d2629;box-shadow:inset 0 0 0 1px var(--line-2);
+  font-family:var(--mono,ui-monospace,monospace);font-size:min(18px,3.6cqw);color:var(--ink)}
+.flm-xmap-t{font-size:min(13px,3.4cqw);color:var(--ink-2);white-space:nowrap}
+
+/* 3. THE EXCHANGE (4b–4d, 6b): two lanes through the centre, the copies
+      rise out of the crossing into Eve's hands, the originals keep going */
+.flm.xchg .flm-stage{grid-template-rows:minmax(0,1fr) 36%}
+.flm.j-both .flm-lane [data-obj="qa"]{top:27%}
+.flm.j-both .flm-lane [data-obj="qb"]{top:75%}
+.flm.xchg .flm-lane .flm-obj{width:min(20cqh,30cqw)}
+.flm.xchg .flm-lane .tk-l{display:none}
+.flm.j-both .flm-net [data-obj="qa2"],
+.flm.j-both .flm-net [data-obj="qb2"]{animation:copyRise 900ms var(--ease) 3100ms both}
+@keyframes copyRise{
+  0%{opacity:0;transform:translateY(44cqh) scale(.96)}
+  25%{opacity:.85}
+  100%{opacity:1;transform:none}
+}
+.flm.xchg .flm-eve .flm-obj{width:min(14cqh,15cqw)}
+.flm.xchg .flm-ph-scr .flm-focal > .flm-obj:not(.is-lead){width:86%}
+/* an object that flew in from a different size leaves Chrome holding a stale
+   overflow box after its transform ends; the glass already clips at this
+   edge, so paint containment says the same thing without the stale scroll */
+.flm.xchg .flm-ph-scr .flm-focal{contain:paint}
+@media (prefers-reduced-motion:reduce){
+  .flm.j-both .flm-net [data-obj="qa2"],.flm.j-both .flm-net [data-obj="qb2"]{animation:none}
+}
+
+/* 4. EVE IN THE REVEAL (5d): dimmed, holding the two copies she took —
+      where the module is wide enough for a third column (see below) */
+.flm.eve-in .flm-net .flm-peek{display:none}
+
+@container (min-width:560px){
+  .flm.cam-both.eve-in .flm-stage{grid-template-columns:minmax(0,1fr) minmax(0,.62fr) minmax(0,1fr)}
+  .flm.cam-both.eve-in .flm-net{display:grid}
+  .flm.eve-in .flm-net.off{opacity:.6;filter:none}
+
+  /* 5. THREE SCALES, ALL OF THEM LARGER. A character is a participant, not a
+        badge: close-up > comparison > network-wide, still exactly three.
+        Width only: the stage's width is the same in every frame, its height
+        is not (the dialogue under it varies), and a height term drifts. */
+  /* capped so the shortest close-up stage (protect, with its two-line
+     formula, at 1024x800) still holds the figure */
+  .flm.cam-a:not(.cast),.flm.cam-b:not(.cast){--face:min(40cqw,340px)}
+  .flm.cam-wide,.flm.journey,.flm.cast{--face:25cqw}
+  .flm.cam-both,.flm.chain{--face:32cqw}
+
+  /* 6. WIDE SHOTS: the figure stands behind and outside its phone, cropped
+        by the stage; the phone stays in front and readable */
+  .flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b),
+  .flm.cam-both .flm-slot.on:is(.flm-a,.flm-b){
+    display:grid;grid-template:minmax(0,1fr) / minmax(0,1fr);align-items:end;
+    justify-items:center;width:100%;height:100%;position:relative;
+  }
+  .flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b) > *,
+  .flm.cam-both .flm-slot.on:is(.flm-a,.flm-b) > *{grid-area:1 / 1}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-a .cin-face{justify-self:start;margin:0 0 -3% 0;z-index:0}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-b .cin-face{justify-self:end;margin:0 0 -3% 0;z-index:0}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-a .flm-ph{justify-self:end;align-self:center;width:auto;z-index:1}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-b .flm-ph{justify-self:start;align-self:center;width:auto;z-index:1}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-slot:is(.flm-a,.flm-b) .cin-who{
+    align-self:start;justify-self:center;z-index:2}
+  .flm:is(.cam-wide,.journey) .flm-stage{
+    grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,1fr)}
+  .flm.xchg .flm-slot:not(.flm-net) .flm-ph-body,
+  .flm.journey .flm-slot:not(.flm-net) .flm-ph-body{--ph-h:44cqh}
+  .flm.wide-open .flm-slot.on .flm-ph-body{--ph-h:30cqh}
+
+  /* Eve, centre: the figure at the top of her column, what she holds over
+     her hands, in front */
+  .flm:is(.cam-wide,.journey) .flm-net,
+  .flm.cam-both.eve-in .flm-net{display:grid;grid-template:minmax(0,1fr) / minmax(0,1fr);
+    justify-items:center;align-items:start;width:100%;height:100%}
+  .flm:is(.cam-wide,.journey) .flm-net > *,
+  .flm.cam-both.eve-in .flm-net > *{grid-area:1 / 1}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-net .cin-face{align-self:start;z-index:0}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-net .cin-who{align-self:start;z-index:3;margin-top:2px}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-net .flm-eve{align-self:start;z-index:2;
+    margin-top:calc(var(--face) * .887 * .6)}
+  .flm:is(.cam-wide,.journey) .flm-net .flm-peek{align-self:end;z-index:3}
+  /* in a two-shot each phone stands in its owner's half, in front of them */
+  .flm.cam-both .flm-slot.on:is(.flm-a,.flm-b) .flm-ph{justify-self:center}
+  /* her copies need no caption: same shape, same colour, broken edge */
+  .flm:is(.xchg,.eve-in) .flm-net .flm-hold .tk-l{display:none}
+  /* her two copies side by side, in her hands */
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-net .flm-hold{
+    flex-direction:row;justify-content:center;align-items:flex-start;gap:10px}
+}
 </style>
 </head>
 <body>
@@ -6478,6 +6602,18 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       threeWays: { s: "The same traffic crossed the same network." },
       close: { s: "ECDH gave them the same key. AES-GCM protected the message." }
     };
+    const CAFE_REF = /* @__PURE__ */ new Map([
+      [NOTE.wifi, "0a"],
+      [NOTE.pairWant, "0a"],
+      [NOTE.eveHere, "0b"],
+      [NOTE.eveWatch, "0b"],
+      [NOTE.eveBoth, "0b"],
+      [NOTE.oneNetwork, "0b"],
+      [NOTE.plainDemo, "0c"],
+      [NOTE.plainSeen, "0d"],
+      [NOTE.howPrivate, "0d"],
+      [NOTE.pushAlice, "1a"]
+    ]);
     const SAY = {
       router: "Everyone on this Wi-Fi can read what crosses it. That is normal, and it is the problem.",
       eveHere: "Eve is on the same network. He can see the starting value \u2014 it was never secret.",
@@ -7667,11 +7803,12 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     const ARCNAME = { secret: "Make the secret", key: "Make the key", send: "Send the message" };
     const FILM = [
       /* -- 1. the problem ------------------------------------------------- */
+      /* storyboard 1a: a true close-up. The onlookers were the café's job;
+         here the viewer becomes Alice, at the close-up scale */
       {
         k: "problem",
         cam: "a",
         arc: "secret",
-        cast: true,
         at: { msg: "a" },
         lead: "msg",
         from: { msg: "seed" },
@@ -7758,7 +7895,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         keep: "pa",
         fuse: true,
         wait: 6600,
-        math: "Q_A = d_A G",
+        /* no formula over the paint: Q_A arrives with its picture in 6b */
         say: "The two make a third colour",
         sub: "Yours stays in its slot. The mixture is the part you can share."
       },
@@ -7774,7 +7911,6 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         keep: "pb",
         fuse: true,
         wait: 6400,
-        math: "Q_B = d_B G",
         say: "Bob does the same with his",
         sub: ""
       },
@@ -7811,9 +7947,24 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         from: { qa2: ["qa"], qb2: ["qb"] },
         born: "qa2",
         peek: true,
-        wait: 9200,
+        wait: 7200,
         say: "You swap mixtures. Eve copies both.",
         sub: "Eve can see the mixed colours, but not the original private colours."
+      },
+      /* storyboard 4e: the census. Each mixture finishes its trip INTO the
+         other phone, so the frame says, without words, who now holds what:
+         own colour + the other's mixture on each phone, two copies with Eve */
+      {
+        k: "xland",
+        cam: "wide",
+        arc: "secret",
+        xchg: true,
+        at: { pa: "a", qb: "a", pb: "b", qa: "b", qa2: "eve", qb2: "eve" },
+        lead: "qa",
+        moved: "qa",
+        wait: 4200,
+        say: "Now each of you has the other\u2019s mixture",
+        sub: "Eve has copies of both. Neither private colour ever left."
       },
       /* -- 12-14. both sides combine; the results form covered ----------- */
       {
@@ -7850,7 +8001,6 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         lead: "sb",
         from: { sb: ["qa", "pb"] },
         born: "sb",
-        arrive: "qa",
         masked: true,
         fuse: true,
         wait: 6600,
@@ -7858,19 +8008,20 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         sub: ""
       },
       /* -- 15. the payoff: both uncover at once, and the wire is empty ---- */
+      /* storyboard 5d: revealed together, with Eve in the shot holding the two
+         copies she took — the proof that what she has is not enough */
       {
         k: "reveal",
         cam: "both",
         arc: "secret",
-        at: { sa: "a", sb: "b" },
+        at: { sa: "a", sb: "b", qa2: "eve", qb2: "eve" },
         lead: "sa",
         rev: true,
         payoff: true,
         converge: true,
         bare: true,
-        eveShort: true,
+        eveIn: true,
         wait: 6e3,
-        math: "Z = d_A Q_B = d_B Q_A",
         say: "Same colour. Never sent.",
         sub: "Eve has both mixtures and still cannot make this one."
       },
@@ -7885,9 +8036,43 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         bare: true,
         converge: true,
         toMath: true,
-        wait: 5200,
+        bridge: true,
+        wait: 6200,
         say: "Computers do this with numbers instead of paint",
-        sub: "Same idea: a value both sides can work out and nobody else can."
+        sub: "Every colour you used has an exact number behind it."
+      },
+      /* storyboard 6b: the same exchange, once, in the real vocabulary and on
+         the same stage — the private numbers stay in their slots, the two
+         public values cross, Eve copies the public values */
+      {
+        k: "pubvals",
+        cam: "wide",
+        arc: "key",
+        xchg: true,
+        sym: true,
+        at: { pa: "a", pb: "b", qa: "lane", qb: "lane", qa2: "eve", qb2: "eve" },
+        lead: "qa",
+        journey: "both",
+        wait: 7400,
+        math: "Q_A = d_A G   \xB7   Q_B = d_B G",
+        say: "Each private number makes a public value",
+        sub: "Only the public values cross. Eve copies those."
+      },
+      /* storyboard 7a: each phone combines its own private number with the
+         other side's public value, and both arrive at the same Z */
+      {
+        k: "zsec",
+        cam: "both",
+        arc: "key",
+        sym: true,
+        at: { pa: "a", sa: "a", pb: "b", sb: "b" },
+        lead: "sa",
+        rev: true,
+        bare: true,
+        wait: 6e3,
+        math: "Z = d_A Q_B = d_B Q_A",
+        say: "Both phones reach the same Z",
+        sub: "Z never crossed the network."
       },
       /* -- 17-18. the key, derived locally, identical on both ------------- */
       /* "each phone derives a key" and "both phones have the same key" were
@@ -7942,11 +8127,14 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         sub: "Nothing readable leaves the phone."
       },
       /* -- 21. it crosses; Eve gets a copy and cannot open it ------------ */
+      /* storyboard 9a: both keys stay in their phones while the packet crosses,
+         so what Eve lacks is visible, not stated */
       {
         k: "journey",
         cam: "wide",
         arc: "send",
-        at: { pkt: "lane", pkt2: "eve" },
+        xchg: true,
+        at: { ka: "a", kb: "b", pkt: "lane", pkt2: "eve" },
         lead: "pkt",
         journey: "pkt",
         from: { pkt2: ["pkt"] },
@@ -8003,6 +8191,38 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     const FKEY = FILM.map((f) => f.k);
     const FAT = (k) => FILM[FKEY.indexOf(k)] || FILM[0];
     const GATES = FILM.filter((f) => f.act).map((f) => f.k);
+    const REF = {
+      you: "1a",
+      problem: "1a",
+      base: "1b",
+      pickA: "2a",
+      mine: "2b",
+      pickB: "2c",
+      mixA: "3a",
+      mixAout: "3b",
+      mixB: "3d",
+      sendA: "4a",
+      exchange: "4b",
+      xland: "4e",
+      combA: "5a",
+      combAout: "5b",
+      combB: "5c",
+      reveal: "5d",
+      asmath: "6a",
+      pubvals: "6b",
+      zsec: "7a",
+      tokey: "7b",
+      type: "8a",
+      protect: "8b",
+      journey: "9a",
+      arrive: "10a",
+      open: "10b",
+      chain: "10c"
+    };
+    const REF_SUB = {
+      mixAout: [[3400, "3c"]],
+      exchange: [[2600, "4c"], [3900, "4d"]]
+    };
     const CONSUMED = { base: ["qa", "qb"], msg: ["pkt"], sa: ["ka"], sb: ["kb"], pkt: ["plain"] };
     const SIDE_OF = {
       pa: "a",
@@ -8098,7 +8318,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       return "#" + sum.map((x) => Math.round(x / n).toString(16).padStart(2, "0").toUpperCase()).join("");
     };
     const SWATCHES = ["#3276E8", "#E8734A", "#22C98A", "#B968E8", "#E0457B", "#3AC7E8"];
-    const Tok = ({ role, hex, label, note, masked, state, bytes, dock, digits }) => {
+    const Tok = ({ role, hex, label, note, masked, state, bytes, dock, digits, sym }) => {
       const c = masked ? "none" : hex || "#3a4449";
       const S = {
         className: "tk-art",
@@ -8138,9 +8358,9 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
              closed edge + a rail under it   it stays where it is
              edge broken at both sides       it leaves, and comes back
              doubled edge                    it was made from two things     */
-        private: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "6", y: "10", width: "48", height: "26", rx: "4", fill: "none" }), /* @__PURE__ */ React.createElement("rect", { className: "tk-rail", x: "11", y: "39", width: "38", height: "2", rx: "1" })),
-        public: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M6 20 V14 a4 4 0 0 1 4 -4 H50 a4 4 0 0 1 4 4 V20", fill: "none" }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M54 26 V32 a4 4 0 0 1 -4 4 H10 a4 4 0 0 1 -4 -4 V26", fill: "none" }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M1.6 23 H5 M55 23 H58.4", fill: "none" })),
-        secret: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "6", y: "10", width: "48", height: "26", rx: "4", fill: "none" }), !digits && /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "3", y: "7", width: "54", height: "32", rx: "6.5", fill: "none", opacity: ".55" }), digits && /* @__PURE__ */ React.createElement(
+        private: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "6", y: "10", width: "48", height: "26", rx: "4", fill: "none" }), /* @__PURE__ */ React.createElement("rect", { className: "tk-rail", x: "11", y: "39", width: "38", height: "2", rx: "1" }), sym && /* @__PURE__ */ React.createElement("text", { className: "tk-sym", x: "30", y: "27.6", textAnchor: "middle" }, sym)),
+        public: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M6 20 V14 a4 4 0 0 1 4 -4 H50 a4 4 0 0 1 4 4 V20", fill: "none" }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M54 26 V32 a4 4 0 0 1 -4 4 H10 a4 4 0 0 1 -4 -4 V26", fill: "none" }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M1.6 23 H5 M55 23 H58.4", fill: "none" }), sym && /* @__PURE__ */ React.createElement("text", { className: "tk-sym", x: "30", y: "27.6", textAnchor: "middle" }, sym)),
+        secret: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "6", y: "10", width: "48", height: "26", rx: "4", fill: "none" }), !digits && !sym && /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "3", y: "7", width: "54", height: "32", rx: "6.5", fill: "none", opacity: ".55" }), digits && /* @__PURE__ */ React.createElement(
           "text",
           {
             className: "tk-dg",
@@ -8151,7 +8371,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             lengthAdjust: "spacingAndGlyphs"
           },
           digits
-        ), masked && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("rect", { className: "tk-cover", x: "6", y: "10", width: "48", height: "26", rx: "4" }), /* @__PURE__ */ React.createElement("text", { className: "tk-q", x: "30", y: "27", textAnchor: "middle" }, "?"))),
+        ), sym && /* @__PURE__ */ React.createElement("text", { className: "tk-sym", x: "30", y: "27.6", textAnchor: "middle" }, sym), masked && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("rect", { className: "tk-cover", x: "6", y: "10", width: "48", height: "26", rx: "4" }), /* @__PURE__ */ React.createElement("text", { className: "tk-q", x: "30", y: "27", textAnchor: "middle" }, "?"))),
         /* The key was a keyhole cut out of the plate — a quieter drawing than
            the cartoon key it replaced, but still a picture of a lock in a
            system where nothing else is a picture of anything. It is the same
@@ -8384,6 +8604,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       const cbytes = [];
       if (pack) for (let i = 0; i + 2 < pack.C.length && cbytes.length < 6; i += 3)
         cbytes.push(RGB(pack.C, i));
+      const N = F.sym ? "#1d2629" : null;
       const CAST = {
         base: (d) => /* @__PURE__ */ React.createElement(
           Tok,
@@ -8395,7 +8616,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        pa: (d) => /* @__PURE__ */ React.createElement(
+        pa: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "private", hex: N, sym: "d_A", dock: d, label: "your private number" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "private",
@@ -8406,7 +8627,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        pb: (d) => /* @__PURE__ */ React.createElement(
+        pb: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "private", hex: N, sym: "d_B", dock: d, label: "Bob\u2019s private number" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "private",
@@ -8416,7 +8637,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        qa: (d) => /* @__PURE__ */ React.createElement(
+        qa: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N, sym: "Q_A", dock: d, label: "your public value" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "public",
@@ -8426,7 +8647,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        qb: (d) => /* @__PURE__ */ React.createElement(
+        qb: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N, sym: "Q_B", dock: d, label: "Bob\u2019s public value" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "public",
@@ -8436,14 +8657,14 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        qa2: (d) => /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: qaC, dock: d, label: "Alice\u2019s mixture, copied" }),
-        qb2: (d) => /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: qbC, dock: d, label: "Bob\u2019s mixture, copied" }),
+        qa2: (d) => /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N || qaC, sym: N ? "Q_A" : null, dock: d, label: N ? "Q_A, copied" : "Alice\u2019s mixture, copied" }),
+        qb2: (d) => /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N || qbC, sym: N ? "Q_B" : null, dock: d, label: N ? "Q_B, copied" : "Bob\u2019s mixture, copied" }),
         /* AT THE MORPH THE PLATE STOPS BEING PAINT. It keeps its place, its
            size and its position — the same object — while the colour drains
            out of it and the number the browser actually computed appears on
            its face. That is the whole transition, in one object, with no
            mapping legend and no second diagram. */
-        sa: (d) => /* @__PURE__ */ React.createElement(
+        sa: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: N, sym: "Z", dock: d, label: "the shared secret" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "secret",
@@ -8455,7 +8676,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        sb: (d) => /* @__PURE__ */ React.createElement(
+        sb: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: N, sym: "Z", dock: d, label: "the same Z" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "secret",
@@ -8608,7 +8829,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       return /* @__PURE__ */ React.createElement(
         "div",
         {
-          className: "flm cam-" + F.cam + " f-" + F.k + (gate ? " turn" : "") + (tampered ? " tampered" : "") + (F.act === "pick" || F.act === "type" ? " solo" : "") + (F.journey ? " journey j-" + F.journey : "") + (F.morph ? " morphing" : "") + (F.gcm ? " gcm" : "") + (F.verify ? " verifying" : "") + (F.payoff ? " payoff" : "") + (F.converge ? " converge" : "") + (F.eveShort ? " eve-short" : "") + (F.chain ? " chain" : "") + (F.arrive ? " arriving" : "") + (F.back ? " back" : "") + (F.watched ? " watched" : "") + (F.claim ? " claiming" : "") + (F.empty ? " empty-" + F.empty : "") + (F.fuse ? " fusing" : "") + (F.toMath ? " toMath" : "") + (F.open ? " wide-open" : "") + (WORK.has(F.k) ? " working" : "") + (F.cast ? " cast" : "") + (F.xchg ? " xchg" : ""),
+          className: "flm cam-" + F.cam + " f-" + F.k + (gate ? " turn" : "") + (tampered ? " tampered" : "") + (F.act === "pick" || F.act === "type" ? " solo" : "") + (F.journey ? " journey j-" + F.journey : "") + (F.morph ? " morphing" : "") + (F.gcm ? " gcm" : "") + (F.verify ? " verifying" : "") + (F.payoff ? " payoff" : "") + (F.converge ? " converge" : "") + (F.eveShort ? " eve-short" : "") + (F.chain ? " chain" : "") + (F.arrive ? " arriving" : "") + (F.back ? " back" : "") + (F.watched ? " watched" : "") + (F.claim ? " claiming" : "") + (F.empty ? " empty-" + F.empty : "") + (F.fuse ? " fusing" : "") + (F.toMath ? " toMath" : "") + (F.open ? " wide-open" : "") + (WORK.has(F.k) ? " working" : "") + (F.cast ? " cast" : "") + (F.xchg ? " xchg" : "") + (F.eveIn ? " eve-in" : "") + (F.bridge ? " bridging" : "") + (F.sym ? " sym" : ""),
           "data-frame": F.k,
           "data-act": F.act || "",
           "data-arc": F.arc || ""
@@ -8679,7 +8900,12 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           },
           /* @__PURE__ */ React.createElement("span", { className: "flm-lane-track", "aria-hidden": "true" }),
           /* @__PURE__ */ React.createElement("div", { className: "flm-focal" }, bin.lane)
-        )),
+        ), F.bridge && /* @__PURE__ */ React.createElement("div", { className: "flm-xmap" }, [
+          [base, "G", "the public starting point"],
+          [mine, "d", "a private number, one each"],
+          [qaC, "Q", "a public value: Q = d\xB7G"],
+          [sharedC, "Z", "the shared secret"]
+        ].map(([c, sym, t], i) => /* @__PURE__ */ React.createElement("div", { className: "flm-xmap-r", key: sym, style: { animationDelay: 400 + i * 650 + "ms" } }, /* @__PURE__ */ React.createElement("i", { className: "flm-xmap-c", style: { background: c } }), /* @__PURE__ */ React.createElement("b", { className: "flm-xmap-a", "aria-hidden": "true" }, "\u2192"), /* @__PURE__ */ React.createElement("span", { className: "flm-xmap-s" }, sym), /* @__PURE__ */ React.createElement("span", { className: "flm-xmap-t" }, t))))),
         gate && (F.drag || F.point) && /* @__PURE__ */ React.createElement(
           Lead,
           {
@@ -9085,6 +9311,13 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       const [ebeat, setEbeat] = useState("setup");
       const [bridge, setBridge] = useState(null);
       const [cbeat, setCbeat] = useState("you");
+      const [refSub, setRefSub] = useState(null);
+      useEffect(() => {
+        setRefSub(null);
+        const ts = (REF_SUB[cbeat] || []).map(([ms, l]) => setTimeout(() => setRefSub(l), ms));
+        return () => ts.forEach(clearTimeout);
+      }, [cbeat]);
+      const refLabel = refSub || REF[cbeat] || null;
       const [pick, setPick] = useState(null);
       const [opened, setOpened] = useState(null);
       const [peeking, setPeeking] = useState(false);
@@ -9371,6 +9604,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           /* motion is divided by the same rate the dwells are, so a flight can    never still be in the air when the next beat begins */
           style: { "--rate": rate }
         },
+        refLabel && /* @__PURE__ */ React.createElement("span", { className: "ref-label", "aria-hidden": "true", "data-ref": refLabel }, refLabel),
         /* The two turning points, each said once and then gone. The first is
         why the agreement is about to happen; the second is that it did, and
         that the message is still here. Without these the two halves are two
@@ -10287,6 +10521,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           className: "stage" + (frameOn ? " frozen" : "") + (frameOn && frame && frame.soft ? " soft" : "") + (inspecting ? " inspect" : ""),
           style: { ["--ar"]: String(L.w / L.h) }
         },
+        /* the café's review label; once the film is open it carries its own */
+        !inspecting && CAFE_REF.get(note) && /* @__PURE__ */ React.createElement("span", { className: "ref-label", "aria-hidden": "true", "data-ref": CAFE_REF.get(note) }, CAFE_REF.get(note)),
         /* @__PURE__ */ React.createElement("div", { className: "screen" }, /* @__PURE__ */ React.createElement("svg", { ref: svgRef, viewBox: `0 0 ${L.w} ${L.h}`, role: "img", "aria-label": note.s }, /* @__PURE__ */ React.createElement("defs", null, ["you", "fr", "key", "danger"].map((t2) => /* @__PURE__ */ React.createElement(
           "marker",
           {

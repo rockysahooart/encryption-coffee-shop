@@ -233,6 +233,14 @@
       threeWays: { s: "The same traffic crossed the same network." },
       close: { s: "ECDH gave them the same key. AES-GCM protected the message." }
     };
+    /* the café act's states, by the line it is showing (see REF below) */
+    const CAFE_REF = new Map([
+      [NOTE.wifi, "0a"], [NOTE.pairWant, "0a"],
+      [NOTE.eveHere, "0b"], [NOTE.eveWatch, "0b"], [NOTE.eveBoth, "0b"], [NOTE.oneNetwork, "0b"],
+      [NOTE.plainDemo, "0c"],
+      [NOTE.plainSeen, "0d"], [NOTE.howPrivate, "0d"],
+      [NOTE.pushAlice, "1a"]
+    ]);
     const SAY = {
       router: "Everyone on this Wi-Fi can read what crosses it. That is normal, and it is the problem.",
       eveHere: "Eve is on the same network. He can see the starting value \u2014 it was never secret.",
@@ -1418,7 +1426,9 @@
     const ARCNAME = { secret: "Make the secret", key: "Make the key", send: "Send the message" };
     const FILM = [
       /* -- 1. the problem ------------------------------------------------- */
-      { k: "problem", cam: "a", arc: "secret", cast: true, at: { msg: "a" }, lead: "msg",
+      /* storyboard 1a: a true close-up. The onlookers were the café's job;
+         here the viewer becomes Alice, at the close-up scale */
+      { k: "problem", cam: "a", arc: "secret", at: { msg: "a" }, lead: "msg",
         from: { msg: "seed" }, born: "msg", watched: true, wait: 4600,
         say: "You want to send Bob something only he can read",
         sub: "Eve sees everything that crosses this café's Wi‑Fi." },
@@ -1450,7 +1460,7 @@
       { k: "mixAout", cam: "a", arc: "secret", at: { base: "a", qa: "a", pa: "a" },
         lead: "qa", from: { qa: ["base", "pa"] }, born: "qa", keep: "pa",
         fuse: true, wait: 6600,
-        math: "Q_A = d_A G",
+        /* no formula over the paint: Q_A arrives with its picture in 6b */
         say: "The two make a third colour",
         sub: "Yours stays in its slot. The mixture is the part you can share." },
 
@@ -1458,7 +1468,6 @@
       { k: "mixB", cam: "b", arc: "secret", at: { base: "b", qb: "b", pb: "b" },
         lead: "qb", from: { qb: ["base", "pb"] }, born: "qb", keep: "pb",
         fuse: true, wait: 6400,
-        math: "Q_B = d_B G",
         say: "Bob does the same with his", sub: "" },
 
       /* -- 9-11. the exchange, with Eve taking a copy of each ------------- */
@@ -1476,9 +1485,17 @@
       { k: "exchange", cam: "wide", arc: "secret", xchg: true,
         at: { pa: "a", pb: "b", qa: "lane", qb: "lane", qa2: "eve", qb2: "eve" },
         lead: "qa", journey: "both", from: { qa2: ["qa"], qb2: ["qb"] },
-        born: "qa2", peek: true, wait: 9200,
+        born: "qa2", peek: true, wait: 7200,
         say: "You swap mixtures. Eve copies both.",
         sub: "Eve can see the mixed colours, but not the original private colours." },
+      /* storyboard 4e: the census. Each mixture finishes its trip INTO the
+         other phone, so the frame says, without words, who now holds what:
+         own colour + the other's mixture on each phone, two copies with Eve */
+      { k: "xland", cam: "wide", arc: "secret", xchg: true,
+        at: { pa: "a", qb: "a", pb: "b", qa: "b", qa2: "eve", qb2: "eve" },
+        lead: "qa", moved: "qa", wait: 4200,
+        say: "Now each of you has the other’s mixture",
+        sub: "Eve has copies of both. Neither private colour ever left." },
 
       /* -- 12-14. both sides combine; the results form covered ----------- */
       { k: "combA", cam: "a", arc: "secret", at: { qb: "a", pa: "a" }, lead: "qb",
@@ -1488,22 +1505,41 @@
         from: { sa: ["qb", "pa"] }, born: "sa", masked: true, fuse: true, wait: 6400,
         say: "That makes your result", sub: "Covered until Bob has his." },
       { k: "combB", cam: "b", arc: "secret", at: { qa: "b", sb: "b", pb: "b" }, lead: "sb",
-        from: { sb: ["qa", "pb"] }, born: "sb", arrive: "qa", masked: true,
+        from: { sb: ["qa", "pb"] }, born: "sb", masked: true,
         fuse: true, wait: 6600,
         say: "Bob does the same with yours", sub: "" },
 
       /* -- 15. the payoff: both uncover at once, and the wire is empty ---- */
-      { k: "reveal", cam: "both", arc: "secret", at: { sa: "a", sb: "b" }, lead: "sa",
-        rev: true, payoff: true, converge: true, bare: true, eveShort: true, wait: 6000,
-        math: "Z = d_A Q_B = d_B Q_A",
+      /* storyboard 5d: revealed together, with Eve in the shot holding the two
+         copies she took — the proof that what she has is not enough */
+      { k: "reveal", cam: "both", arc: "secret", at: { sa: "a", sb: "b", qa2: "eve", qb2: "eve" },
+        lead: "sa", rev: true, payoff: true, converge: true, bare: true, eveIn: true, wait: 6000,
         say: "Same colour. Never sent.",
         sub: "Eve has both mixtures and still cannot make this one." },
 
       /* -- 16. one transition out of the analogy, and only one ------------ */
       { k: "asmath", cam: "both", arc: "key", at: { sa: "a", sb: "b" }, lead: "sa",
-        rev: true, bare: true, converge: true, toMath: true, wait: 5200,
+        rev: true, bare: true, converge: true, toMath: true, bridge: true, wait: 6200,
         say: "Computers do this with numbers instead of paint",
-        sub: "Same idea: a value both sides can work out and nobody else can." },
+        sub: "Every colour you used has an exact number behind it." },
+
+      /* storyboard 6b: the same exchange, once, in the real vocabulary and on
+         the same stage — the private numbers stay in their slots, the two
+         public values cross, Eve copies the public values */
+      { k: "pubvals", cam: "wide", arc: "key", xchg: true, sym: true,
+        at: { pa: "a", pb: "b", qa: "lane", qb: "lane", qa2: "eve", qb2: "eve" },
+        lead: "qa", journey: "both", wait: 7400,
+        math: "Q_A = d_A G   ·   Q_B = d_B G",
+        say: "Each private number makes a public value",
+        sub: "Only the public values cross. Eve copies those." },
+
+      /* storyboard 7a: each phone combines its own private number with the
+         other side's public value, and both arrive at the same Z */
+      { k: "zsec", cam: "both", arc: "key", sym: true, at: { pa: "a", sa: "a", pb: "b", sb: "b" },
+        lead: "sa", rev: true, bare: true, wait: 6000,
+        math: "Z = d_A Q_B = d_B Q_A",
+        say: "Both phones reach the same Z",
+        sub: "Z never crossed the network." },
 
       /* -- 17-18. the key, derived locally, identical on both ------------- */
       /* "each phone derives a key" and "both phones have the same key" were
@@ -1529,7 +1565,10 @@
         sub: "Nothing readable leaves the phone." },
 
       /* -- 21. it crosses; Eve gets a copy and cannot open it ------------ */
-      { k: "journey", cam: "wide", arc: "send", at: { pkt: "lane", pkt2: "eve" }, lead: "pkt",
+      /* storyboard 9a: both keys stay in their phones while the packet crosses,
+         so what Eve lacks is visible, not stated */
+      { k: "journey", cam: "wide", arc: "send", xchg: true,
+        at: { ka: "a", kb: "b", pkt: "lane", pkt2: "eve" }, lead: "pkt",
         journey: "pkt", from: { pkt2: ["pkt"] }, born: "pkt2", peek: true, noK: true,
         bare: true, wait: 7400,
         say: "Eve copies the packet too",
@@ -1551,6 +1590,34 @@
     const FKEY = FILM.map((f) => f.k);
     const FAT  = (k) => FILM[FKEY.indexOf(k)] || FILM[0];
     const GATES = FILM.filter((f) => f.act).map((f) => f.k);
+
+    /* ------------------------------------------- FRAME REFERENCE LABELS ----
+       A review marker, not part of the lesson: the label in the top-left of
+       the module names the storyboard frame being shown, so "4c" in a note
+       means the same picture here and in the Figma storyboard. Sections are
+       story chapters, letters are the visual states inside them, in order.
+       Internal beat ids are unchanged; this is the one place they are mapped.
+       The full table (label -> Figma frame -> beat/state) is in CLAUDE.md.
+
+       Two beats hold more than one storyboard state, so they are split by
+       time since the beat began, matched to their animations: the held blend
+       resolves at ~3.4s, and the two mixtures meet under Eve at ~3.1s. */
+    const REF = {
+      you: "1a", problem: "1a", base: "1b",
+      pickA: "2a", mine: "2b", pickB: "2c",
+      mixA: "3a", mixAout: "3b", mixB: "3d",
+      sendA: "4a", exchange: "4b", xland: "4e",
+      combA: "5a", combAout: "5b", combB: "5c", reveal: "5d",
+      asmath: "6a", pubvals: "6b",
+      zsec: "7a", tokey: "7b",
+      type: "8a", protect: "8b",
+      journey: "9a",
+      arrive: "10a", open: "10b", chain: "10c"
+    };
+    const REF_SUB = {
+      mixAout: [[3400, "3c"]],
+      exchange: [[2600, "4c"], [3900, "4d"]]
+    };
 
     /* ------------------------------------------------ WHO HOLDS WHAT ------
        Ownership is derived by walking the film once: a focal placement assigns
@@ -1687,7 +1754,7 @@
 
        Colour still carries the VALUE (the display mapping of real bytes);
        shape carries the ROLE. Neither is asked to do the other's work. */
-    const Tok = ({ role, hex, label, note, masked, state, bytes, dock, digits }) => {
+    const Tok = ({ role, hex, label, note, masked, state, bytes, dock, digits, sym }) => {
       const c = masked ? "none" : (hex || "#3a4449");
       const S = { className: "tk-art", viewBox: "0 0 60 44", width: "100%",
         preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" };
@@ -1727,6 +1794,7 @@
             <rect x="6" y="10" width="48" height="26" rx="4" fill={c} />
             <rect className="tk-ln" x="6" y="10" width="48" height="26" rx="4" fill="none" />
             <rect className="tk-rail" x="11" y="39" width="38" height="2" rx="1" />
+            {sym && <text className="tk-sym" x="30" y="27.6" textAnchor="middle">{sym}</text>}
           </svg>
         ),
         public: (
@@ -1735,15 +1803,17 @@
             <path className="tk-ln" d="M6 20 V14 a4 4 0 0 1 4 -4 H50 a4 4 0 0 1 4 4 V20" fill="none" />
             <path className="tk-ln" d="M54 26 V32 a4 4 0 0 1 -4 4 H10 a4 4 0 0 1 -4 -4 V26" fill="none" />
             <path className="tk-ln" d="M1.6 23 H5 M55 23 H58.4" fill="none" />
+            {sym && <text className="tk-sym" x="30" y="27.6" textAnchor="middle">{sym}</text>}
           </svg>
         ),
         secret: (
           <svg {...S}>
             <rect x="6" y="10" width="48" height="26" rx="4" fill={c} />
             <rect className="tk-ln" x="6" y="10" width="48" height="26" rx="4" fill="none" />
-            {!digits && <rect className="tk-ln" x="3" y="7" width="54" height="32" rx="6.5" fill="none" opacity=".55" />}
+            {!digits && !sym && <rect className="tk-ln" x="3" y="7" width="54" height="32" rx="6.5" fill="none" opacity=".55" />}
             {digits && <text className="tk-dg" x="30" y="26" textAnchor="middle"
               textLength="40" lengthAdjust="spacingAndGlyphs">{digits}</text>}
+            {sym && <text className="tk-sym" x="30" y="27.6" textAnchor="middle">{sym}</text>}
             {masked && <>
               <rect className="tk-cover" x="6" y="10" width="48" height="26" rx="4" />
               <text className="tk-q" x="30" y="27" textAnchor="middle">?</text>
@@ -2059,29 +2129,34 @@
         cbytes.push(RGB(pack.C, i));
 
       /* -------- the cast. role decides the shape, bytes decide the colour -- */
+      /* THE SAME OBJECTS, AS NUMBERS. On the beats after the paint is put
+         away (storyboard 6b, 7a) every analogy object keeps its id, its owner
+         and its place, and carries the symbol it stood for on a neutral plate
+         instead of a colour: d stays in the slot, Q travels, Z is made. */
+      const N = F.sym ? "#1d2629" : null;
       const CAST = {
         base: (d) => <Tok role="public" hex={base} dock={d} label="the public colour"
                        note="" />,
-        pa:   (d) => <Tok role="private" hex={pick ? mine : null} masked={!pick} dock={d}
+        pa:   (d) => N ? <Tok role="private" hex={N} sym="d_A" dock={d} label="your private number" /> : <Tok role="private" hex={pick ? mine : null} masked={!pick} dock={d}
                        label={pick ? "your private colour" : "your private colour — not chosen yet"}
                        note="" />,
-        pb:   (d) => <Tok role="private" hex={bprivC} dock={d} label="Bob’s private colour"
+        pb:   (d) => N ? <Tok role="private" hex={N} sym="d_B" dock={d} label="Bob’s private number" /> : <Tok role="private" hex={bprivC} dock={d} label="Bob’s private colour"
                        note="" />,
-        qa:   (d) => <Tok role="public" hex={qaC} dock={d} label="your mixture"
+        qa:   (d) => N ? <Tok role="public" hex={N} sym="Q_A" dock={d} label="your public value" /> : <Tok role="public" hex={qaC} dock={d} label="your mixture"
                        note="" />,
-        qb:   (d) => <Tok role="public" hex={qbC} dock={d} label="Bob’s mixture"
+        qb:   (d) => N ? <Tok role="public" hex={N} sym="Q_B" dock={d} label="Bob’s public value" /> : <Tok role="public" hex={qbC} dock={d} label="Bob’s mixture"
                        note="" />,
-        qa2:  (d) => <Tok role="public" hex={qaC} dock={d} label="Alice’s mixture, copied" />,
-        qb2:  (d) => <Tok role="public" hex={qbC} dock={d} label="Bob’s mixture, copied" />,
+        qa2:  (d) => <Tok role="public" hex={N || qaC} sym={N ? "Q_A" : null} dock={d} label={N ? "Q_A, copied" : "Alice’s mixture, copied"} />,
+        qb2:  (d) => <Tok role="public" hex={N || qbC} sym={N ? "Q_B" : null} dock={d} label={N ? "Q_B, copied" : "Bob’s mixture, copied"} />,
         /* AT THE MORPH THE PLATE STOPS BEING PAINT. It keeps its place, its
            size and its position — the same object — while the colour drains
            out of it and the number the browser actually computed appears on
            its face. That is the whole transition, in one object, with no
            mapping legend and no second diagram. */
-        sa:   (d) => <Tok role="secret" hex={sharedC} dock={d} masked={!F.rev && !d}
+        sa:   (d) => N ? <Tok role="secret" hex={N} sym="Z" dock={d} label="the shared secret" /> : <Tok role="secret" hex={sharedC} dock={d} masked={!F.rev && !d}
                        digits={F.toMath && s ? BYTES(s.Z, 3) : null}
                        label={F.toMath ? "the shared secret" : "the final colour"} note="" />,
-        sb:   (d) => <Tok role="secret" hex={sharedC} dock={d} masked={!F.rev && !d}
+        sb:   (d) => N ? <Tok role="secret" hex={N} sym="Z" dock={d} label="the same Z" /> : <Tok role="secret" hex={sharedC} dock={d} masked={!F.rev && !d}
                        digits={F.toMath && s ? BYTES(s.Z, 3) : null}
                        label={F.toMath ? "the same number" : "the final colour"} note="" />,
         ka:   (d) => <Tok role="key" hex={kC} dock={d} label="K · key material"
@@ -2235,7 +2310,8 @@
               + (F.empty ? " empty-" + F.empty : "") + (F.fuse ? " fusing" : "")
               + (F.toMath ? " toMath" : "") + (F.open ? " wide-open" : "")
               + (WORK.has(F.k) ? " working" : "") + (F.cast ? " cast" : "")
-              + (F.xchg ? " xchg" : "")}
+              + (F.xchg ? " xchg" : "") + (F.eveIn ? " eve-in" : "")
+              + (F.bridge ? " bridging" : "") + (F.sym ? " sym" : "")}
           data-frame={F.k} data-act={F.act || ""} data-arc={F.arc || ""}>
           {/* THE PHASE CUE. A viewer who lands on a frame cold needs to know
               which of the three questions the film is answering. It is one
@@ -2362,6 +2438,22 @@
               <span className="flm-lane-track" aria-hidden="true" />
               <div className="flm-focal">{bin.lane}</div>
             </div>
+            {/* STORYBOARD 6a — THE METAPHOR IS RESET. Each colour the viewer
+                used turns into the symbol it stood for, between the two dimmed
+                phones. Positioned over the stage, so nothing else moves. */}
+            {F.bridge && (
+              <div className="flm-xmap">
+                {[[base, "G", "the public starting point"], [mine, "d", "a private number, one each"],
+                  [qaC, "Q", "a public value: Q = d·G"], [sharedC, "Z", "the shared secret"]].map(([c, sym, t], i) => (
+                  <div className="flm-xmap-r" key={sym} style={{ animationDelay: (400 + i * 650) + "ms" }}>
+                    <i className="flm-xmap-c" style={{ background: c }} />
+                    <b className="flm-xmap-a" aria-hidden="true">→</b>
+                    <span className="flm-xmap-s">{sym}</span>
+                    <span className="flm-xmap-t">{t}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
 
@@ -2786,6 +2878,15 @@
          take in. `pickA` and `type` wait for the viewer; everything else
          plays on its own. */
       const [cbeat, setCbeat] = useState("you");
+      /* the review label for the frame on screen; a split beat advances it
+         on the same clock as its animation */
+      const [refSub, setRefSub] = useState(null);
+      useEffect(() => {
+        setRefSub(null);
+        const ts = (REF_SUB[cbeat] || []).map(([ms, l]) => setTimeout(() => setRefSub(l), ms));
+        return () => ts.forEach(clearTimeout);
+      }, [cbeat]);
+      const refLabel = refSub || REF[cbeat] || null;
       const [pick, setPick] = useState(null);
       const [opened, setOpened] = useState(null);
       const [peeking, setPeeking] = useState(false);
@@ -3115,7 +3216,7 @@
       const ct = shown ? BYTES(shown.C) : "";
       const F = FAT(cbeat);
       const line = null;   /* the film carries its own travelling rail */ const oldLine = algo === "ecdh" ? STEP[(mode === "live" ? "e_" : "n_") + ebeat] || null : stage !== "idle" ? STEP[stage] || null : mode === "net" ? text ? STEP.netTyping : STEP.netIdle : text ? STEP.typing : STEP.ready;
-      return /* @__PURE__ */ React.createElement("div", { className: "insp f-" + focus + (tall ? " tall" : "") + " side-" + side + " m-" + mode + " a-" + algo + (stage === "idle" ? " composing" : ""), /* motion is divided by the same rate the dwells are, so a flight can    never still be in the air when the next beat begins */ style: { "--rate": rate } }, /* The two turning points, each said once and then gone. The first is
+      return /* @__PURE__ */ React.createElement("div", { className: "insp f-" + focus + (tall ? " tall" : "") + " side-" + side + " m-" + mode + " a-" + algo + (stage === "idle" ? " composing" : ""), /* motion is divided by the same rate the dwells are, so a flight can    never still be in the air when the next beat begins */ style: { "--rate": rate } }, refLabel && /* @__PURE__ */ React.createElement("span", { className: "ref-label", "aria-hidden": "true", "data-ref": refLabel }, refLabel), /* The two turning points, each said once and then gone. The first is
      why the agreement is about to happen; the second is that it did, and
      that the message is still here. Without these the two halves are two
      demos that share a screen. */
@@ -3948,6 +4049,8 @@ E && /* @__PURE__ */ React.createElement("div", { className: "ipk" + (scene.same
           className: "stage" + (frameOn ? " frozen" : "") + (frameOn && frame && frame.soft ? " soft" : "") + (inspecting ? " inspect" : ""),
           style: { ["--ar"]: String(L.w / L.h) }
         },
+        /* the café's review label; once the film is open it carries its own */
+        !inspecting && CAFE_REF.get(note) && /* @__PURE__ */ React.createElement("span", { className: "ref-label", "aria-hidden": "true", "data-ref": CAFE_REF.get(note) }, CAFE_REF.get(note)),
         /* @__PURE__ */ React.createElement("div", { className: "screen" }, /* @__PURE__ */ React.createElement("svg", { ref: svgRef, viewBox: `0 0 ${L.w} ${L.h}`, role: "img", "aria-label": note.s }, /* @__PURE__ */ React.createElement("defs", null, ["you", "fr", "key", "danger"].map((t2) => /* @__PURE__ */ React.createElement(
           "marker",
           {

@@ -115,7 +115,7 @@ const probe = () => {
     const seen = [];
     for (const k of KEYS) {
       await p.evaluate((x) => window.__cin(x), k);
-      await p.waitForTimeout(/cross|journey|exchange/.test(k) ? 7600
+      await p.waitForTimeout(/cross|journey|exchange|pubvals/.test(k) ? 7600
         : /mixAout|mixB|combAout|combB|protect/.test(k) ? 7000 : 3400);
       const r = await p.evaluate(probe);
       seen.push({ k, r });

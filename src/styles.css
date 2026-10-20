@@ -5932,3 +5932,127 @@ details.read summary:hover{color:var(--ink-2)}
 .flm.xchg .flm-vault > .tk::after{left:4%;right:4%}
 .flm.xchg .flm-ph-scr *{max-width:100%;min-width:0}
 .flm.xchg .flm-vault{width:100%}
+
+/* ============================================================================
+   PASS 48 — the storyboard is the specification
+   Figma: "Encryption Coffee Shop — iPhone Interactive Storyboard". Frame labels
+   (1a, 4c, …) are shared with the review marker below; the table is in
+   CLAUDE.md. Composition changes are scoped to a module at least 560px wide;
+   the narrow layout keeps its measured sizes.
+   ========================================================================= */
+
+/* 0. THE REVIEW LABEL. A marker for talking about frames, not part of the
+      lesson: in the module's corner padding, out of the layout, inert. */
+.ref-label{
+  position:absolute;top:2px;left:8px;z-index:60;margin:0;padding:0;
+  font-family:var(--mono,ui-monospace,monospace);font-size:10px;line-height:10px;
+  font-weight:500;letter-spacing:.06em;color:rgba(231,239,233,.66);
+  pointer-events:none;user-select:none;white-space:nowrap;
+  background:none;border:0;box-shadow:none;animation:none;transition:none;
+}
+
+/* 1. SYMBOLS ON THE SAME PLATES (6b, 7a): d stays, Q travels, Z is made */
+.tk-sym{fill:var(--ink);font-family:var(--mono,ui-monospace,monospace);
+  font-size:11px;font-weight:500;letter-spacing:.02em}
+.flm.sym .tk-box{filter:none}
+
+/* 2. THE RESET (6a): each colour becomes the symbol it stood for, between
+      the two phones, which step back */
+.flm.bridging .flm-slot :is(.flm-ph,.cin-face,.cin-who){opacity:.36;transition:opacity .6s var(--ease)}
+.flm-xmap{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:8;
+  display:grid;gap:14px;pointer-events:none}
+.flm-xmap-r{display:grid;grid-template-columns:auto auto auto minmax(0,1fr);
+  align-items:center;gap:12px;animation:xmapIn 700ms var(--ease) both}
+@keyframes xmapIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.flm-xmap-c{display:block;width:min(56px,9cqw);height:min(34px,5.5cqw);border-radius:var(--r-s);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}
+.flm-xmap-a{color:var(--ink-3);font-weight:400}
+.flm-xmap-s{min-width:min(46px,8cqw);height:min(34px,5.5cqw);display:grid;place-items:center;
+  border-radius:var(--r-s);background:#1d2629;box-shadow:inset 0 0 0 1px var(--line-2);
+  font-family:var(--mono,ui-monospace,monospace);font-size:min(18px,3.6cqw);color:var(--ink)}
+.flm-xmap-t{font-size:min(13px,3.4cqw);color:var(--ink-2);white-space:nowrap}
+
+/* 3. THE EXCHANGE (4b–4d, 6b): two lanes through the centre, the copies
+      rise out of the crossing into Eve's hands, the originals keep going */
+.flm.xchg .flm-stage{grid-template-rows:minmax(0,1fr) 36%}
+.flm.j-both .flm-lane [data-obj="qa"]{top:27%}
+.flm.j-both .flm-lane [data-obj="qb"]{top:75%}
+.flm.xchg .flm-lane .flm-obj{width:min(20cqh,30cqw)}
+.flm.xchg .flm-lane .tk-l{display:none}
+.flm.j-both .flm-net [data-obj="qa2"],
+.flm.j-both .flm-net [data-obj="qb2"]{animation:copyRise 900ms var(--ease) 3100ms both}
+@keyframes copyRise{
+  0%{opacity:0;transform:translateY(44cqh) scale(.96)}
+  25%{opacity:.85}
+  100%{opacity:1;transform:none}
+}
+.flm.xchg .flm-eve .flm-obj{width:min(14cqh,15cqw)}
+.flm.xchg .flm-ph-scr .flm-focal > .flm-obj:not(.is-lead){width:86%}
+/* an object that flew in from a different size leaves Chrome holding a stale
+   overflow box after its transform ends; the glass already clips at this
+   edge, so paint containment says the same thing without the stale scroll */
+.flm.xchg .flm-ph-scr .flm-focal{contain:paint}
+@media (prefers-reduced-motion:reduce){
+  .flm.j-both .flm-net [data-obj="qa2"],.flm.j-both .flm-net [data-obj="qb2"]{animation:none}
+}
+
+/* 4. EVE IN THE REVEAL (5d): dimmed, holding the two copies she took —
+      where the module is wide enough for a third column (see below) */
+.flm.eve-in .flm-net .flm-peek{display:none}
+
+@container (min-width:560px){
+  .flm.cam-both.eve-in .flm-stage{grid-template-columns:minmax(0,1fr) minmax(0,.62fr) minmax(0,1fr)}
+  .flm.cam-both.eve-in .flm-net{display:grid}
+  .flm.eve-in .flm-net.off{opacity:.6;filter:none}
+
+  /* 5. THREE SCALES, ALL OF THEM LARGER. A character is a participant, not a
+        badge: close-up > comparison > network-wide, still exactly three.
+        Width only: the stage's width is the same in every frame, its height
+        is not (the dialogue under it varies), and a height term drifts. */
+  /* capped so the shortest close-up stage (protect, with its two-line
+     formula, at 1024x800) still holds the figure */
+  .flm.cam-a:not(.cast),.flm.cam-b:not(.cast){--face:min(40cqw,340px)}
+  .flm.cam-wide,.flm.journey,.flm.cast{--face:25cqw}
+  .flm.cam-both,.flm.chain{--face:32cqw}
+
+  /* 6. WIDE SHOTS: the figure stands behind and outside its phone, cropped
+        by the stage; the phone stays in front and readable */
+  .flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b),
+  .flm.cam-both .flm-slot.on:is(.flm-a,.flm-b){
+    display:grid;grid-template:minmax(0,1fr) / minmax(0,1fr);align-items:end;
+    justify-items:center;width:100%;height:100%;position:relative;
+  }
+  .flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b) > *,
+  .flm.cam-both .flm-slot.on:is(.flm-a,.flm-b) > *{grid-area:1 / 1}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-a .cin-face{justify-self:start;margin:0 0 -3% 0;z-index:0}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-b .cin-face{justify-self:end;margin:0 0 -3% 0;z-index:0}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-a .flm-ph{justify-self:end;align-self:center;width:auto;z-index:1}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-b .flm-ph{justify-self:start;align-self:center;width:auto;z-index:1}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-slot:is(.flm-a,.flm-b) .cin-who{
+    align-self:start;justify-self:center;z-index:2}
+  .flm:is(.cam-wide,.journey) .flm-stage{
+    grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,1fr)}
+  .flm.xchg .flm-slot:not(.flm-net) .flm-ph-body,
+  .flm.journey .flm-slot:not(.flm-net) .flm-ph-body{--ph-h:44cqh}
+  .flm.wide-open .flm-slot.on .flm-ph-body{--ph-h:30cqh}
+
+  /* Eve, centre: the figure at the top of her column, what she holds over
+     her hands, in front */
+  .flm:is(.cam-wide,.journey) .flm-net,
+  .flm.cam-both.eve-in .flm-net{display:grid;grid-template:minmax(0,1fr) / minmax(0,1fr);
+    justify-items:center;align-items:start;width:100%;height:100%}
+  .flm:is(.cam-wide,.journey) .flm-net > *,
+  .flm.cam-both.eve-in .flm-net > *{grid-area:1 / 1}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-net .cin-face{align-self:start;z-index:0}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-net .cin-who{align-self:start;z-index:3;margin-top:2px}
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-net .flm-eve{align-self:start;z-index:2;
+    margin-top:calc(var(--face) * .887 * .6)}
+  .flm:is(.cam-wide,.journey) .flm-net .flm-peek{align-self:end;z-index:3}
+  /* in a two-shot each phone stands in its owner's half, in front of them */
+  .flm.cam-both .flm-slot.on:is(.flm-a,.flm-b) .flm-ph{justify-self:center}
+  /* her copies need no caption: same shape, same colour, broken edge */
+  .flm:is(.xchg,.eve-in) .flm-net .flm-hold .tk-l{display:none}
+  /* her two copies side by side, in her hands */
+  .flm:is(.cam-wide,.journey,.cam-both) .flm-net .flm-hold{
+    flex-direction:row;justify-content:center;align-items:flex-start;gap:10px}
+}

@@ -20,8 +20,9 @@ Chromium through `launch()` in `drive.js`; there is no machine-specific path.
 
 | script | what it asserts |
 |---|---|
-| `smoke.js` | the deployment smoke suite: `hands`, `touch`, `walk`, `fit`, `validate44` in parallel, each finding sorted against `baseline.json` as known, worse or new; exits 1 on a regression. `ship.sh` runs it. |
+| `smoke.js` | the deployment smoke suite: `hands`, `touch`, `walk`, `fit`, `validate44`, `labels` in parallel, each finding sorted against `baseline.json` as known, worse or new; exits 1 on a regression. `ship.sh` runs it. |
 | `shoot.js` | not a test: screenshots of the named beats (default all 22) at 393 and 1440 into `shots/`; `WIDTHS=` overrides |
+| `labels.js` | every beat (and the timed states inside `mixAout` and `exchange`) and every café state shows the storyboard label from `drive.js` `LABELS`; one label at a time, absolutely positioned, inert, overlapping nothing |
 | `fit.js` | nothing overflows or overlaps, at 1440, 1024, 393, 360 and 320 |
 | `hands.js` | all five gates complete with a mouse, every beat in order, Bob reads the message back |
 | `touch.js` | the same five gates complete with `pointerType: "touch"` |
@@ -56,9 +57,8 @@ known; anything else is a regression.
 | harness | result |
 |---|---|
 | `fit.js` | **1 known issue** — `chain` at 320×700: `.flm-rail runs outside the module`. Not a demo width. |
-| `validate44.js` | **1 known failure** — `exchange` at 1440×900: `flm-ph-scr 88>82`, 6–7px of overshoot inside the glass (which has `overflow:hidden`). Reproduces on every run, not intermittently. |
-| `six.js` | **advisory, not a failure** — `base` (4.4%) and `exchange` (3.0%) report "biggest object under 5% of stage". Both are wide shots; whether the 5% threshold still describes the intended design is unresolved pending a visual review. |
-| `hands.js`, `touch.js`, `walk.js`, `silent3.js`, `locked.js`, `paint.js`, `real.js`, `a11y2.js` | pass |
+| `six.js` | **advisory, not a failure** — the wide network shots (`base`, `exchange`, `xland`, `pubvals`, `journey`) report "biggest object under 5% of stage" (2.3–4.4%). Pass 48 made the characters much larger in those shots, so the objects are a smaller share of the frame; whether the 5% threshold still describes the intended design is unresolved pending a visual review. |
+| `hands.js`, `touch.js`, `walk.js`, `validate44.js`, `labels.js`, `silent3.js`, `locked.js`, `paint.js`, `real.js`, `a11y2.js` | pass (pass 48 removed the old `exchange` 88>82 clip) |
 
 `fit`, `validate44`, `silent3`, `locked` and `six` step through all 22 beats;
 `hands` and `touch` play all 22 in order through the five gates. `paint`,

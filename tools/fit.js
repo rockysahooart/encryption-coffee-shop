@@ -82,7 +82,7 @@ const probe = () => {
       await p.evaluate((x) => window.__cin(x), beat);
       /* the object travel is deliberate and passes outside its container while
          it is in the air; this checks the composed frame, once it has settled */
-      await p.waitForTimeout(/exchange|journey/.test(beat) ? 7600 : 1400);
+      await p.waitForTimeout(/exchange|journey|pubvals/.test(beat) ? 7600 : 1400);
       const issues = await p.evaluate(probe);
       if (issues.length) { n += issues.length; console.log(`  ${beat}: ${issues.join("; ")}`); }
     }

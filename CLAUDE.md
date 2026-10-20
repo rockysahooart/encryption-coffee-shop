@@ -158,13 +158,14 @@ finds a new regression, or the change would reach outside what was asked.
 
 ### The smoke suite and the baseline
 
-`tools/smoke.js` runs `hands`, `touch`, `walk`, `fit` and `validate44` in
-parallel, about 4 minutes. Between them they cover:
-- all 22 beats, at 1440, 1024, 393, 360 and 320
+`tools/smoke.js` runs `hands`, `touch`, `walk`, `fit`, `validate44` and `labels` in
+parallel, about 4–8 minutes. Between them they cover:
+- all 25 beats, at 1440, 1024, 393, 360 and 320
 - the five gates by mouse and by touch
 - Bob reading back the typed message
 - the happy path at mobile and desktop
 - console errors
+- the frame reference label on every beat and café state
 
 Each finding is sorted against `tools/baseline.json`:
 - **known**: listed there, and no worse than recorded. This does not block.
@@ -201,7 +202,7 @@ comparison — set by `--face`; a fourth is a regression. `validate44.js` checks
 both the ratios and the scale count.
 
 **Close-up framing.** In a single-character close-up the slot is a two-column
-grid: phone in one column, figure in the other at `--face: min(41cqw,230px)`,
+grid: phone in one column, figure in the other at `--face: min(41cqw,230px)` (`min(40cqw,340px)` on a module ≥560px wide — pass 48),
 bottom-aligned and overlapping the device by 14%, with the stage cropping them
 at the knees. Bob's side mirrors. The phone is sized from **its column**
 (`min(78cqh,106cqw)`), not from the stage — sizing it from the stage is what
@@ -241,8 +242,8 @@ them in sync):
 
 ```
 problem · base · pickA · mine · pickB · mixA · mixAout · mixB · sendA ·
-exchange · combA · combAout · combB · reveal · asmath · tokey · type ·
-protect · journey · arrive · open · chain
+exchange · xland · combA · combAout · combB · reveal · asmath · pubvals ·
+zsec · tokey · type · protect · journey · arrive · open · chain
 ```
 
 Five of these are **gates** — the film stops and waits for the viewer:
@@ -285,10 +286,9 @@ relationship it describes, in the dialogue container, never over the action:
 
 | beat | formula |
 |---|---|
-| `mixAout` | `Q_A = d_A G` |
-| `mixB` | `Q_B = d_B G` |
-| `reveal` | `Z = d_A Q_B = d_B Q_A` |
-| `tokey` | `K = HKDF(Z)` |
+| `pubvals` (6b) | `Q_A = d_A G · Q_B = d_B G` |
+| `zsec` (7a) | `Z = d_A Q_B = d_B Q_A` |
+| `tokey` (7b) | `K = HKDF(Z)` |
 | `protect` | `(C, T) = AES-GCM(K, nonce, message)` |
 | `open` | `message = AES-GCM-Open(K, nonce, C, T)` |
 
@@ -300,6 +300,62 @@ browser computed. `real.js` checks the panel against the live session.
 viewer's own choice or a documented blend of such colours. The crypto layer's
 colours are deterministic mappings of real bytes. No colour anywhere is
 invented to look good, and `paint.js` + `real.js` enforce the split.
+
+## Frame reference labels
+
+The film and the Figma storyboard share one set of review labels. A note
+like "4c needs a bigger Eve" means the same picture in both places.
+
+- **Figma:** [Encryption Coffee Shop — iPhone Interactive Storyboard](https://www.figma.com/design/FfurwWtD8WRHOXEH6rFUue).
+  Each top-level frame is named `4c — Eve copies both mixtures`, with the bare
+  label in large type just above its top-left corner.
+- **Live:** `.ref-label`, top-left of the module, in the panel padding: absolutely
+  positioned, `pointer-events:none`, no animation. It is a review marker, not
+  lesson copy.
+- **Code:** `REF` / `REF_SUB` (film) and `CAFE_REF` (café notes) in `app.tsx`.
+  The expected table is `LABELS` / `LABEL_SUB` in `tools/drive.js`.
+  `tools/labels.js` checks that they agree and that the label overlaps nothing.
+  It is part of the smoke suite.
+- **Changing a beat:** if you add, split or rename a beat, give it a label in
+  all three places and in Figma, in story order. Don't renumber existing
+  labels unless the storyboard is re-cut.
+
+| label | storyboard frame | production beat / state |
+|---|---|---|
+| 0a | Alice wants to reach Bob | café, notes `wifi`, `pairWant` |
+| 0b | One Wi‑Fi, and Eve is on it | café, notes `eveHere` → `oneNetwork` |
+| 0c | A plain note crosses | café, note `plainDemo` |
+| 0d | Eve reads it | café, notes `plainSeen`, `howPrivate` |
+| 1a | The problem — you are Alice | act 2 push-in (`pushAlice`), then `problem` |
+| 1b | The public colour | `base` |
+| 2a | Alice chooses | `pickA` (gate: tap) |
+| 2b | Alice’s colour stays | `mine` |
+| 2c | Bob chooses | `pickB` |
+| 3a | Alice drags the public colour | `mixA` (gate: drag) |
+| 3b | Blending | `mixAout`, 0–3.4s |
+| 3c | Alice’s mixture | `mixAout`, from 3.4s |
+| 3d | Bob blends | `mixB` |
+| 4a | Alice sends | `sendA` (gate: tap) |
+| 4b | Both mixtures leave | `exchange`, 0–2.6s |
+| 4c | Eve copies both mixtures | `exchange`, 2.6–3.9s |
+| 4d | Copies to Eve, originals continue | `exchange`, from 3.9s |
+| 4e | Mixtures arrive | `xland` |
+| 5a | Alice combines | `combA` (gate: drag) |
+| 5b | Alice’s result, covered | `combAout` |
+| 5c | Bob combines | `combB` |
+| 5d | Same colour, never sent | `reveal` |
+| 6a | Paint becomes numbers | `asmath` |
+| 6b | Public values Q_A, Q_B | `pubvals` |
+| 7a | Shared secret Z | `zsec` |
+| 7b | Key K = HKDF(Z) | `tokey` |
+| 8a | Alice types | `type` (gate: type, Send) |
+| 8b | The message becomes a packet | `protect` |
+| 9a | Packet crosses, Eve copies it | `journey` |
+| 10a | Bob checks the packet | `arrive` |
+| 10b | Bob opens it | `open` |
+| 10c | Recap | `chain` |
+
+A1–A4 in Figma are alternate compositions, not in the film.
 
 ## Do not
 

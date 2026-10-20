@@ -1,5 +1,5 @@
 /* shared: reach the film and step it, honouring the nine viewer gates */
-const KEYS = ["problem","base","pickA","mine","pickB","mixA","mixAout","mixB","sendA","exchange","combA","combAout","combB","reveal","asmath","tokey","type","protect","journey","arrive","open","chain"];
+const KEYS = ["problem","base","pickA","mine","pickB","mixA","mixAout","mixB","sendA","exchange","xland","combA","combAout","combB","reveal","asmath","pubvals","zsec","tokey","type","protect","journey","arrive","open","chain"];
 
 /* The film falls back to its first frame for a name it does not know, so a
    stale beat name used to test "problem" without saying so. Every page a
@@ -37,4 +37,15 @@ async function reach(p) {
   await p.waitForFunction(() => !!window.__cin, null, { timeout: 25000 });
   await p.waitForTimeout(400);
 }
-module.exports = { KEYS, reach, launch };
+/* The frame reference labels, as the storyboard assigns them. app.tsx (REF,
+   REF_SUB, CAFE_REF) draws them; labels.js checks the page against this. */
+const LABELS = {
+  problem: "1a", base: "1b", pickA: "2a", mine: "2b", pickB: "2c",
+  mixA: "3a", mixAout: "3b", mixB: "3d", sendA: "4a", exchange: "4b", xland: "4e",
+  combA: "5a", combAout: "5b", combB: "5c", reveal: "5d", asmath: "6a", pubvals: "6b",
+  zsec: "7a", tokey: "7b", type: "8a", protect: "8b", journey: "9a",
+  arrive: "10a", open: "10b", chain: "10c"
+};
+/* states inside one beat: [ms after the beat starts, label] */
+const LABEL_SUB = { mixAout: [[3400, "3c"]], exchange: [[2600, "4c"], [3900, "4d"]] };
+module.exports = { KEYS, reach, launch, LABELS, LABEL_SUB };
