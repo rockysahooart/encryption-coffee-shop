@@ -11,3 +11,7 @@ tools/node_modules/
 
 # an empty nested clone left over from an earlier attempt; not part of the site
 encryption-coffee-explainer/
+
+# harness output: smoke logs and the pass record ship.sh reads, screenshots
+tools/.smoke/
+tools/shots/

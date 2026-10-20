@@ -33,7 +33,8 @@ it, and served by GitHub Pages as a static file.
     vendor-react-dom.js pinned ReactDOM, inlined at build time
   tools/                headless validation harnesses (see tools/README.md)
   one-scene/            an earlier single-scene prototype; not deployed
-  sync.sh, watch.sh     publish helpers (git add/commit/push)
+  ship.sh               the mechanical half of `ship it`: check, then push
+  sync.sh, watch.sh     older publish helpers that skip validation; do not use
 ```
 
 `app.tsx` is a single file on purpose. It compiles with `--jsx=transform` and
@@ -65,49 +66,116 @@ earlier ones; read from the bottom when debugging.
 
 ```bash
 # build  (from the repo root)
-cd src && ./make.sh          # esbuild app.tsx -> app.js, then inline -> ../index.html
-                             # NOTE: make.sh currently writes storyboard.html next to
-                             # the sources; see "Known issues" below.
+cd src && ./make.sh          # esbuild app.tsx -> app.js (pinned 0.28.2), then inline -> ../index.html
 
 # preview
 open index.html              # macOS; it is a static file with no server needed
-python3 -m http.server 8000  # if you want a server (then open localhost:8000)
 
-# validate
-cd tools && npm install && npx playwright install chromium
-node fit.js                  # layout: nothing overflows at five widths
-node hands.js                # the five gates, with a mouse, end to end
-node touch.js                # the five gates, with touch pointers
-node walk.js                 # the happy path at mobile and desktop
-node validate44.js           # the nine frame tests, both viewports
-node silent3.js              # the story reads with no words
-node locked.js               # every phone holds 71.9 : 150
-node paint.js                # the colour analogy is real arithmetic
-node real.js                 # the picture matches the bytes
-node a11y2.js                # targets, colour-free reading, reduced motion
+# look at beats, mobile and desktop  (tools/shots/<beat>-<width>.png)
+cd tools && node shoot.js exchange journey
 
-# deploy
-./sync.sh "message"          # add -A, commit, push to origin main
+# validate  (first time: cd tools && npm install && npx playwright install chromium)
+cd tools && node smoke.js    # the deployment smoke suite, compared with baseline.json
+node fit.js                  # any single harness; see the table below
+
+# ship
+./ship.sh check              # rebuild + smoke suite + what would ship
+./ship.sh push "message"     # commit what passed check, push, wait for Pages
 ```
 
-**Deployment is GitHub Pages serving the root of `main`.** Pushing to `main`
-is the deploy. `.nojekyll` is present so paths beginning with `_` survive.
-There is no build step on the server: whatever `index.html` is in `main` is
-what the world sees, so **`index.html` must be rebuilt and committed with any
-source change.**
+**Deployment is GitHub Pages serving the root of `main`** (legacy branch
+build, no workflow). Pushing to `main` is the deploy. `.nojekyll` is present
+so paths beginning with `_` survive. Whatever `index.html` is in `main` is
+what the world sees, so **`index.html` is always rebuilt and committed with
+the source change that produced it.**
 
-## `ship it`
+## How we work
 
-When I say **ship it**, do all of this, in order, and stop at the first failure:
+This is the operating contract. It holds in every session.
 
-1. **Validate** — `cd tools && node fit.js && node hands.js && node walk.js && node validate44.js`
-2. **Build** — `cd src && ./make.sh`, and make sure the built file lands at the repo root as `index.html`
-3. **Review the diff** — `git --no-pager diff --stat` and read the source diff, not the generated one
-4. **Commit** — a message that says what changed in the experience, not "update"
-5. **Push** — `git push origin main`
+### A change request
 
-Never push a build that has not been validated. Never commit `index.html`
-without the source change that produced it.
+When I describe a change in plain English:
+
+1. **Inspect first.** Find the beat in `FILM`, its JSX in `Cinema`, and the
+   `.flm` rules involved; read the guardrails below that touch it.
+2. **Edit canonical source only**: `src/app.tsx`, `src/styles.css`. Never
+   `index.html`, `src/app.js` or `src/storyboard.html`.
+3. **Rebuild**: `cd src && ./make.sh`.
+4. **Run the targeted harnesses** for what changed (table below), not the
+   whole suite.
+5. **Look at it**: `cd tools && node shoot.js <affected beats>` and view the
+   393 and 1440 shots. Add `WIDTHS=320x700,393x852,1440x900` when narrow
+   widths matter.
+6. **Report and stop.** Say what changed, what was run, and show the shots.
+   Do not commit or push.
+
+If the request is ambiguous, or doing it properly would change something
+outside what was asked, ask before doing it.
+
+### Which harnesses to run
+
+| change | run |
+|---|---|
+| layout / visual (sizes, spacing, framing, type, motion) | `fit.js`, `validate44.js`, `locked.js`, plus `shoot.js` |
+| interaction / gates (pickA, mixA, sendA, combA, type; drag, tap, timing, `wait`) | `hands.js`, `touch.js`, `walk.js` |
+| colour / blending (swatches, `MIX`, base, blend animation) | `paint.js`, `silent3.js`, `validate44.js` (accent cap, grayscale) |
+| crypto / message flow (`KIT`, values panel, packet, open) | `real.js`, `walk.js`, `hands.js` (Bob reads the message back) |
+| accessibility (targets, focus, reduced motion, colour-free reading) | `a11y2.js`, `validate44.js` |
+| copy / dialogue | `six.js` (advisory), `silent3.js`, `fit.js` |
+| adding, removing or renaming a beat | update `KEYS` in `tools/drive.js` first, then `node smoke.js` |
+| anything spanning several of these, or unsure | `node smoke.js` |
+
+Every harness prints `FAIL` lines (fit prints `beat: issue`). Compare
+against the baseline in `tools/README.md`: a listed failure is known, any
+other is a regression to fix before reporting.
+
+### `ship it`
+
+When I say **ship it**:
+
+1. **Check the tree.** `git status`: only the files this change needed.
+   Anything unrelated, stop and ask.
+2. **`./ship.sh check`**, which:
+   - refuses to run off `main`, behind `origin/main`, with untracked files,
+     or with changes outside `src/`, `tools/`, `index.html`, `ship.sh`,
+     `.gitignore` and `*.md`
+   - rebuilds from source, and refuses if `index.html` differs from HEAD with
+     no change in `src/`
+   - runs the smoke suite and stops on any regression
+3. **Read the source diff**: `git diff HEAD -- . ':!index.html'`. Anything
+   outside the request, stop and ask.
+4. **`./ship.sh push "message"`**, with a message that says what changed in
+   the experience. It refuses unless the last `check` passed on exactly this
+   tree, then commits all tracked changes (source together with
+   `index.html`), pushes to `origin main`, checks that `origin/main` is the
+   new commit, and waits for the GitHub Pages build of that commit.
+5. **Report** the commit hash and the Pages build status.
+
+If my request already says **ship it**, carry the change through all of this
+without asking again, unless the request is genuinely ambiguous, validation
+finds a new regression, or the change would reach outside what was asked.
+
+### The smoke suite and the baseline
+
+`tools/smoke.js` runs `hands`, `touch`, `walk`, `fit` and `validate44` in
+parallel, about 4 minutes. Between them they cover:
+- all 22 beats, at 1440, 1024, 393, 360 and 320
+- the five gates by mouse and by touch
+- Bob reading back the typed message
+- the happy path at mobile and desktop
+- console errors
+
+Each finding is sorted against `tools/baseline.json`:
+- **known**: listed there, and no worse than recorded. This does not block.
+- **worse**: listed there, but past its recorded limit (the exchange overshoot
+  beyond 89px). This is a regression.
+- **new**: anything else. This is a regression.
+
+A harness that reports something new under parallel load is rerun alone
+once, and that second run counts. A known failure that disappears is printed
+as `resolved`; remove it from `baseline.json` and `tools/README.md` in
+the same change. `six.js` is advisory and is not part of the smoke suite.
 
 ## Guardrails
 

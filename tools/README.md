@@ -20,6 +20,8 @@ Chromium through `launch()` in `drive.js`; there is no machine-specific path.
 
 | script | what it asserts |
 |---|---|
+| `smoke.js` | the deployment smoke suite: `hands`, `touch`, `walk`, `fit`, `validate44` in parallel, each finding sorted against `baseline.json` as known, worse or new; exits 1 on a regression. `ship.sh` runs it. |
+| `shoot.js` | not a test: screenshots of the named beats (default all 22) at 393 and 1440 into `shots/`; `WIDTHS=` overrides |
 | `fit.js` | nothing overflows or overlaps, at 1440, 1024, 393, 360 and 320 |
 | `hands.js` | all five gates complete with a mouse, every beat in order, Bob reads the message back |
 | `touch.js` | the same five gates complete with `pointerType: "touch"` |
@@ -46,7 +48,8 @@ name used to test `problem` silently. Now `__cin("crossA")` throws
 
 ## Baseline
 
-Recorded 2026-10-20 at `8307833` (the build GitHub Pages serves), with
+The machine-readable copy is `baseline.json`, which `smoke.js` compares
+against; change both together. Recorded 2026-10-20 at `8307833` (the build GitHub Pages serves), with
 Playwright 1.61.1 / Chromium 149, Node 18.15, macOS. A result listed here is
 known; anything else is a regression.
 

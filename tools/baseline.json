@@ -1,0 +1,18 @@
+{
+  "recorded": "2026-10-20 at 8307833, Playwright 1.61.1 / Chromium 149",
+  "known": [
+    {
+      "harness": "fit",
+      "section": "320x700",
+      "match": "^chain: \\.flm-rail runs outside the module$",
+      "why": "the recap line overflows at 320px; not a demo width"
+    },
+    {
+      "harness": "validate44",
+      "section": "1440x900",
+      "match": "^exchange: 1 element\\(s\\) clipped — flm-ph-scr (\\d+)>82$",
+      "max": 89,
+      "why": "6-7px overshoot inside the glass, which has overflow:hidden; 88 or 89 on every run"
+    }
+  ]
+}
