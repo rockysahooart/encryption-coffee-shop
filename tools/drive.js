@@ -42,12 +42,13 @@ async function reach(p) {
 const LABELS = {
   problem: "1a", base: "1b", pickA: "2a", mine: "2b", pickB: "2c",
   mixA: "3a", mixAout: "3b", mixB: "3d", sendA: "4a", exchange: "4b", xland: "4e",
-  combA: "5a", combAout: "5b", combB: "5c", reveal: "5d", asmath: "6a", pubvals: "6b",
+  combA: "5a", combAout: "5b", combB: "5d", reveal: "5f", asmath: "6a", pubvals: "6b",
   zsec: "7a", tokey: "7b", type: "8a", protect: "8b", journey: "9a",
   arrive: "10a", open: "10b", chain: "10c"
 };
 /* states inside one beat: [ms after the beat starts, label] */
-const LABEL_SUB = { mixAout: [[3400, "3c"]], exchange: [[2600, "4c"], [3900, "4d"]] };
+const LABEL_SUB = { mixAout: [[3360, "3c"]], mixB: [[3360, "3e"]], exchange: [[2600, "4c"], [3900, "4d"]],
+  combAout: [[3360, "5c"]], combB: [[3360, "5e"]] };
 /* Go to a storyboard label and hold it. Film labels use the app's hidden
    window.__ref, which pins the beat and pauses every animation at that
    label's moment. Café labels (0a–0d) are times on the café's own tape: the

@@ -6095,6 +6095,61 @@ details.read summary:hover{color:var(--ink-2)}
   .flm.cam-both.eve-in .flm-slot.on.flm-b .flm-ph{justify-self:start}
 }
 .flm.f-reveal .flm-lane-track{opacity:.7}
+
+/* ============================================================================
+   PASS 50 — the blend is a transformation (storyboard 3b–3e, 5b–5e)
+   6s, linear clock. 0–1.3s the moving ingredient lands ON the private plate
+   (distance measured by the app: --fall / --rise), translucent so both
+   colours stay identifiable. 1.8–2.82s a 1.0s convergence to one colour
+   (--mixc). 2.82–3.36s held, synchronised. 3.36s the result is born on that
+   spot in that colour — the reveal is the consequence — then settles into
+   its place by 4.8s. A combined result is covered at 4.8–5.4s, until 5f.
+   The packet assembly (gcm) keeps its own grammar.
+   ========================================================================= */
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:not(:has(.tk-private)){
+  overflow:visible;animation:blendIn 6000ms linear both}
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:has(.tk-private){animation:none}
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-lead{animation:blendOut 6000ms linear both}
+/* what moves and what is born are drawn over the private plate they meet */
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:not(:has(.tk-private)),
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-lead{position:relative;z-index:2}
+@keyframes blendIn{
+  0%,6%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.32,0,.2,1)}
+  22%{transform:translateY(var(--fall,96%));opacity:.66}
+  30%{transform:translateY(var(--fall,96%));opacity:.6}
+  47%,56%{transform:translateY(var(--fall,96%));opacity:1}
+  60%,100%{transform:translateY(var(--fall,96%));opacity:0}
+}
+@keyframes blendOut{
+  0%,55%{transform:translateY(var(--rise,-96%));opacity:0}
+  57%{transform:translateY(var(--rise,-96%));opacity:1}
+  64%{transform:translateY(var(--rise,-96%));opacity:1;animation-timing-function:cubic-bezier(.32,0,.2,1)}
+  80%,100%{transform:none;opacity:1}
+}
+/* the convergence itself: the moving plate's colour runs, over one second,
+   from its own colour to the colour the two make together */
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:not(:has(.tk-private)) .tk-box{mix-blend-mode:normal}
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:not(:has(.tk-private)) .tk-box::after{
+  content:"";position:absolute;left:10%;right:10%;top:22.7%;bottom:18.2%;
+  border-radius:8% / 15%;background:var(--mixc,transparent);pointer-events:none;
+  opacity:0;animation:blendSync 6000ms linear both;
+}
+@keyframes blendSync{0%,30%{opacity:0}47%,100%{opacity:1}}
+.flm.fusing:not(.gcm) .flm-blending{animation:blendCue 6000ms linear both}
+@keyframes blendCue{0%,20%{opacity:0}26%,50%{opacity:1}56%,100%{opacity:0}}
+/* the cover arrives after the reveal, not instead of it */
+.flm-obj.covers-late .tk-box::before{
+  content:"";position:absolute;left:10%;right:10%;top:22.7%;bottom:18.2%;z-index:1;
+  border-radius:8% / 15%;background:var(--glass);pointer-events:none;
+  box-shadow:inset 0 0 0 1.4px var(--line-2);opacity:0;animation:coverOn 6000ms linear both;
+}
+@keyframes coverOn{0%,80%{opacity:0}90%,100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .flm-obj.covers-late .tk-box::before{opacity:1}
+  .flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:not(:has(.tk-private)){opacity:0}
+}
+/* the travelling ingredient's caption would sit on the private one's */
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:not(:has(.tk-private)) .tk-l{visibility:hidden}
 </style>
 </head>
 <body>
@@ -8240,8 +8295,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       xland: "4e",
       combA: "5a",
       combAout: "5b",
-      combB: "5c",
-      reveal: "5d",
+      combB: "5d",
+      reveal: "5f",
       asmath: "6a",
       pubvals: "6b",
       zsec: "7a",
@@ -8254,8 +8309,11 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       chain: "10c"
     };
     const REF_SUB = {
-      mixAout: [[3400, "3c"]],
-      exchange: [[2600, "4c"], [3900, "4d"]]
+      mixAout: [[3360, "3c"]],
+      mixB: [[3360, "3e"]],
+      exchange: [[2600, "4c"], [3900, "4d"]],
+      combAout: [[3360, "5c"]],
+      combB: [[3360, "5e"]]
     };
     const REF_AT = {
       "1a": ["problem", 1500],
@@ -8264,18 +8322,21 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       "2b": ["mine", 2e3],
       "2c": ["pickB", 2e3],
       "3a": ["mixA", 1200],
-      "3b": ["mixAout", 2600],
+      "3b": ["mixAout", 2350],
       "3c": ["mixAout", 6200],
-      "3d": ["mixB", 6200],
+      "3d": ["mixB", 2350],
+      "3e": ["mixB", 6200],
       "4a": ["sendA", 1200],
       "4b": ["exchange", 1300],
       "4c": ["exchange", 3350],
       "4d": ["exchange", 5e3],
       "4e": ["xland", 1600],
       "5a": ["combA", 1200],
-      "5b": ["combAout", 6200],
-      "5c": ["combB", 6200],
-      "5d": ["reveal", 2400],
+      "5b": ["combAout", 2350],
+      "5c": ["combAout", 4600],
+      "5d": ["combB", 2350],
+      "5e": ["combB", 4600],
+      "5f": ["reveal", 2400],
       "6a": ["asmath", 3600],
       "6b": ["pubvals", 4400],
       "7a": ["zsec", 2e3],
@@ -8734,7 +8795,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             role: "secret",
             hex: sharedC,
             dock: d,
-            masked: !F.rev && !d,
+            masked: !F.rev && !d && !F.fuse,
             digits: F.toMath && s ? BYTES(s.Z, 3) : null,
             label: F.toMath ? "the shared secret" : "the final colour",
             note: ""
@@ -8746,7 +8807,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             role: "secret",
             hex: sharedC,
             dock: d,
-            masked: !F.rev && !d,
+            masked: !F.rev && !d && !F.fuse,
             digits: F.toMath && s ? BYTES(s.Z, 3) : null,
             label: F.toMath ? "the same number" : "the final colour",
             note: ""
@@ -8850,7 +8911,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         if (id === "pa" || id === "pb")
           node = /* @__PURE__ */ React.createElement("div", { className: "flm-vault" + (id === "pa" ? " mine" : "") }, /* @__PURE__ */ React.createElement("span", { className: "flm-vault-k" }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 12 14", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M3 6 V4.2 a3 3 0 0 1 6 0 V6", fill: "none", strokeWidth: "1.6" }), /* @__PURE__ */ React.createElement("rect", { x: "1.6", y: "6", width: "8.8", height: "7", rx: "1.8" })), id === "pa" ? "private" : "private"), node);
         placed.add(id);
-        const cls = (F.copy === id ? "is-copy " : "") + (F.land && w === F.land ? "is-land " : "") + (F.born === id ? "is-born " : "") + (F.moved === id ? "is-moved " : "");
+        const cls = (F.copy === id ? "is-copy " : "") + (F.land && w === F.land ? "is-land " : "") + (F.born === id ? "is-born " : "") + (F.moved === id ? "is-moved " : "") + (F.fuse && !F.rev && (id === "sa" || id === "sb") ? "covers-late " : "");
         const isLead = F.lead ? F.lead === id : Object.keys(F.at)[0] === id;
         const grabs = F.drag && F.drag.from === id;
         const drops = F.drag && F.drag.to === id;
@@ -8889,6 +8950,28 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         const [pq, pm2] = pair(nq, nm);
         return (s2 || "").replace("{BASE} ", pb).replace("{MINE} public", (pm1 || "") + "public").replace("{QB} ", pq).replace("{MINE} ", s2.indexOf("{QB}") >= 0 ? pm2 || "private " : pm1 || "private ").replace("{BASE}", nb).replace("{MINE}", nm).replace("{QB}", nq).replace("{QA}", HUE_NAME(qaC));
       };
+      const mixc = F.fuse && !F.gcm ? F.k === "mixAout" ? qaC : F.k === "mixB" ? qbC : sharedC : null;
+      useLayoutEffect(() => {
+        if (!F.fuse || F.gcm) return;
+        const top = (el, root) => {
+          let y = 0;
+          for (let e = el; e && e !== root; e = e.offsetParent) y += e.offsetTop;
+          return y;
+        };
+        for (const focal of document.querySelectorAll(".flm-slot.on .flm-ph-scr .flm-focal")) {
+          const plate = focal.querySelector(".flm-obj .tk-private .tk-box");
+          if (!plate) continue;
+          const at = top(plate, focal);
+          for (const o of focal.querySelectorAll(":scope > .flm-obj")) {
+            if (o.querySelector(".tk-private")) continue;
+            const box = o.querySelector(".tk-box");
+            if (!box) continue;
+            const d = at - top(box, focal);
+            if (o.classList.contains("is-lead")) o.style.setProperty("--rise", d + "px");
+            else o.style.setProperty("--fall", d + "px");
+          }
+        }
+      }, [beat]);
       const Shelf = ({ items }) => items.length ? /* @__PURE__ */ React.createElement("div", { className: "flm-shelf" }, items) : null;
       return /* @__PURE__ */ React.createElement(
         "div",
@@ -8896,7 +8979,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           className: "flm cam-" + F.cam + " f-" + F.k + (gate ? " turn" : "") + (tampered ? " tampered" : "") + (F.act === "pick" || F.act === "type" ? " solo" : "") + (F.journey ? " journey j-" + F.journey : "") + (F.morph ? " morphing" : "") + (F.gcm ? " gcm" : "") + (F.verify ? " verifying" : "") + (F.payoff ? " payoff" : "") + (F.converge ? " converge" : "") + (F.eveShort ? " eve-short" : "") + (F.chain ? " chain" : "") + (F.arrive ? " arriving" : "") + (F.back ? " back" : "") + (F.watched ? " watched" : "") + (F.claim ? " claiming" : "") + (F.empty ? " empty-" + F.empty : "") + (F.fuse ? " fusing" : "") + (F.toMath ? " toMath" : "") + (F.open ? " wide-open" : "") + (WORK.has(F.k) ? " working" : "") + (F.cast ? " cast" : "") + (F.xchg ? " xchg" : "") + (F.eveIn ? " eve-in" : "") + (F.bridge ? " bridging" : "") + (F.sym ? " sym" : ""),
           "data-frame": F.k,
           "data-act": F.act || "",
-          "data-arc": F.arc || ""
+          "data-arc": F.arc || "",
+          style: mixc ? { "--mixc": mixc } : void 0
         },
         /* @__PURE__ */ React.createElement("div", { className: "flm-arc", "aria-label": "part " + (ARCS.indexOf(F.arc) + 1) + " of 3" }, ARCS.map((a) => /* @__PURE__ */ React.createElement("span", { key: a, className: "flm-arc-i" + (a === F.arc ? " on" : "") }, /* @__PURE__ */ React.createElement("i", { "aria-hidden": "true" }), a === F.arc && /* @__PURE__ */ React.createElement("b", null, ARCNAME[a])))),
         /* @__PURE__ */ React.createElement("div", { className: "flm-stage" }, F.fuse && /* @__PURE__ */ React.createElement("span", { className: "flm-blending", "aria-hidden": "true" }, "blending\u2026"), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-a" + (lit("a") ? " on" : " off") }, /* @__PURE__ */ React.createElement("img", { className: "cin-face", src: SPRITE.you, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Alice ", /* @__PURE__ */ React.createElement("i", { className: "sur-me" }, "you")), /* @__PURE__ */ React.createElement(Phone, { who: "a", lit: lit("a"), drop: F.drag && F.drag.to === "phoneA" || beat === "pickA" ? "phoneA" : null }, F.drag && F.drag.to === "openA" && /* @__PURE__ */ React.createElement("span", { className: "flm-open is-drop", "data-drop": "openA", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "flm-focal" }, bin.a), F.drag && F.drag.to === "slot" && /* @__PURE__ */ React.createElement("div", { className: "flm-slot-x is-drop", "data-drop": "slot" }, /* @__PURE__ */ React.createElement("span", { className: "flm-slot-k" }, beat === "hkdf" ? "HKDF" : "AES\u2011GCM"), /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 60 18", className: "flm-slot-a", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M6 9 h40 M40 4 l6 5 l-6 5", fill: "none", strokeWidth: "2.2" }))), (beat === "pickA" || beat === "mine") && /* The row stays for one beat after the choice, with the five
@@ -9642,12 +9726,13 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           }
         };
         window.__refs = Object.keys(REF_AT);
-        window.__ref = (lab) => {
+        window.__ref = (lab, ms) => {
           const at2 = REF_AT[lab];
           if (!at2) throw new Error(`__ref: "${lab}" is not a film frame label`);
+          const t = typeof ms === "number" ? ms : at2[1];
           window.__cin(at2[0]);
-          setRefPin({ lab, beat: at2[0], ms: at2[1] });
-          return { label: lab, beat: at2[0], ms: at2[1] };
+          setRefPin({ lab, beat: at2[0], ms: t });
+          return { label: lab, beat: at2[0], ms: t };
         };
         window.__insp = (st, m, a, eb) => {
           if (a === "aes" || eb && eb === "rest") setKeyReady(true);

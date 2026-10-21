@@ -1607,7 +1607,7 @@
       pickA: "2a", mine: "2b", pickB: "2c",
       mixA: "3a", mixAout: "3b", mixB: "3d",
       sendA: "4a", exchange: "4b", xland: "4e",
-      combA: "5a", combAout: "5b", combB: "5c", reveal: "5d",
+      combA: "5a", combAout: "5b", combB: "5d", reveal: "5f",
       asmath: "6a", pubvals: "6b",
       zsec: "7a", tokey: "7b",
       type: "8a", protect: "8b",
@@ -1615,8 +1615,9 @@
       arrive: "10a", open: "10b", chain: "10c"
     };
     const REF_SUB = {
-      mixAout: [[3400, "3c"]],
-      exchange: [[2600, "4c"], [3900, "4d"]]
+      mixAout: [[3360, "3c"]], mixB: [[3360, "3e"]],
+      exchange: [[2600, "4c"], [3900, "4d"]],
+      combAout: [[3360, "5c"]], combB: [[3360, "5e"]]
     };
     /* WHERE EACH LABEL IS, EXACTLY. For review, not for viewers: the hidden
        window.__ref("4c") pins the beat and pauses every animation in the film
@@ -1626,10 +1627,12 @@
     const REF_AT = {
       "1a": ["problem", 1500], "1b": ["base", 2400],
       "2a": ["pickA", 1200], "2b": ["mine", 2000], "2c": ["pickB", 2000],
-      "3a": ["mixA", 1200], "3b": ["mixAout", 2600], "3c": ["mixAout", 6200], "3d": ["mixB", 6200],
+      "3a": ["mixA", 1200], "3b": ["mixAout", 2350], "3c": ["mixAout", 6200],
+      "3d": ["mixB", 2350], "3e": ["mixB", 6200],
       "4a": ["sendA", 1200], "4b": ["exchange", 1300], "4c": ["exchange", 3350],
       "4d": ["exchange", 5000], "4e": ["xland", 1600],
-      "5a": ["combA", 1200], "5b": ["combAout", 6200], "5c": ["combB", 6200], "5d": ["reveal", 2400],
+      "5a": ["combA", 1200], "5b": ["combAout", 2350], "5c": ["combAout", 4600],
+      "5d": ["combB", 2350], "5e": ["combB", 4600], "5f": ["reveal", 2400],
       "6a": ["asmath", 3600], "6b": ["pubvals", 4400],
       "7a": ["zsec", 2000], "7b": ["tokey", 3200],
       "8a": ["type", 1200], "8b": ["protect", 6200],
@@ -2171,10 +2174,10 @@
            out of it and the number the browser actually computed appears on
            its face. That is the whole transition, in one object, with no
            mapping legend and no second diagram. */
-        sa:   (d) => N ? <Tok role="secret" hex={N} sym="Z" dock={d} label="the shared secret" /> : <Tok role="secret" hex={sharedC} dock={d} masked={!F.rev && !d}
+        sa:   (d) => N ? <Tok role="secret" hex={N} sym="Z" dock={d} label="the shared secret" /> : <Tok role="secret" hex={sharedC} dock={d} masked={!F.rev && !d && !F.fuse}
                        digits={F.toMath && s ? BYTES(s.Z, 3) : null}
                        label={F.toMath ? "the shared secret" : "the final colour"} note="" />,
-        sb:   (d) => N ? <Tok role="secret" hex={N} sym="Z" dock={d} label="the same Z" /> : <Tok role="secret" hex={sharedC} dock={d} masked={!F.rev && !d}
+        sb:   (d) => N ? <Tok role="secret" hex={N} sym="Z" dock={d} label="the same Z" /> : <Tok role="secret" hex={sharedC} dock={d} masked={!F.rev && !d && !F.fuse}
                        digits={F.toMath && s ? BYTES(s.Z, 3) : null}
                        label={F.toMath ? "the same number" : "the final colour"} note="" />,
         ka:   (d) => <Tok role="key" hex={kC} dock={d} label="K · key material"
@@ -2251,7 +2254,10 @@
           );
         placed.add(id);
         const cls = (F.copy === id ? "is-copy " : "") + (F.land && w === F.land ? "is-land " : "")
-          + (F.born === id ? "is-born " : "") + (F.moved === id ? "is-moved " : "");
+          + (F.born === id ? "is-born " : "") + (F.moved === id ? "is-moved " : "")
+          /* a combined result is revealed in colour, then covered until both
+             sides have one (storyboard 5c/5e → 5f) */
+          + (F.fuse && !F.rev && (id === "sa" || id === "sb") ? "covers-late " : "");
         /* ONE DOMINANT OBJECT PER FRAME. A frame may show its inputs beside
            the thing it is about, but only one of them is the subject, and the
            lead is sized so the frame has an unmistakable centre. */
@@ -2310,6 +2316,36 @@
           .replace("{QA}", HUE_NAME(qaC));
       };
 
+      /* THE BLEND IS A TRANSFORMATION, NOT A TOUCH (storyboard 3b/3d/5b/5d).
+         The moving ingredient lands ON the private plate, the two converge for
+         a second to one synchronised colour (--mixc), and only then is the
+         result born at that same spot and allowed to settle into its place.
+         The distances are measured, not guessed, so the ingredient lands on
+         the plate on every screen size. */
+      const mixc = F.fuse && !F.gcm
+        ? (F.k === "mixAout" ? qaC : F.k === "mixB" ? qbC : sharedC) : null;
+      useLayoutEffect(() => {
+        if (!F.fuse || F.gcm) return;
+        /* layout position of a plate inside the column, ignoring transforms:
+           a FLIP from the previous frame may still be moving the private
+           plate when this runs, and a transformed rect would aim at where it
+           WAS, not where it is */
+        const top = (el, root) => { let y = 0; for (let e = el; e && e !== root; e = e.offsetParent) y += e.offsetTop; return y; };
+        for (const focal of document.querySelectorAll(".flm-slot.on .flm-ph-scr .flm-focal")) {
+          const plate = focal.querySelector(".flm-obj .tk-private .tk-box");
+          if (!plate) continue;
+          const at = top(plate, focal);
+          for (const o of focal.querySelectorAll(":scope > .flm-obj")) {
+            if (o.querySelector(".tk-private")) continue;
+            const box = o.querySelector(".tk-box");
+            if (!box) continue;
+            const d = at - top(box, focal);
+            if (o.classList.contains("is-lead")) o.style.setProperty("--rise", d + "px");
+            else o.style.setProperty("--fall", d + "px");
+          }
+        }
+      }, [beat]);
+
       const Shelf = ({ items }) => items.length
         ? <div className="flm-shelf">{items}</div> : null;
 
@@ -2330,7 +2366,8 @@
               + (WORK.has(F.k) ? " working" : "") + (F.cast ? " cast" : "")
               + (F.xchg ? " xchg" : "") + (F.eveIn ? " eve-in" : "")
               + (F.bridge ? " bridging" : "") + (F.sym ? " sym" : "")}
-          data-frame={F.k} data-act={F.act || ""} data-arc={F.arc || ""}>
+          data-frame={F.k} data-act={F.act || ""} data-arc={F.arc || ""}
+          style={mixc ? { "--mixc": mixc } : undefined}>
           {/* THE PHASE CUE. A viewer who lands on a frame cold needs to know
               which of the three questions the film is answering. It is one
               line of small caps with three ticks, carries no box, no colour
@@ -3217,12 +3254,13 @@
         };
         /* review only: jump to a storyboard label and freeze it there */
         window.__refs = Object.keys(REF_AT);
-        window.__ref = (lab) => {
+        window.__ref = (lab, ms) => {
           const at = REF_AT[lab];
           if (!at) throw new Error(`__ref: "${lab}" is not a film frame label`);
+          const t = typeof ms === "number" ? ms : at[1];
           window.__cin(at[0]);
-          setRefPin({ lab, beat: at[0], ms: at[1] });
-          return { label: lab, beat: at[0], ms: at[1] };
+          setRefPin({ lab, beat: at[0], ms: t });
+          return { label: lab, beat: at[0], ms: t };
         };
         window.__insp = (st, m, a, eb) => {
           /* a harness that jumps straight to the message half is standing in

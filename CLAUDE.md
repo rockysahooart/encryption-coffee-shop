@@ -275,11 +275,22 @@ the easiest way to break every harness at once.**
   `{P,A} + {B}` and `{P,B} + {A}` are both `{P,A,B}`. A pairwise average would
   weight one ingredient twice. `paint.js` proves this against the colours the
   page actually paints.
-- A blend is a **6-second held process**, not a cut: the two ingredients meet
-  at ~1.3s, overlap and mix for ~2.4s with `blending…` shown and
-  `mix-blend-mode:hard-light` on the falling plate, and the result only begins
-  to appear at ~3.4s. The beats' `wait` values are tuned to this; changing the
-  animation without changing the waits cuts away mid-blend.
+- A blend is a **6-second transformation**, not a touch (pass 50). On one
+  linear clock:
+  - **0–1.3s:** the moving ingredient lands *on* the private plate. The app
+    measures the distance (`--fall`/`--rise`, by layout offsets, not by
+    transformed rects). The ingredient is translucent, so both colours stay
+    identifiable.
+  - **1.8–2.82s:** a **1.0s convergence** to one colour (`--mixc`, the real
+    `MIX` result).
+  - **2.82–3.36s:** a synchronised hold.
+  - **3.36s:** the result is born on that spot, then settles into its place
+    by 4.8s.
+  - **Combines only:** the result is then covered (4.8–5.4s) until 5f.
+
+  The result is never visible before 3.36s. `wait` values (≥6.4s) are tuned
+  to this; changing the animation without them cuts away mid-blend.
+  `window.__ref("3b", ms)` freezes any moment of it.
 
 **Formula sequence.** Each formula appears on the beat whose visual
 relationship it describes, in the dialogue container, never over the action:
@@ -340,18 +351,21 @@ like "4c needs a bigger Eve" means the same picture in both places.
 | 2b | Alice’s colour stays | `mine` |
 | 2c | Bob chooses | `pickB` |
 | 3a | Alice drags the public colour | `mixA` (gate: drag) |
-| 3b | Blending | `mixAout`, 0–3.4s |
-| 3c | Alice’s mixture | `mixAout`, from 3.4s |
-| 3d | Bob blends | `mixB` |
+| 3b | The colours blend | `mixAout`, 0–3.36s |
+| 3c | Alice’s mixture | `mixAout`, from 3.36s |
+| 3d | Bob’s colours blend | `mixB`, 0–3.36s |
+| 3e | Bob’s mixture | `mixB`, from 3.36s |
 | 4a | Alice sends | `sendA` (gate: tap) |
 | 4b | Alice’s mixture leaves, Bob sends his | `exchange`, 0–2.6s (Bob’s own Send at ~0.8s) |
 | 4c | Eve copies both mixtures | `exchange`, 2.6–3.9s |
 | 4d | Copies to Eve, originals continue | `exchange`, from 3.9s |
 | 4e | Mixtures arrive | `xland` |
 | 5a | Alice combines | `combA` (gate: drag) |
-| 5b | Alice’s result, covered | `combAout` |
-| 5c | Bob combines | `combB` |
-| 5d | Same colour, never sent | `reveal` |
+| 5b | Alice’s colours blend | `combAout`, 0–3.36s |
+| 5c | Alice’s result (covered at ~4.9s) | `combAout`, from 3.36s |
+| 5d | Bob’s colours blend | `combB`, 0–3.36s |
+| 5e | Bob’s result (covered at ~4.9s) | `combB`, from 3.36s |
+| 5f | Same colour, never sent | `reveal` |
 | 6a | Paint becomes numbers | `asmath` |
 | 6b | Public values Q_A, Q_B | `pubvals` |
 | 7a | Shared secret Z | `zsec` |

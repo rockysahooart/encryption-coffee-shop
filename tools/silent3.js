@@ -18,7 +18,7 @@ const shot = () => {
     const f = e.querySelector("svg > [fill]:not([fill=none])");
     o[e.dataset.obj] = { zone: zone(e), h: +(r.height / st.height).toFixed(3),
       colour: f ? f.getAttribute("fill") : null,
-      masked: !!e.querySelector(".tk-masked"),
+      masked: !!e.querySelector(".tk-masked") || e.classList.contains("covers-late"),
       role: (e.querySelector(".tk") || { className: "" }).className
         .match(/tk-(private|public|secret|key|cipher|seal|message|payload)/)?.[1] || null };
   }
