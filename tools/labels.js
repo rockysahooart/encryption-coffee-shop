@@ -3,7 +3,10 @@
    sub-states of LABEL_SUB); the café walks 0a → 0d; exactly one label is
    ever visible; and the label is out of the layout — absolutely positioned,
    inert, unanimated — and overlaps no dialogue, control or phase cue. */
-const { KEYS, reach, launch, LABELS, LABEL_SUB } = require("./drive");
+const { KEYS, reach, launch, LABELS, LABEL_SUB, gotoRef } = require("./drive");
+/* where every object is, to tell a frozen frame from a moving one */
+const snap = () => [...document.querySelectorAll(".flm [data-obj], .flm-bsend")].map((e) => {
+  const r = e.getBoundingClientRect(); return `${e.dataset.obj || "bsend"}:${Math.round(r.x)},${Math.round(r.y)},${Math.round(r.width)},${(+getComputedStyle(e).opacity).toFixed(2)}`; }).join(" ");
 
 const probe = () => {
   const ls = [...document.querySelectorAll(".ref-label")].filter((e) => {
@@ -58,6 +61,25 @@ const probe = () => {
         await p.waitForTimeout(ms + 350);
         check(await p.evaluate(probe), lab, `${k} +${ms}ms`);
       }
+    }
+    /* every label is a deterministic, inspectable state: __ref jumps to it
+       and freezes it there, and the corner says the same label */
+    const refs = await p.evaluate(() => window.__refs || []);
+    const want = [...new Set([...Object.values(LABELS), ...Object.values(LABEL_SUB).flat().map((x) => x[1])])];
+    ok(want.every((l) => refs.includes(l)) && refs.every((l) => want.includes(l)),
+      "__ref knows exactly the storyboard's film labels", refs.join(" "));
+    for (const l of refs) {
+      await gotoRef(p, l);
+      const a = await p.evaluate(snap), r = await p.evaluate(probe);
+      await p.waitForTimeout(1200);
+      const b2 = await p.evaluate(snap);
+      ok(r.n === 1 && r.text === l, `__ref ${l}: the corner shows ${l}`, r.text);
+      ok(a === b2, `__ref ${l}: frozen`, a === b2 ? "" : "the picture moved while pinned");
+    }
+    for (const l of ["0a", "0b", "0c", "0d"]) {
+      const r0 = await gotoRef(p, l);
+      const r = await p.evaluate(probe);
+      ok(r.n === 1 && r.text === l, `gotoRef ${l}: the café shows ${l}`, `${r.text} at t=${r0.t}`);
     }
     await p.close();
   }

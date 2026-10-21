@@ -313,9 +313,17 @@ like "4c needs a bigger Eve" means the same picture in both places.
   positioned, `pointer-events:none`, no animation. It is a review marker, not
   lesson copy.
 - **Code:** `REF` / `REF_SUB` (film) and `CAFE_REF` (café notes) in `app.tsx`.
-  The expected table is `LABELS` / `LABEL_SUB` in `tools/drive.js`.
+  The expected table is `LABELS` / `LABEL_SUB` in `tools/drive.js`; the freeze
+  points are `REF_AT` in `app.tsx`.
   `tools/labels.js` checks that they agree and that the label overlaps nothing.
   It is part of the smoke suite.
+- **Inspecting a label:** every film label is a deterministic, frozen state.
+  `window.__ref("4c")` is hidden, review-only and not in the UI. It pins the
+  beat and pauses every animation in the film at that label's moment
+  (`REF_AT` in `app.tsx`). `window.__refs` lists the labels. From the tools:
+  - `node tools/shoot.js 4b 4c 4d` screenshots each label frozen, at 393 and 1440
+  - `gotoRef(page, "4c")` in `tools/drive.js` does the same inside a harness;
+    café labels `0a`–`0d` are found by stepping the café tape
 - **Changing a beat:** if you add, split or rename a beat, give it a label in
   all three places and in Figma, in story order. Don't renumber existing
   labels unless the storyboard is re-cut.
@@ -336,7 +344,7 @@ like "4c needs a bigger Eve" means the same picture in both places.
 | 3c | Alice’s mixture | `mixAout`, from 3.4s |
 | 3d | Bob blends | `mixB` |
 | 4a | Alice sends | `sendA` (gate: tap) |
-| 4b | Both mixtures leave | `exchange`, 0–2.6s |
+| 4b | Alice’s mixture leaves, Bob sends his | `exchange`, 0–2.6s (Bob’s own Send at ~0.8s) |
 | 4c | Eve copies both mixtures | `exchange`, 2.6–3.9s |
 | 4d | Copies to Eve, originals continue | `exchange`, from 3.9s |
 | 4e | Mixtures arrive | `xland` |

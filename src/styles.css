@@ -6056,3 +6056,36 @@ details.read summary:hover{color:var(--ink-2)}
   .flm:is(.cam-wide,.journey,.cam-both) .flm-net .flm-hold{
     flex-direction:row;justify-content:center;align-items:flex-start;gap:10px}
 }
+
+/* ============================================================================
+   PASS 49 — Bob sends his own mixture
+   Alice's tap sends hers (it leaves at 0.5s). Bob's phone shows its own Send
+   pressed at ~0.8s, and his mixture leaves his side at 1.1s on a shorter
+   flight, so the two still meet under Eve at ~3.1s, when the copies split.
+   The chip is Bob's action drawn, not a control: no accent, not a button.
+   ========================================================================= */
+.flm-bsend{
+  position:absolute;left:50%;bottom:7%;transform:translateX(-50%);z-index:3;
+  padding:3px 10px;border-radius:var(--r-s);pointer-events:none;
+  font-family:var(--sans);font-size:max(9px,min(12px,2.2cqh));font-weight:600;color:var(--ink);
+  box-shadow:inset 0 0 0 1px var(--line-2);background:rgba(231,239,233,.04);
+  opacity:0;animation:bobSend 2000ms var(--ease) 200ms both;
+}
+@keyframes bobSend{
+  0%{opacity:0}
+  14%{opacity:1;transform:translateX(-50%) scale(1);background:rgba(231,239,233,.04)}
+  30%,38%{opacity:1;transform:translateX(-50%) scale(.9);background:rgba(231,239,233,.2)}
+  52%,74%{opacity:1;transform:translateX(-50%) scale(1);background:rgba(231,239,233,.04)}
+  92%,100%{opacity:0;transform:translateX(-50%) scale(1)}
+}
+.flm.f-exchange.j-both .flm-lane [data-obj="qb"]{animation:travel42BA 4000ms var(--ease) 1100ms both}
+@media (prefers-reduced-motion:reduce){.flm-bsend{opacity:0}}
+
+/* 5d: with Eve between them, each phone stands at the inner edge of its
+   owner's half, so the face beside it stays clear; and the wire between them
+   is drawn, visibly empty — the shared colour never went down it */
+@container (min-width:560px){
+  .flm.cam-both.eve-in .flm-slot.on.flm-a .flm-ph{justify-self:end}
+  .flm.cam-both.eve-in .flm-slot.on.flm-b .flm-ph{justify-self:start}
+}
+.flm.f-reveal .flm-lane-track{opacity:.7}

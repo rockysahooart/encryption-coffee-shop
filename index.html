@@ -6062,6 +6062,39 @@ details.read summary:hover{color:var(--ink-2)}
   .flm:is(.cam-wide,.journey,.cam-both) .flm-net .flm-hold{
     flex-direction:row;justify-content:center;align-items:flex-start;gap:10px}
 }
+
+/* ============================================================================
+   PASS 49 — Bob sends his own mixture
+   Alice's tap sends hers (it leaves at 0.5s). Bob's phone shows its own Send
+   pressed at ~0.8s, and his mixture leaves his side at 1.1s on a shorter
+   flight, so the two still meet under Eve at ~3.1s, when the copies split.
+   The chip is Bob's action drawn, not a control: no accent, not a button.
+   ========================================================================= */
+.flm-bsend{
+  position:absolute;left:50%;bottom:7%;transform:translateX(-50%);z-index:3;
+  padding:3px 10px;border-radius:var(--r-s);pointer-events:none;
+  font-family:var(--sans);font-size:max(9px,min(12px,2.2cqh));font-weight:600;color:var(--ink);
+  box-shadow:inset 0 0 0 1px var(--line-2);background:rgba(231,239,233,.04);
+  opacity:0;animation:bobSend 2000ms var(--ease) 200ms both;
+}
+@keyframes bobSend{
+  0%{opacity:0}
+  14%{opacity:1;transform:translateX(-50%) scale(1);background:rgba(231,239,233,.04)}
+  30%,38%{opacity:1;transform:translateX(-50%) scale(.9);background:rgba(231,239,233,.2)}
+  52%,74%{opacity:1;transform:translateX(-50%) scale(1);background:rgba(231,239,233,.04)}
+  92%,100%{opacity:0;transform:translateX(-50%) scale(1)}
+}
+.flm.f-exchange.j-both .flm-lane [data-obj="qb"]{animation:travel42BA 4000ms var(--ease) 1100ms both}
+@media (prefers-reduced-motion:reduce){.flm-bsend{opacity:0}}
+
+/* 5d: with Eve between them, each phone stands at the inner edge of its
+   owner's half, so the face beside it stays clear; and the wire between them
+   is drawn, visibly empty — the shared colour never went down it */
+@container (min-width:560px){
+  .flm.cam-both.eve-in .flm-slot.on.flm-a .flm-ph{justify-self:end}
+  .flm.cam-both.eve-in .flm-slot.on.flm-b .flm-ph{justify-self:start}
+}
+.flm.f-reveal .flm-lane-track{opacity:.7}
 </style>
 </head>
 <body>
@@ -7948,6 +7981,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         born: "qa2",
         peek: true,
         wait: 7200,
+        bobSends: true,
         say: "You swap mixtures. Eve copies both.",
         sub: "Eve can see the mixed colours, but not the original private colours."
       },
@@ -8222,6 +8256,36 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     const REF_SUB = {
       mixAout: [[3400, "3c"]],
       exchange: [[2600, "4c"], [3900, "4d"]]
+    };
+    const REF_AT = {
+      "1a": ["problem", 1500],
+      "1b": ["base", 2400],
+      "2a": ["pickA", 1200],
+      "2b": ["mine", 2e3],
+      "2c": ["pickB", 2e3],
+      "3a": ["mixA", 1200],
+      "3b": ["mixAout", 2600],
+      "3c": ["mixAout", 6200],
+      "3d": ["mixB", 6200],
+      "4a": ["sendA", 1200],
+      "4b": ["exchange", 1300],
+      "4c": ["exchange", 3350],
+      "4d": ["exchange", 5e3],
+      "4e": ["xland", 1600],
+      "5a": ["combA", 1200],
+      "5b": ["combAout", 6200],
+      "5c": ["combB", 6200],
+      "5d": ["reveal", 2400],
+      "6a": ["asmath", 3600],
+      "6b": ["pubvals", 4400],
+      "7a": ["zsec", 2e3],
+      "7b": ["tokey", 3200],
+      "8a": ["type", 1200],
+      "8b": ["protect", 6200],
+      "9a": ["journey", 4600],
+      "10a": ["arrive", 2e3],
+      "10b": ["open", 2400],
+      "10c": ["chain", 1500]
     };
     const CONSUMED = { base: ["qa", "qb"], msg: ["pkt"], sa: ["ka"], sb: ["kb"], pkt: ["plain"] };
     const SIDE_OF = {
@@ -8881,7 +8945,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             role: "seal",
             state: opened ? opened.ok ? "ok" : "bad" : ""
           }
-        )), /* @__PURE__ */ React.createElement("div", { className: "flm-focal" }, bin.b), beat === "pickB" && /* the same tray Alice used, with his choice resolving out of
+        )), /* @__PURE__ */ React.createElement("div", { className: "flm-focal" }, bin.b), F.bobSends && /* @__PURE__ */ React.createElement("span", { className: "flm-bsend", "aria-hidden": "true" }, "Send"), beat === "pickB" && /* the same tray Alice used, with his choice resolving out of
            it — so "Bob keeps one too" is a thing the viewer watches
            happen rather than a colour that was already there */
         /* @__PURE__ */ React.createElement("div", { className: "cin-pick done bob" }, bobPool.map((c) => /* @__PURE__ */ React.createElement(
@@ -9312,12 +9376,36 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       const [bridge, setBridge] = useState(null);
       const [cbeat, setCbeat] = useState("you");
       const [refSub, setRefSub] = useState(null);
+      const [refPin, setRefPin] = useState(null);
       useEffect(() => {
         setRefSub(null);
         const ts = (REF_SUB[cbeat] || []).map(([ms, l]) => setTimeout(() => setRefSub(l), ms));
         return () => ts.forEach(clearTimeout);
       }, [cbeat]);
-      const refLabel = refSub || REF[cbeat] || null;
+      const refLabel = (refPin && refPin.beat === cbeat ? refPin.lab : null) || refSub || REF[cbeat] || null;
+      useEffect(() => {
+        if (!refPin || refPin.beat !== cbeat) return;
+        const hold = () => {
+          const root = document.querySelector(".flm");
+          if (!root || !document.getAnimations) return;
+          for (const a of document.getAnimations()) {
+            const t = a.effect && a.effect.target;
+            if (!t || !root.contains(t)) continue;
+            a.pause();
+            a.currentTime = refPin.ms;
+          }
+        };
+        let r1 = 0, r2 = 0;
+        r1 = requestAnimationFrame(() => {
+          r2 = requestAnimationFrame(hold);
+        });
+        const ts = [250, 700, 1200].map((ms) => setTimeout(hold, ms));
+        return () => {
+          cancelAnimationFrame(r1);
+          cancelAnimationFrame(r2);
+          ts.forEach(clearTimeout);
+        };
+      }, [refPin, cbeat]);
       const [pick, setPick] = useState(null);
       const [opened, setOpened] = useState(null);
       const [peeking, setPeeking] = useState(false);
@@ -9543,6 +9631,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           cManual.current = true;
           cRun.current++;
           setCbeat(x);
+          setRefPin(null);
           if (FKEY.indexOf(x) >= FKEY.indexOf("press") || x === "tamper" || x === "broke") {
             if (!text) setText("meet me at six");
             if (!packRef.current && kit) kit.encrypt(text || "meet me at six").then((p2) => {
@@ -9551,6 +9640,14 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               kit.open(p2).then(setOpened);
             });
           }
+        };
+        window.__refs = Object.keys(REF_AT);
+        window.__ref = (lab) => {
+          const at2 = REF_AT[lab];
+          if (!at2) throw new Error(`__ref: "${lab}" is not a film frame label`);
+          window.__cin(at2[0]);
+          setRefPin({ lab, beat: at2[0], ms: at2[1] });
+          return { label: lab, beat: at2[0], ms: at2[1] };
         };
         window.__insp = (st, m, a, eb) => {
           if (a === "aes" || eb && eb === "rest") setKeyReady(true);

@@ -1485,7 +1485,7 @@
       { k: "exchange", cam: "wide", arc: "secret", xchg: true,
         at: { pa: "a", pb: "b", qa: "lane", qb: "lane", qa2: "eve", qb2: "eve" },
         lead: "qa", journey: "both", from: { qa2: ["qa"], qb2: ["qb"] },
-        born: "qa2", peek: true, wait: 7200,
+        born: "qa2", peek: true, wait: 7200, bobSends: true,
         say: "You swap mixtures. Eve copies both.",
         sub: "Eve can see the mixed colours, but not the original private colours." },
       /* storyboard 4e: the census. Each mixture finishes its trip INTO the
@@ -1617,6 +1617,24 @@
     const REF_SUB = {
       mixAout: [[3400, "3c"]],
       exchange: [[2600, "4c"], [3900, "4d"]]
+    };
+    /* WHERE EACH LABEL IS, EXACTLY. For review, not for viewers: the hidden
+       window.__ref("4c") pins the beat and pauses every animation in the film
+       at this many ms after the beat began, so a labelled state can be
+       inspected without waiting for a timer. A label inside a split beat sits
+       inside its REF_SUB window; the rest are the settled picture. */
+    const REF_AT = {
+      "1a": ["problem", 1500], "1b": ["base", 2400],
+      "2a": ["pickA", 1200], "2b": ["mine", 2000], "2c": ["pickB", 2000],
+      "3a": ["mixA", 1200], "3b": ["mixAout", 2600], "3c": ["mixAout", 6200], "3d": ["mixB", 6200],
+      "4a": ["sendA", 1200], "4b": ["exchange", 1300], "4c": ["exchange", 3350],
+      "4d": ["exchange", 5000], "4e": ["xland", 1600],
+      "5a": ["combA", 1200], "5b": ["combAout", 6200], "5c": ["combB", 6200], "5d": ["reveal", 2400],
+      "6a": ["asmath", 3600], "6b": ["pubvals", 4400],
+      "7a": ["zsec", 2000], "7b": ["tokey", 3200],
+      "8a": ["type", 1200], "8b": ["protect", 6200],
+      "9a": ["journey", 4600],
+      "10a": ["arrive", 2000], "10b": ["open", 2400], "10c": ["chain", 1500]
     };
 
     /* ------------------------------------------------ WHO HOLDS WHAT ------
@@ -2417,6 +2435,10 @@
                     state={opened ? (opened.ok ? "ok" : "bad") : ""} /></span>
                 )}
                 <div className="flm-focal">{bin.b}</div>
+                {/* BOB SENDS HIS OWN. Alice's tap sends Alice's mixture; a
+                    moment later Bob presses Send on his phone and his leaves
+                    from his side. Not a control: it is Bob's action, drawn. */}
+                {F.bobSends && <span className="flm-bsend" aria-hidden="true">Send</span>}
                 {beat === "pickB" && (
                   /* the same tray Alice used, with his choice resolving out of
                      it — so "Bob keeps one too" is a thing the viewer watches
@@ -2881,12 +2903,33 @@
       /* the review label for the frame on screen; a split beat advances it
          on the same clock as its animation */
       const [refSub, setRefSub] = useState(null);
+      const [refPin, setRefPin] = useState(null);
       useEffect(() => {
         setRefSub(null);
         const ts = (REF_SUB[cbeat] || []).map(([ms, l]) => setTimeout(() => setRefSub(l), ms));
         return () => ts.forEach(clearTimeout);
       }, [cbeat]);
-      const refLabel = refSub || REF[cbeat] || null;
+      const refLabel = (refPin && refPin.beat === cbeat ? refPin.lab : null) || refSub || REF[cbeat] || null;
+      /* hold a pinned label's picture: every animation in the film paused at
+         the label's moment, re-applied briefly so late-starting ones (a FLIP,
+         a connector) are caught too */
+      useEffect(() => {
+        if (!refPin || refPin.beat !== cbeat) return;
+        const hold = () => {
+          const root = document.querySelector(".flm");
+          if (!root || !document.getAnimations) return;
+          for (const a of document.getAnimations()) {
+            const t = a.effect && a.effect.target;
+            if (!t || !root.contains(t)) continue;
+            a.pause();
+            a.currentTime = refPin.ms;
+          }
+        };
+        let r1 = 0, r2 = 0;
+        r1 = requestAnimationFrame(() => { r2 = requestAnimationFrame(hold); });
+        const ts = [250, 700, 1200].map((ms) => setTimeout(hold, ms));
+        return () => { cancelAnimationFrame(r1); cancelAnimationFrame(r2); ts.forEach(clearTimeout); };
+      }, [refPin, cbeat]);
       const [pick, setPick] = useState(null);
       const [opened, setOpened] = useState(null);
       const [peeking, setPeeking] = useState(false);
@@ -3162,7 +3205,7 @@
       }, [text, stage, mode]);
       useEffect(() => {
         /* a harness needs to hold a beat still; the film otherwise plays on */
-        window.__cin = (x) => { cManual.current = true; cRun.current++; setCbeat(x);
+        window.__cin = (x) => { cManual.current = true; cRun.current++; setCbeat(x); setRefPin(null);
           /* see above: no default pick */
           if (FKEY.indexOf(x) >= FKEY.indexOf("press") || x === "tamper" || x === "broke") {
             if (!text) setText("meet me at six");
@@ -3171,6 +3214,15 @@
               kit.open(p2).then(setOpened);
             });
           }
+        };
+        /* review only: jump to a storyboard label and freeze it there */
+        window.__refs = Object.keys(REF_AT);
+        window.__ref = (lab) => {
+          const at = REF_AT[lab];
+          if (!at) throw new Error(`__ref: "${lab}" is not a film frame label`);
+          window.__cin(at[0]);
+          setRefPin({ lab, beat: at[0], ms: at[1] });
+          return { label: lab, beat: at[0], ms: at[1] };
         };
         window.__insp = (st, m, a, eb) => {
           /* a harness that jumps straight to the message half is standing in
