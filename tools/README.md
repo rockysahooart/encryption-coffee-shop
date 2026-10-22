@@ -50,13 +50,13 @@ name used to test `problem` silently. Now `__cin("crossA")` throws
 ## Baseline
 
 The machine-readable copy is `baseline.json`, which `smoke.js` compares
-against; change both together. Recorded 2026-10-20 at `8307833` (the build GitHub Pages serves), with
+against; change both together. Recorded 2026-10-22 after pass 53, with
 Playwright 1.61.1 / Chromium 149, Node 18.15, macOS. A result listed here is
 known; anything else is a regression.
 
 | harness | result |
 |---|---|
-| `fit.js` | **1 known issue** — `chain` at 320×700: `.flm-rail runs outside the module`. Not a demo width. |
+| `fit.js` | pass at every width. The old 320×700 `chain` overflow was fixed in pass 53 (the mobile recap holds two by two). |
 | `six.js` | **advisory, not a failure** — the wide network shots (`base`, `exchange`, `xland`, `pubvals`, `journey`) report "biggest object under 5% of stage" (2.3–4.4%). Pass 48 made the characters much larger in those shots, so the objects are a smaller share of the frame; whether the 5% threshold still describes the intended design is unresolved pending a visual review. |
 | `hands.js`, `touch.js`, `walk.js`, `validate44.js`, `labels.js`, `silent3.js`, `locked.js`, `paint.js`, `real.js`, `a11y2.js` | pass (pass 48 removed the old `exchange` 88>82 clip) |
 

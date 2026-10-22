@@ -235,8 +235,31 @@ plates with a 1px inside stroke, in three sizes by emphasis (close-up,
 two-shot, wide). Spacing inside the phone uses one unit,
 `--u: calc(var(--ph-h)/50)`. Removed and not to return: vault padlock header,
 history shelf, the packet's "1x" tag, "you chose this one", the grab hint.
-The Figma frames 1a–10c are generated from production geometry; when the
-film changes, regenerate them rather than hand-editing them apart.
+
+**One grid in the colour close-ups (pass 53).** On every frame where a colour
+is chosen or blended (2a–5e) the phone screen is a fixed three-row grid:
+row 1 what comes in (the public colour, or the other side's mixture), row 2
+the private colour, row 3 the result. One plate size (78% of the screen's
+content width), rows a fixed pitch from the top (`--pitch`, 15.1u), so adding
+the result row never moves the rows above it. The dialogue row reserves its
+tallest height across these beats so the phone never changes size between a
+gate and its outcome. The public colour stays in the chooser's phone at 60%
+during 2a–2c; the picker tray leaves once Alice has chosen.
+
+**Mobile is directed, not scaled (pass 53).** Below 560px the film has its own
+composition (Figma row "MOBILE · 393"; 360 and 320 follow the same rules):
+close-ups put a ≈78%-of-stage phone beside a figure 58% of its height,
+overlapping the glass edge; network shots (1b, 4b–4e, 6b, 9a) bring Alice and
+Bob in from the edges at half the stage width, standing behind their phones,
+with Eve in a wider centre column holding her copies and the lane drawn at
+the copies' size; two-shots (6a, 7a, 7b) put each figure behind its phone;
+5f keeps Eve between the phones; 10c stands Alice and Bob above a recap that
+stays two by two. Eve's copies carry no visible caption at any width — the
+words remain for screen readers (`a11y2.js`).
+
+Figma holds the design (desktop frames 1a–10c, the mobile row, and the
+"FIGMA ↔ DEPLOYED PARITY AUDIT" section with every decision by label). Design
+there first, implement, then check each changed label against its frame.
 
 **Object continuity.** Every object has a stable `data-obj` id and is FLIPped
 between frames by that id — objects **transform and move**, they do not
@@ -290,15 +313,16 @@ the easiest way to break every harness at once.**
   page actually paints.
 - A blend is a **6-second transformation**, not a touch (pass 50). On one
   linear clock:
-  - **0–1.3s:** the moving ingredient lands *on* the private plate. The app
-    measures the distance (`--fall`/`--rise`, by layout offsets, not by
-    transformed rects). The ingredient is translucent, so both colours stay
-    identifiable.
+  - **0–1.3s:** the moving ingredient drops from row 1 *onto* the private
+    plate in row 2 until the edges coincide (the travel is exactly one grid
+    pitch; FLIP is suspended in a blend frame so both sources start in
+    place). The ingredient is translucent, so both colours stay identifiable.
   - **1.8–2.82s:** a **1.0s convergence** to one colour (`--mixc`, the real
     `MIX` result).
   - **2.82–3.36s:** a synchronised hold.
-  - **3.36s:** the result is born on that spot, then settles into its place
-    by 4.8s.
+  - **3.36s:** the result is born on the stack; from 3.6s it pulls down into
+    row 3 (by 4.8s), uncovering the private plate, which never moved.
+  - **4.8–5.2s:** only then does the result's caption appear.
   - **Combines only:** the result is then covered (4.8–5.4s) until 5f.
 
   The result is never visible before 3.36s. `wait` values (≥6.4s) are tuned

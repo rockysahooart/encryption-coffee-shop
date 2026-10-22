@@ -1440,16 +1440,19 @@
         sub: "Alice, Bob and Eve can all see this one." },
 
       /* -- 3-4. Alice's private value: chosen, then held ------------------ */
-      { k: "pickA", cam: "a", arc: "secret", at: { pa: "a" }, lead: "pa",
+      /* the public colour stays in the phone, quieter, while the private one
+         is chosen: "shared + mine -> my mixture" without relying on memory
+         of 1b (pass 53). Bob's phone shows it the same way in 2c. */
+      { k: "pickA", cam: "a", arc: "secret", at: { base: "a", pa: "a" }, lead: "pa",
         from: { pa: "pick" }, act: "pick", point: "picker", empty: "pa",
         say: "Choose your private colour", sub: "" },
-      { k: "mine", cam: "a", arc: "secret", at: { pa: "a" }, lead: "pa", keep: "pa",
+      { k: "mine", cam: "a", arc: "secret", at: { base: "a", pa: "a" }, lead: "pa", keep: "pa",
         claim: true, wait: 4400,
         say: "{MINE} is yours",
         sub: "It stays in this slot. It never leaves the phone." },
 
       /* -- 5. Bob does the same, so the mirror is established early ------- */
-      { k: "pickB", cam: "b", arc: "secret", at: { pb: "b" }, lead: "pb",
+      { k: "pickB", cam: "b", arc: "secret", at: { base: "b", pb: "b" }, lead: "pb",
         from: { pb: "pick" }, born: "pb", claim: true, wait: 3800,
         say: "Bob keeps one too", sub: "Neither of you will ever see the other's." },
 
@@ -2052,6 +2055,11 @@
         const was = FLIPS.get(id);
         FLIPS.set(id, now);
         if (!was || REDUCE() || now.width < 1) return;
+        /* a blend's sources start where the blend needs them: the blend
+           itself is the only travel in that frame (pass 53). Without this,
+           after a cut to Bob his private plate flew in from his thumbnail
+           phone while the public colour was already falling onto it. */
+        if (el.closest(".flm.fusing:not(.gcm)")) return;
         const dx = (was.left + was.width / 2) - (now.left + now.width / 2);
         const dy = (was.top + was.height / 2) - (now.top + now.height / 2);
         const s = Math.max(.25, Math.min(4, was.width / Math.max(1, now.width)));
@@ -2383,10 +2391,8 @@
             ))}
           </div>
           <div className="flm-stage">
-            {/* THE MIDDLE OF A BLEND IS A STATE, NOT A GAP. The two colours
-                overlap and the frame says so while it is happening, so the
-                result is never the first thing the viewer learns. */}
-            {F.fuse && <span className="flm-blending" aria-hidden="true">blending…</span>}
+            {/* the middle of a blend needs no caption (pass 53): the two
+                plates converging on one footprint is the evidence */}
 
             <div className={"flm-slot flm-a" + (lit("a") ? " on" : " off")}>
               <img className="cin-face" src={SPRITE.you} alt="" />
@@ -2409,12 +2415,10 @@
                     chosen with a tap. A separate tray under the phone could not
                     coexist with a phone this size, and a tap is the plainer gesture
                     for "choose" in any case. */}
-                {(beat === "pickA" || beat === "mine") && (
-                  /* The row stays for one beat after the choice, with the five
-                     that were not taken dimmed and the one that was ringed, so
-                     the viewer can see their own decision rather than only its
-                     result. It is inert on that beat: nothing in a watching
-                     frame may look pressable. */
+                {beat === "pickA" && (
+                  /* The row leaves once the choice is made (pass 53): the
+                     slot shows the decision, and a tray of five colours not
+                     taken would be history competing with it. */
                   <div className={"cin-pick" + (beat === "mine" ? " done" : "")}>
                     {SWATCHES.map((c) => (
                       <button key={c} className={"cin-sw" + (pick && mine === c.toUpperCase() ? " on" : "")}

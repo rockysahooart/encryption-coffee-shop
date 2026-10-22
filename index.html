@@ -6327,6 +6327,203 @@ details.read summary:hover{color:var(--ink-2)}
 }
 /* the exchange stage reveals the glass contents; the history shelf stays hidden */
 .flm.flm.xchg .flm-ph-scr .flm-shelf{display:none}
+
+/* ============================================================================
+   PASS 53 — one design, audited once (Figma "FIGMA ↔ DEPLOYED PARITY AUDIT")
+   ========================================================================= */
+
+/* 1. THE COLOUR CLOSE-UPS SHARE ONE GRID. Inside the phone, on every frame
+      where a colour is chosen or blended (2a–5e), there are three fixed rows:
+      1 what comes in (the public colour, or the other side's mixture),
+      2 the private colour, 3 the result. One plate size throughout. Rows are
+      a fixed pitch from the top, so adding a result row never moves the rows
+      above it, and the blend's travel is exactly one pitch. */
+.flm:is(.f-pickA,.f-mine,.f-pickB,.f-mixA,.f-mixAout,.f-mixB,.f-combA,.f-combAout,.f-combB)
+  .flm-slot.on .flm-ph-scr{
+  --pitch:calc(var(--u) * 15.1);
+  display:grid;grid-template-columns:minmax(0,1fr);
+  grid-template-rows:var(--pitch) var(--pitch) minmax(0,1fr);
+  align-items:start;justify-items:center;align-content:start;
+  padding-top:calc(var(--u) * 3.5);row-gap:0}
+.flm:is(.f-pickA,.f-mine,.f-pickB,.f-mixA,.f-mixAout,.f-mixB,.f-combA,.f-combAout,.f-combB)
+  .flm-slot.on .flm-ph-scr .flm-focal{display:contents}
+.flm:is(.f-pickA,.f-mine,.f-pickB,.f-mixA,.f-mixAout,.f-mixB,.f-combA,.f-combAout,.f-combB)
+  .flm-slot.on .flm-ph-scr .flm-focal > .flm-obj{width:78%;grid-column:1;grid-row:3;margin:0}
+.flm.flm.flm .flm-slot.on .flm-ph-scr .flm-focal > .flm-obj[data-obj="base"],
+.flm.flm.flm .flm-a.on .flm-ph-scr .flm-focal > .flm-obj[data-obj="qb"],
+.flm.flm.flm .flm-b.on .flm-ph-scr .flm-focal > .flm-obj[data-obj="qa"]{grid-row:1}
+.flm.flm.flm .flm-slot.on .flm-ph-scr .flm-focal > .flm-obj:is([data-obj="pa"],[data-obj="pb"]){grid-row:2}
+/* the tray is the third row: the plate's width, swatches drawn smaller
+   (each keeps its 44px hit area via ::after, and the row gap keeps the hit
+   areas from overlapping) */
+.flm:is(.f-pickA,.f-pickB) .flm-slot.on .flm-ph-scr{padding-bottom:var(--u)}
+.flm.flm:is(.f-pickA,.f-pickB) .flm-slot.on .flm-ph-scr .cin-pick{grid-row:3;grid-column:1;margin:0;
+  width:78%;padding:0;gap:calc(var(--u) * 1.4) calc(var(--u) * 1.8)}
+.flm.flm:is(.f-pickA,.f-pickB) .flm-slot.on .flm-ph-scr .cin-sw{min-height:0;aspect-ratio:auto;
+  height:calc(var(--u) * 5)}
+/* the blend travels exactly one row: in from row 1, out to row 3 */
+.flm.fusing:not(.gcm):is(.f-mixAout,.f-mixB,.f-combAout,.f-combB) .flm-focal > .flm-obj{
+  --fall:var(--pitch) !important;--rise:calc(var(--pitch) * -1) !important}
+
+/* 2. THE PUBLIC COLOUR STAYS while a private colour is chosen: present, so
+      the causal model holds, but quieter than the choice being made. */
+.flm:is(.f-pickA,.f-mine,.f-pickB) .flm-ph-scr .flm-focal > [data-obj="base"]{opacity:.6}
+
+/* 3. THE RESULT IS NAMED ONLY ONCE IT HAS ARRIVED. Born on the stack at
+      3.4s, it leaves downward from 3.6s, uncovering the private plate, and
+      lands in row 3 by 4.8s; its caption fades in over 4.8–5.2s. */
+@keyframes blendOut{
+  0%,55%{transform:translateY(var(--rise,-96%));opacity:0}
+  57%{transform:translateY(var(--rise,-96%));opacity:1}
+  60%{transform:translateY(var(--rise,-96%));opacity:1;animation-timing-function:cubic-bezier(.32,0,.2,1)}
+  80%,100%{transform:none;opacity:1}
+}
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-lead .tk-l{animation:labelLate 6000ms linear both}
+@keyframes labelLate{0%,80%{opacity:0}87%,100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-lead .tk-l{animation:none}}
+
+/* 4. EVE'S COPIES CARRY NO VISIBLE CAPTION AT ANY WIDTH: same shape, same
+      colour. The words stay for a reader who cannot see the colours. */
+.flm.flm:is(.xchg,.eve-in) .flm-net .flm-hold .tk-l{display:block;position:absolute;left:0;top:0;
+  opacity:0;pointer-events:none;margin:0}
+
+/* 6. THE PHONE HOLDS STILL THROUGH THE COLOUR SEQUENCE. The stage takes
+      whatever height the dialogue leaves, so a one-line turn and a two-line
+      narration gave the phone two sizes and moved it at the moment of the
+      drop. The dialogue's row reserves the tallest line these beats use;
+      the box itself sits at the bottom of that row at its own height. */
+.flm:is(.f-pickA,.f-mine,.f-pickB,.f-mixA,.f-mixAout,.f-mixB,.f-combA,.f-combAout,.f-combB){
+  grid-template-rows:auto minmax(0,1fr) minmax(144px,auto) auto}
+.flm:is(.f-pickA,.f-mine,.f-pickB,.f-mixA,.f-mixAout,.f-mixB,.f-combA,.f-combAout,.f-combB) .flm-rail{align-self:end}
+@container (min-width:560px){
+  .flm:is(.f-pickA,.f-mine,.f-pickB,.f-mixA,.f-mixAout,.f-mixB,.f-combA,.f-combAout,.f-combB){
+    grid-template-rows:auto minmax(0,1fr) minmax(91px,auto) auto}
+}
+
+/* 7. 5f HAS EVE AT EVERY WIDTH. "Eve has both mixtures and still cannot make
+      this one" needs Eve and her two copies in the frame; below 560px she
+      was not rendered. Narrow: a third, narrower column between the phones. */
+@container (max-width:559.98px){
+  .flm.cam-both.eve-in .flm-stage{grid-template-columns:minmax(0,1fr) minmax(0,.62fr) minmax(0,1fr)}
+  .flm.cam-both.eve-in .flm-net{display:flex;flex-direction:column;align-items:center;
+    justify-content:flex-start;gap:4px;opacity:.6;filter:none}
+  .flm.cam-both.eve-in .flm-net .flm-hold{flex-direction:column;align-items:center;gap:6px}
+  .flm.cam-both.eve-in .flm-net .flm-hold > .flm-obj{width:100%}
+  /* each phone fits its narrower column (phone width = .479 x height) */
+  .flm.cam-both.eve-in .flm-slot.on .flm-ph-body{--ph-h:min(46cqh,70cqw)}
+}
+
+/* ============================================================================
+   PASS 53 · MOBILE — the same story, directed for an iPhone frame
+   (Figma "MOBILE · 393" row; 393 authored, 360 and 320 follow the same rules).
+   Only below 560px: the desktop composition is untouched.
+   ========================================================================= */
+@container (max-width:559.98px){
+  /* 1. CLOSE-UPS: the phone takes the height it was leaving empty (≈78% of
+        the stage), the person is a participant beside it (58% of the phone),
+        bottom-aligned with it and overlapping its glass edge by 14%. */
+  .flm.flm.flm.cam-a:not(.cast) .flm-slot.on,
+  .flm.flm.flm.cam-b:not(.cast) .flm-slot.on{
+    grid-template-columns:auto auto;justify-content:center;align-content:center;padding-top:28px}
+  .flm.flm.cam-a:not(.cast) .flm-slot.on .flm-ph-body,
+  .flm.flm.cam-b:not(.cast) .flm-slot.on .flm-ph-body{--ph-h:min(78cqh,122cqw)}
+  .flm.flm.cam-a:not(.cast),.flm.flm.cam-b:not(.cast){--face:70.7cqw}
+  .flm.flm.flm.cam-a:not(.cast) .flm-slot.on .cin-face{margin:0 0 0 calc(var(--face) * -.0956);align-self:end}
+  .flm.flm.flm.cam-b:not(.cast) .flm-slot.on .cin-face{margin:0 calc(var(--face) * -.0956) 0 0;align-self:end}
+  .flm.flm.flm.flm.flm.cam-a:not(.cast) .flm-slot.on .cin-who{align-self:end;justify-self:center;
+    margin:0 0 calc(var(--face) + 6px) calc(var(--face) * -.0956);transform:none}
+  .flm.flm.flm.flm.flm.cam-b:not(.cast) .flm-slot.on .cin-who{align-self:end;justify-self:center;
+    margin:0 calc(var(--face) * -.0956) calc(var(--face) * .88 + 6px) 0;transform:none}
+
+  /* 2. NETWORK SHOTS (1b, 4b–4e, 6b, 9a): Alice and Bob enter from the edges
+        at half the stage width tall, standing behind their phones; Eve takes
+        a wider centre column with what she copied in her hands; whatever
+        travels is drawn at that same size in the lane. */
+  .flm.flm:is(.cam-wide,.journey) .flm-stage{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);column-gap:0}
+  .flm.flm:is(.cam-wide,.journey){--face:44cqw}
+  .flm.flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b,.flm-net){
+    display:grid;grid-template:minmax(0,1fr) / minmax(0,1fr);justify-items:center;align-items:start;
+    width:100%;height:100%;position:relative;overflow:visible}
+  .flm.flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b,.flm-net) > *{grid-area:1 / 1}
+  .flm.flm.flm:is(.cam-wide,.journey) .flm-slot .cin-face{align-self:start;margin:30px 0 0;z-index:0}
+  .flm.flm.flm.flm.flm.flm:is(.cam-wide,.journey) .flm-slot .cin-who{align-self:start;justify-self:center;
+    margin:3px 0 0;font-size:13px;z-index:3;position:static;transform:none}
+  .flm.flm.flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b) .flm-ph{
+    align-self:start;justify-self:center;margin-top:calc(30px + var(--face) * .5);width:auto;z-index:1}
+  .flm.flm.flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b) .flm-ph-body{
+    --ph-h:min(calc(27.9cqw / .479), calc(64cqh - 38px - var(--face) * .5))}
+  .flm.flm.flm.f-base .flm-slot:is(.flm-a,.flm-b) .flm-ph{visibility:hidden}
+  .flm.flm.flm:is(.cam-wide,.journey) .flm-net .flm-eve{align-self:start;margin-top:calc(7px + var(--face) * .887 * .58);z-index:2}
+  .flm.flm.flm:is(.cam-wide,.journey) .flm-net .flm-hold{flex-direction:column;align-items:center;gap:8px}
+  .flm.flm.flm:is(.cam-wide,.journey) .flm-net .flm-hold > .flm-obj{width:min(115px,90%)}
+  .flm.flm.flm:is(.cam-wide,.journey) .flm-net .flm-peek{align-self:start;z-index:3;
+    margin-top:calc(41px + var(--face) * .887 * .58 + 1.6 * min(84px,25.7cqw))}
+  .flm.flm.flm:is(.cam-wide,.journey) .flm-lane .flm-focal > .flm-obj{width:min(115px,35cqw)}
+
+  /* 3. TWO-SHOTS (6a, 7a, 7b) and THE REVEAL (5f): the figure stands behind
+        its phone; the reveal keeps Eve, quieter, between them. */
+  .flm.flm.cam-both:not(.chain){--face:44cqw}
+  .flm.flm.flm.cam-both:not(.chain) .flm-slot.on:is(.flm-a,.flm-b),
+  .flm.flm.flm.cam-both.eve-in .flm-net{
+    display:grid;grid-template:minmax(0,1fr) / minmax(0,1fr);justify-items:center;align-items:start;
+    width:100%;height:100%;position:relative}
+  .flm.flm.flm.cam-both:not(.chain) .flm-slot.on:is(.flm-a,.flm-b) > *,
+  .flm.flm.flm.cam-both.eve-in .flm-net > *{grid-area:1 / 1}
+  .flm.flm.flm.flm.cam-both:not(.chain) .flm-slot .cin-face{align-self:start;margin:30px 0 0;z-index:0;order:0}
+  .flm.flm.flm.flm.cam-both:not(.eve-in):not(.chain) .flm-a .cin-face{transform:translateX(-18px)}
+  .flm.flm.flm.flm.cam-both:not(.eve-in):not(.chain) .flm-b .cin-face{transform:translateX(18px)}
+  .flm.flm.flm.flm.flm.flm.cam-both:not(.chain) .flm-slot .cin-who{align-self:start;justify-self:center;
+    margin:3px 0 0;font-size:15px;z-index:3;position:static;transform:none}
+  .flm.flm.flm.flm.flm.flm.cam-both.eve-in .flm-slot .cin-who{font-size:13px}
+  .flm.flm.flm.flm.cam-both:not(.chain) .flm-slot.on:is(.flm-a,.flm-b) .flm-ph{
+    align-self:start;justify-self:center;margin:calc(30px + var(--face) * .5) 0 0;width:auto;z-index:1;order:0}
+  .flm.flm.flm.cam-both:not(.chain):not(.eve-in) .flm-slot.on .flm-ph-body{
+    --ph-h:min(calc(43cqw / .479), calc(100cqh - 38px - var(--face) * .5))}
+  .flm.flm.flm.cam-both.eve-in .flm-slot.on .flm-ph-body{
+    --ph-h:min(calc(35.1cqw / .479), calc(100cqh - 38px - var(--face) * .5))}
+  .flm.flm.flm.cam-both.eve-in .flm-stage{grid-template-columns:minmax(0,1fr) minmax(0,.62fr) minmax(0,1fr)}
+  .flm.flm.flm.cam-both.eve-in .flm-net .flm-eve{align-self:start;margin-top:calc(7px + var(--face) * .887 * .58)}
+  .flm.flm.flm.cam-both.eve-in .flm-net .flm-hold > .flm-obj{width:min(115px,90%)}
+
+  /* close-ups: the pair is centred in the stage's height (the slot fills it) */
+  .flm.flm.flm.cam-a:not(.cast) .flm-slot.on,
+  .flm.flm.flm.cam-b:not(.cast) .flm-slot.on{height:100%;align-self:stretch}
+  .flm.flm.flm.flm:is(.cam-a,.cam-b):not(.cast) .flm-stage{grid-template-rows:minmax(0,1fr) 0}
+  /* what Eve holds and what travels share one size; the old 28cqw cap goes */
+  .flm.flm.flm.flm:is(.cam-wide,.journey) .flm-lane .flm-obj{width:min(100px,28cqw);max-width:none}
+  .flm.flm.flm.flm:is(.cam-wide,.journey) .flm-net .flm-hold > .flm-obj{width:min(84px,25.7cqw);max-width:none}
+  .flm.flm.flm.flm:is(.cam-both.eve-in,.f-xland) .flm-net .flm-hold > .flm-obj{width:min(70px,21cqw);max-width:none}
+  /* 4e, like 5f, is about what each phone now holds: the phones take the
+     width and Eve stands in a narrow middle with her two copies */
+  .flm.flm.flm.flm.f-xland .flm-stage{grid-template-columns:minmax(0,1fr) minmax(0,.62fr) minmax(0,1fr)}
+  .flm.flm.flm.flm.f-xland .flm-slot:is(.flm-a,.flm-b) .flm-ph-body{
+    --ph-h:min(calc(35.1cqw / .479), calc(64cqh - 38px - var(--face) * .5))}
+
+  /* 10c: the two people stand in the stage above the recap, as on desktop */
+  .flm.flm.chain .flm-stage{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+  .flm.flm.flm.chain .flm-slot:is(.flm-a,.flm-b){display:grid;grid-row:1;height:100%;width:100%;
+    grid-template:minmax(0,1fr) / minmax(0,1fr);align-items:end}
+  .flm.flm.flm.chain .flm-slot.flm-a{grid-column:1;justify-items:start;padding-left:8px}
+  .flm.flm.flm.chain .flm-slot.flm-b{grid-column:2;justify-items:end;padding-right:8px}
+  .flm.flm.flm.chain .flm-slot:is(.flm-a,.flm-b) > :not(.cin-face){display:none}
+  .flm.flm.flm.chain .flm-slot .cin-face{grid-area:1 / 1;margin:0;transform:none;opacity:1;filter:none}
+  .flm.flm.chain{--face:44cqw}
+  /* the recap is always two by two: tiles shrink with the module instead of
+     wrapping to one per row (which pushed the line out at 320) */
+  .flm.flm.chain .flm-chain{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;
+    align-items:center;justify-items:center;gap:10px 8px}
+  .flm.flm.chain .flm-chain .tk{width:min(92px,100%)}
+
+  /* 4. THE PHASE CUE fits at 320 */
+  .flm.flm .flm-arc{gap:7px}
+  .flm.flm .flm-arc-i{gap:5px}
+  .flm.flm .flm-arc-i i{width:10px}
+  .flm.flm .flm-arc-i.on i{width:14px}
+  .flm.flm .flm-arc-i b{letter-spacing:.06em}
+}
+@container (max-height:150px){
+  .flm.flm.flm.chain .flm-slot .cin-face{display:none}
+}
 </style>
 </head>
 <body>
@@ -8097,11 +8294,14 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         sub: "Alice, Bob and Eve can all see this one."
       },
       /* -- 3-4. Alice's private value: chosen, then held ------------------ */
+      /* the public colour stays in the phone, quieter, while the private one
+         is chosen: "shared + mine -> my mixture" without relying on memory
+         of 1b (pass 53). Bob's phone shows it the same way in 2c. */
       {
         k: "pickA",
         cam: "a",
         arc: "secret",
-        at: { pa: "a" },
+        at: { base: "a", pa: "a" },
         lead: "pa",
         from: { pa: "pick" },
         act: "pick",
@@ -8114,7 +8314,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         k: "mine",
         cam: "a",
         arc: "secret",
-        at: { pa: "a" },
+        at: { base: "a", pa: "a" },
         lead: "pa",
         keep: "pa",
         claim: true,
@@ -8127,7 +8327,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         k: "pickB",
         cam: "b",
         arc: "secret",
-        at: { pb: "b" },
+        at: { base: "b", pb: "b" },
         lead: "pb",
         from: { pb: "pick" },
         born: "pb",
@@ -8812,6 +9012,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         const was = FLIPS.get(id);
         FLIPS.set(id, now);
         if (!was || REDUCE() || now.width < 1) return;
+        if (el.closest(".flm.fusing:not(.gcm)")) return;
         const dx = was.left + was.width / 2 - (now.left + now.width / 2);
         const dy = was.top + was.height / 2 - (now.top + now.height / 2);
         const s = Math.max(0.25, Math.min(4, was.width / Math.max(1, now.width)));
@@ -9163,11 +9364,9 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           style: mixc ? { "--mixc": mixc } : void 0
         },
         /* @__PURE__ */ React.createElement("div", { className: "flm-arc", "aria-label": "part " + (ARCS.indexOf(F.arc) + 1) + " of 3" }, ARCS.map((a) => /* @__PURE__ */ React.createElement("span", { key: a, className: "flm-arc-i" + (a === F.arc ? " on" : "") }, /* @__PURE__ */ React.createElement("i", { "aria-hidden": "true" }), a === F.arc && /* @__PURE__ */ React.createElement("b", null, ARCNAME[a])))),
-        /* @__PURE__ */ React.createElement("div", { className: "flm-stage" }, F.fuse && /* @__PURE__ */ React.createElement("span", { className: "flm-blending", "aria-hidden": "true" }, "blending\u2026"), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-a" + (lit("a") ? " on" : " off") }, /* @__PURE__ */ React.createElement("img", { className: "cin-face", src: SPRITE.you, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Alice ", /* @__PURE__ */ React.createElement("i", { className: "sur-me" }, "you")), /* @__PURE__ */ React.createElement(Phone, { who: "a", lit: lit("a"), drop: F.drag && F.drag.to === "phoneA" || beat === "pickA" ? "phoneA" : null }, F.drag && F.drag.to === "openA" && /* @__PURE__ */ React.createElement("span", { className: "flm-open is-drop", "data-drop": "openA", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "flm-focal" }, bin.a), F.drag && F.drag.to === "slot" && /* @__PURE__ */ React.createElement("div", { className: "flm-slot-x is-drop", "data-drop": "slot" }, /* @__PURE__ */ React.createElement("span", { className: "flm-slot-k" }, beat === "hkdf" ? "HKDF" : "AES\u2011GCM"), /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 60 18", className: "flm-slot-a", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M6 9 h40 M40 4 l6 5 l-6 5", fill: "none", strokeWidth: "2.2" }))), (beat === "pickA" || beat === "mine") && /* The row stays for one beat after the choice, with the five
-           that were not taken dimmed and the one that was ringed, so
-           the viewer can see their own decision rather than only its
-           result. It is inert on that beat: nothing in a watching
-           frame may look pressable. */
+        /* @__PURE__ */ React.createElement("div", { className: "flm-stage" }, /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-a" + (lit("a") ? " on" : " off") }, /* @__PURE__ */ React.createElement("img", { className: "cin-face", src: SPRITE.you, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Alice ", /* @__PURE__ */ React.createElement("i", { className: "sur-me" }, "you")), /* @__PURE__ */ React.createElement(Phone, { who: "a", lit: lit("a"), drop: F.drag && F.drag.to === "phoneA" || beat === "pickA" ? "phoneA" : null }, F.drag && F.drag.to === "openA" && /* @__PURE__ */ React.createElement("span", { className: "flm-open is-drop", "data-drop": "openA", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "flm-focal" }, bin.a), F.drag && F.drag.to === "slot" && /* @__PURE__ */ React.createElement("div", { className: "flm-slot-x is-drop", "data-drop": "slot" }, /* @__PURE__ */ React.createElement("span", { className: "flm-slot-k" }, beat === "hkdf" ? "HKDF" : "AES\u2011GCM"), /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 60 18", className: "flm-slot-a", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M6 9 h40 M40 4 l6 5 l-6 5", fill: "none", strokeWidth: "2.2" }))), beat === "pickA" && /* The row leaves once the choice is made (pass 53): the
+           slot shows the decision, and a tray of five colours not
+           taken would be history competing with it. */
         /* @__PURE__ */ React.createElement("div", { className: "cin-pick" + (beat === "mine" ? " done" : "") }, SWATCHES.map((c) => /* @__PURE__ */ React.createElement(
           "button",
           {

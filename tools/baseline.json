@@ -1,11 +1,4 @@
 {
-  "recorded": "2026-10-20 after pass 48 (storyboard composition + labels), Playwright 1.61.1 / Chromium 149",
-  "known": [
-    {
-      "harness": "fit",
-      "section": "320x700",
-      "match": "^chain: \\.flm-rail runs outside the module$",
-      "why": "the recap line overflows at 320px; not a demo width"
-    }
-  ]
+  "recorded": "2026-10-22 after pass 53 (one grid, public colour kept, mobile directed), Playwright 1.61.1 / Chromium 149",
+  "known": []
 }
