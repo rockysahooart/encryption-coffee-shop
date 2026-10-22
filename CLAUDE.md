@@ -290,6 +290,12 @@ for guessing the private input of a one-way calculation, not for anything
 hidden in the mixture. They stay inside Eve's column: on a phone they
 zig-zag down the centre, never over either phone.
 
+**One order on every phone (pass 58).** Once a mixture has arrived, a phone
+shows what came in on top and its own private colour below — the order the
+colour close-ups use — in the wide shots too (`xland`, `unmix`), so the
+private plate never moves at 5a. An object measured while its side of the
+stage is hidden (width 0) never becomes a FLIP origin.
+
 **Object continuity.** Every object has a stable `data-obj` id and is FLIPped
 between frames by that id — objects **transform and move**, they do not
 disappear and reappear. If you add an object, give it an id and add it to

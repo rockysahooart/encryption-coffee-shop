@@ -6761,6 +6761,15 @@ details.read summary:hover{color:var(--ink-2)}
   .flm.f-unmix .flm-net [data-obj="qa2"]{animation:none;transform:scale(1.3)}
   .flm-unmix i{animation:none;opacity:.92;transform:rotate(calc(var(--a) * var(--spread,1))) translateY(calc(var(--rad) * var(--k,1))) rotate(calc(var(--a) * var(--spread,1) * -1))}
 }
+
+/* ============================================================================
+   PASS 58 — COMPREHENSION FIXES (Figma "COMPREHENSION + BLEND AUDIT V3")
+   4e–4g: each phone keeps the order the colour close-ups use — what came in
+   on top, the private colour below (ordered in Cinema) — so nothing swaps
+   rows at 5a and the private colour never visibly moves. 4f–4g: Eve's other copy is set back
+   by darkening it, not by making it see-through over her body.
+   ========================================================================= */
+.flm.f-unmix .flm-net [data-obj="qb2"]{opacity:1;filter:saturate(.55) brightness(.62)}
 </style>
 </head>
 <body>
@@ -8689,7 +8698,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         lead: "qa2",
         wait: 7e3,
         say: "Eve tries to unmix a copy",
-        sub: "Every guess fails. Your colour and Bob\u2019s never left your phones."
+        sub: "No guess turns back into your colour or Bob\u2019s. Working backwards is the hard direction."
       },
       /* -- 12-14. both sides combine; the results form covered ----------- */
       {
@@ -8781,7 +8790,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         wait: 7400,
         math: "Q_A = d_A G   \xB7   Q_B = d_B G",
         say: "Each private number makes a public value",
-        sub: "Only the public values cross. Eve copies those."
+        sub: "Only these cross, and Eve copies them. Finding d from Q is the one-way step the unmixing stood for."
       },
       /* storyboard 7a: each phone combines its own private number with the
          other side's public value, and both arrive at the same Z */
@@ -9283,9 +9292,10 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         const el = ref.current;
         if (!el) return;
         const now = el.getBoundingClientRect();
+        if (now.width < 1) return;
         const was = FLIPS.get(id);
         FLIPS.set(id, now);
-        if (!was || REDUCE() || now.width < 1) return;
+        if (!was || REDUCE()) return;
         if (el.closest(".flm.fusing:not(.gcm)")) return;
         const dx = was.left + was.width / 2 - (now.left + now.width / 2);
         const dy = was.top + was.height / 2 - (now.top + now.height / 2);
@@ -9395,7 +9405,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           for (const c of root.querySelectorAll('.flm-net [data-obj="qa2"], .flm-net [data-obj="qb2"]')) {
             const R = c.getBoundingClientRect(), m = new DOMMatrixReadOnly(getComputedStyle(c).transform);
             const cx = R.left + R.width / 2 - m.m41 - S.left, cy = R.top + R.height / 2 - m.m42 - S.top;
-            c.style.setProperty("--jx", Math.round(x - cx) + "px");
+            const side = c.dataset.obj === "qa2" ? -0.3 : 0.3;
+            c.style.setProperty("--jx", Math.round(x - cx + side * R.width / (m.a || 1)) + "px");
             c.style.setProperty("--jy", Math.round(y - cy) + "px");
           }
         };
@@ -9650,6 +9661,11 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             wrapped
           )
         );
+      }
+      if (F.k === "xland" || F.k === "unmix") {
+        const first = (list, id) => list.sort((x, y) => (y.key === id) - (x.key === id));
+        first(bin.a, "qb");
+        first(bin.b, "qa");
       }
       const parents = [].concat(...Object.values(F.from || {}).filter(Array.isArray));
       const need = F.bare ? parents : RELEVANT[PHASE(beat)];

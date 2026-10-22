@@ -6755,3 +6755,12 @@ details.read summary:hover{color:var(--ink-2)}
   .flm.f-unmix .flm-net [data-obj="qa2"]{animation:none;transform:scale(1.3)}
   .flm-unmix i{animation:none;opacity:.92;transform:rotate(calc(var(--a) * var(--spread,1))) translateY(calc(var(--rad) * var(--k,1))) rotate(calc(var(--a) * var(--spread,1) * -1))}
 }
+
+/* ============================================================================
+   PASS 58 — COMPREHENSION FIXES (Figma "COMPREHENSION + BLEND AUDIT V3")
+   4e–4g: each phone keeps the order the colour close-ups use — what came in
+   on top, the private colour below (ordered in Cinema) — so nothing swaps
+   rows at 5a and the private colour never visibly moves. 4f–4g: Eve's other copy is set back
+   by darkening it, not by making it see-through over her body.
+   ========================================================================= */
+.flm.f-unmix .flm-net [data-obj="qb2"]{opacity:1;filter:saturate(.55) brightness(.62)}

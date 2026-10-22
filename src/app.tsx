@@ -1513,7 +1513,7 @@
         at: { pa: "a", qb: "a", pb: "b", qa: "b", qa2: "eve", qb2: "eve" },
         lead: "qa2", wait: 7000,
         say: "Eve tries to unmix a copy",
-        sub: "Every guess fails. Your colour and Bob’s never left your phones." },
+        sub: "No guess turns back into your colour or Bob’s. Working backwards is the hard direction." },
 
       /* -- 12-14. both sides combine; the results form covered ----------- */
       { k: "combA", cam: "a", arc: "secret", at: { qb: "a", pa: "a" }, lead: "qb",
@@ -1549,7 +1549,7 @@
         lead: "qa", journey: "both", wait: 7400,
         math: "Q_A = d_A G   ·   Q_B = d_B G",
         say: "Each private number makes a public value",
-        sub: "Only the public values cross. Eve copies those." },
+        sub: "Only these cross, and Eve copies them. Finding d from Q is the one-way step the unmixing stood for." },
 
       /* storyboard 7a: each phone combines its own private number with the
          other side's public value, and both arrive at the same Z */
@@ -2084,9 +2084,13 @@
         const el = ref.current;
         if (!el) return;
         const now = el.getBoundingClientRect();
+        /* an object measured while its side of the stage was hidden has no
+           position; keeping that zero rect made it fly in from the page
+           corner when the camera came back to it (pass 58) */
+        if (now.width < 1) return;
         const was = FLIPS.get(id);
         FLIPS.set(id, now);
-        if (!was || REDUCE() || now.width < 1) return;
+        if (!was || REDUCE()) return;
         /* a blend's sources start where the blend needs them: the blend
            itself is the only travel in that frame (pass 53). Without this,
            after a cut to Bob his private plate flew in from his thumbnail
@@ -2198,7 +2202,10 @@
           for (const c of root.querySelectorAll('.flm-net [data-obj="qa2"], .flm-net [data-obj="qb2"]')) {
             const R = c.getBoundingClientRect(), m = new DOMMatrixReadOnly(getComputedStyle(c).transform);
             const cx = R.left + R.width / 2 - m.m41 - S.left, cy = R.top + R.height / 2 - m.m42 - S.top;
-            c.style.setProperty("--jx", Math.round(x - cx) + "px");
+            /* born side by side at the tap, each on its own side, so the
+               two copies never read as one blob (pass 58) */
+            const side = c.dataset.obj === "qa2" ? -.3 : .3;
+            c.style.setProperty("--jx", Math.round(x - cx + side * R.width / (m.a || 1)) + "px");
             c.style.setProperty("--jy", Math.round(y - cy) + "px");
           }
         };
@@ -2388,6 +2395,14 @@
               + (grabs ? " is-grab" : "") + (drops ? " is-drop" : "")}
             drop={drops ? id : null}
             style={grabs ? { "--own": OWN[id] || "#e7efe9" } : undefined}>{wrapped}</Obj>);
+      }
+      /* ONE ORDER ON EVERY PHONE (pass 58). Once a mixture has arrived, the
+         phone shows what came in on top and its own private colour below,
+         the order the colour close-ups use; the wide shots listed them the
+         other way round, so the private plate visibly swapped rows at 5a. */
+      if (F.k === "xland" || F.k === "unmix") {
+        const first = (list, id) => list.sort((x, y) => (y.key === id) - (x.key === id));
+        first(bin.a, "qb"); first(bin.b, "qa");
       }
       /* PERSISTENCE. Everything already made stays on its owner's device,
          docked small. An object is never absent from the world once it exists. */
