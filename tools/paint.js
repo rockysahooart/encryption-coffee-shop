@@ -90,6 +90,26 @@ const fill = async (p, id) => p.evaluate((x) => {
   const eveHolds = await p.evaluate(() => [...document.querySelectorAll(".flm-net .flm-obj[data-obj]")].map((e) => e.dataset.obj).join(","));
   const local = await p.evaluate(() => [document.querySelector('.flm-a [data-obj="pa"]'), document.querySelector('.flm-b [data-obj="pb"]')].every(Boolean));
   ok(eveHolds === "qa2,qb2" && local, "while she tries, Eve holds only the two copies and each private colour is on its own phone", eveHolds);
+
+  /* 9b–9c: Eve tries to open her copy of the packet. She holds the packet and
+     nothing else; no plaintext ever appears on her side; Alice and Bob still
+     hold K; her key guesses are never K; the card says the key was missing */
+  await go("open");
+  const plaintext = await p.evaluate(() => ((document.querySelector(".cin-plain") || {}).textContent || "").trim());
+  await go("unseal");
+  const u = await p.evaluate(() => ({
+    eve: [...document.querySelectorAll(".flm-net .flm-obj[data-obj]")].map((e) => e.dataset.obj).join(","),
+    eveText: (document.querySelector(".flm-net") || {}).textContent || "",
+    keys: [document.querySelector('.flm-a [data-obj="ka"]'), document.querySelector('.flm-b [data-obj="kb"]')].every(Boolean),
+    bob: !!document.querySelector('.flm-b [data-obj="pkt"]'),
+    card: ((document.querySelector(".flm-fail.fail-key b") || {}).textContent || ""),
+    kfill: ((document.querySelector('.flm-a [data-obj="ka"] svg > [fill]:not([fill="none"])') || { getAttribute: () => "" }).getAttribute("fill") || "").toUpperCase(),
+    guesses: [...document.querySelectorAll('.flm-net [data-obj="pkt2"] .flm-unmix i')].flatMap((e) => ["--c1", "--c2", "--c3"].map((v) => e.style.getPropertyValue(v).trim().toUpperCase())) }));
+  ok(u.eve === "pkt2" && u.keys && u.bob, "while Eve tries the packet, she holds only her copy; Alice and Bob hold K; Bob has the original", u.eve);
+  ok(plaintext.length > 0 && !u.eveText.includes(plaintext), "no plaintext ever appears on Eve's side", plaintext);
+  ok(/key required/i.test(u.card), "her attempt ends on the key-required failure card", u.card);
+  ok(u.guesses.length === 24 && (!/^#[0-9A-F]{6}$/.test(u.kfill) || u.guesses.every((g) => dist(g, u.kfill) >= 60)),
+    "her 24 key guesses are all far from K", u.kfill);
   await p.close(); await b.close();
   console.log(bad ? `\n${bad} PROBLEM(S)` : "\nTHE ANALOGY HOLDS AS ARITHMETIC, NOT JUST AS A PICTURE");
 })();

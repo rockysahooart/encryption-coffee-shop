@@ -1,5 +1,5 @@
 /* shared: reach the film and step it, honouring the nine viewer gates */
-const KEYS = ["problem","base","pickA","mine","pickB","mixA","mixAout","mixB","sendA","exchange","xland","unmix","combA","combAout","combB","reveal","asmath","pubvals","zsec","tokey","type","protect","journey","arrive","open","chain"];
+const KEYS = ["problem","base","pickA","mine","pickB","mixA","mixAout","mixB","sendA","exchange","xland","unmix","combA","combAout","combB","reveal","asmath","pubvals","zsec","tokey","type","protect","journey","unseal","arrive","open","chain"];
 
 /* The film falls back to its first frame for a name it does not know, so a
    stale beat name used to test "problem" without saying so. Every page a
@@ -43,11 +43,11 @@ const LABELS = {
   problem: "1a", base: "1b", pickA: "2a", mine: "2b", pickB: "2c",
   mixA: "3a", mixAout: "3b", mixB: "3d", sendA: "4a", exchange: "4b", xland: "4e", unmix: "4f",
   combA: "5a", combAout: "5b", combB: "5d", reveal: "5f", asmath: "6a", pubvals: "6b",
-  zsec: "7a", tokey: "7b", type: "8a", protect: "8b", journey: "9a",
+  zsec: "7a", tokey: "7b", type: "8a", protect: "8b", journey: "9a", unseal: "9b",
   arrive: "10a", open: "10b", chain: "10c"
 };
 /* states inside one beat: [ms after the beat starts, label] */
-const LABEL_SUB = { mixAout: [[3360, "3c"]], mixB: [[3360, "3e"]], exchange: [[2600, "4c"], [3900, "4d"]], unmix: [[4800, "4g"]],
+const LABEL_SUB = { mixAout: [[3360, "3c"]], mixB: [[3360, "3e"]], exchange: [[2600, "4c"], [3900, "4d"]], unmix: [[4800, "4g"]], unseal: [[4800, "9c"]],
   combAout: [[3360, "5c"]], combB: [[3360, "5e"]] };
 /* Go to a storyboard label and hold it. Film labels use the app's hidden
    window.__ref, which pins the beat and pauses every animation at that

@@ -1591,6 +1591,17 @@
         bare: true, wait: 7400,
         say: "Eve copies the packet too",
         sub: "She has no key, so it stays noise." },
+      /* storyboard 9b–9c (pass 59): EVE TRIES TO OPEN HER COPY. The callback
+         to 4f–4g. Her copy swells and fans into random KEY guesses (never K),
+         folds back, and fails the same way the colours did: the failure card
+         says KEY REQUIRED. No plaintext ever appears on her side — without K
+         the tag check fails and AES-GCM gives back nothing at all. Alice and
+         Bob still hold K; the original has already reached Bob's phone. */
+      { k: "unseal", cam: "wide", arc: "send", xchg: true, unseal: true,
+        at: { ka: "a", kb: "b", pkt: "b", pkt2: "eve" }, lead: "pkt2",
+        bare: true, wait: 7000,
+        say: "Eve tries to open her copy",
+        sub: "Without K every try fails the check, and no message comes out." },
 
       /* -- 22-23. Bob checks it, and the message comes back ------------- */
       { k: "arrive", cam: "b", arc: "send", at: { pkt: "b", kb: "b" }, lead: "pkt",
@@ -1629,13 +1640,13 @@
       asmath: "6a", pubvals: "6b",
       zsec: "7a", tokey: "7b",
       type: "8a", protect: "8b",
-      journey: "9a",
+      journey: "9a", unseal: "9b",
       arrive: "10a", open: "10b", chain: "10c"
     };
     const REF_SUB = {
       mixAout: [[3360, "3c"]], mixB: [[3360, "3e"]],
       exchange: [[2600, "4c"], [3900, "4d"]],
-      unmix: [[4800, "4g"]],
+      unmix: [[4800, "4g"]], unseal: [[4800, "9c"]],
       combAout: [[3360, "5c"]], combB: [[3360, "5e"]]
     };
     /* WHERE EACH LABEL IS, EXACTLY. For review, not for viewers: the hidden
@@ -1656,7 +1667,7 @@
       "6a": ["asmath", 3600], "6b": ["pubvals", 4400],
       "7a": ["zsec", 2000], "7b": ["tokey", 3200],
       "8a": ["type", 1200], "8b": ["protect", 6200],
-      "9a": ["journey", 4600],
+      "9a": ["journey", 4600], "9b": ["unseal", 2600], "9c": ["unseal", 6000],
       "10a": ["arrive", 2000], "10b": ["open", 2400], "10c": ["chain", 1500]
     };
 
@@ -2193,7 +2204,10 @@
           if (!st || !shown(tr) || !shown(face)) { setTap(null); return; }
           const S = st.getBoundingClientRect(), T = tr.getBoundingClientRect(), E = face.getBoundingClientRect();
           const x = T.left + T.width / 2 - S.left, top = E.bottom - S.top - E.height * .12, y = T.top + T.height / 2 - S.top;
-          setTap(y - top > 8 ? { x: Math.round(x), top: Math.round(top), h: Math.round(y - top) } : null);
+          /* the failure card's anchor: just under the phones, nearest Eve */
+          const ph = Math.max(0, ...[...root.querySelectorAll(".flm-slot:is(.flm-a,.flm-b) .flm-ph-body")]
+            .map((e) => e.getBoundingClientRect()).filter((r) => r.width > 1).map((r) => r.bottom - S.top));
+          setTap(y - top > 8 ? { x: Math.round(x), top: Math.round(top), h: Math.round(y - top), ph: Math.round(ph) } : null);
           /* THE COPIES BRANCH OFF THE WIRE (pass 57). Each copy starts at the
              point where Eve's tap meets the wire and climbs the tap into her
              hands, so the copy is visibly taken from what is passing, while
@@ -2257,6 +2271,17 @@
         }
         return out;
       }, [mine, bprivC]);
+      /* the same for keys: random bytes, any guess near the real K redrawn */
+      const keyGuesses = useMemo(() => {
+        const k = s ? RGB(s.K, 0) : "#3a4449", q = HEX2RGB(k), out = [], buf = new Uint8Array(3);
+        for (let n = 0; out.length < 24 && n < 4000; n++) {
+          crypto.getRandomValues(buf);
+          const c = "#" + [...buf].map((v) => Math.round(v * .55 + 0x5a * .45).toString(16).padStart(2, "0")).join("").toUpperCase();
+          const p = HEX2RGB(c);
+          if (Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]) > 72) out.push(c);
+        }
+        return out;
+      }, [s]);
       const zC    = s ? RGB(s.Z, 0)   : "#3a4449";       /* real Z, panel only */
       const kC    = s ? RGB(s.K, 0)   : "#3a4449";       /* real K             */
       const nonC  = pack ? RGB(pack.iv, 0) : "#3a4449";
@@ -2364,16 +2389,18 @@
               {node}
             </div>
           );
-        if (F.unmix && id === "qa2")
+        if ((F.unmix && id === "qa2") || (F.unseal && id === "pkt2")) {
+          const G = F.unseal ? keyGuesses : guesses;
           node = (<>
             {node}
             <span className="flm-unmix" aria-hidden="true">
               {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
                 <i key={i} style={{ "--a0": (i - 3.5) * 13 + "deg", "--i": i, "--k0": i % 2 ? 1.5 : 1, "--s": i % 2 ? 1 : -1, "--d": i * 70 + "ms",
-                  "--c1": guesses[i * 3] || "#3a4449", "--c2": guesses[i * 3 + 1] || "#3a4449", "--c3": guesses[i * 3 + 2] || "#3a4449" }} />
+                  "--c1": G[i * 3] || "#3a4449", "--c2": G[i * 3 + 1] || "#3a4449", "--c3": G[i * 3 + 2] || "#3a4449" }} />
               ))}
             </span>
           </>);
+        }
         placed.add(id);
         const cls = (F.copy === id ? "is-copy " : "") + (F.land && w === F.land ? "is-land " : "")
           + (F.born === id ? "is-born " : "") + (F.moved === id ? "is-moved " : "")
@@ -2552,6 +2579,30 @@
           <div className="flm-stage">
             {tap && <i className="flm-tap" aria-hidden="true"
               style={{ left: tap.x + "px", top: tap.top + "px", height: tap.h + "px" }} />}
+              {/* FAILED RECOVERY (pass 59): one picture for "Eve has what
+                  travelled, but not the secret that recovers what it
+                  protects" — what she holds, an arrow, and an output field
+                  that never resolves; the card says which secret was missing.
+                  It sits on the stage just under the phones, above the wire. */}
+              {(F.unmix || F.unseal) && (
+                <div className={"flm-fail " + (F.unseal ? "fail-key" : "fail-colour")} role="note"
+                  style={tap ? { left: tap.x + "px", top: (tap.ph + 16) + "px" } : undefined}
+                  aria-label={F.unseal ? "Decryption failed: Eve does not have the key" : "Eve did not recover the private colour"}>
+                  <span className="ff-in" aria-hidden="true">
+                    {F.unseal ? <Pack pk={pack} locked /> : <i style={{ background: MIX(base, mine) }} />}
+                  </span>
+                  <span className="ff-arrow" aria-hidden="true">→</span>
+                  <span className="ff-out" aria-hidden="true">
+                    {(F.unseal ? keyGuesses : guesses).slice(0, 12).map((c, i) => <i key={i} style={{ background: c }} />)}
+                  </span>
+                  <span className="ff-txt">
+                    <b>{F.unseal ? "Key required · decryption failed" : "Private input not recovered"}</b>
+                    <span>{F.unseal ? "Eve has the packet. Without K nothing readable comes out."
+                      : "Eve has the mixture, not the private colour that made it."}</span>
+                  </span>
+                </div>
+              )}
+
             {/* the middle of a blend needs no caption (pass 53): the two
                 plates converging on one footprint is the evidence */}
 

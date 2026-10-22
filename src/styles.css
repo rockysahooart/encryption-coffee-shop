@@ -6764,3 +6764,64 @@ details.read summary:hover{color:var(--ink-2)}
    by darkening it, not by making it see-through over her body.
    ========================================================================= */
 .flm.f-unmix .flm-net [data-obj="qb2"]{opacity:1;filter:saturate(.55) brightness(.62)}
+
+/* ============================================================================
+   PASS 59 — FAILED RECOVERY. One visual language wherever Eve holds what
+   travelled but cannot recover what it protects (4g, 9c): a card under Eve,
+   in front of everything — what she has → an output field that never
+   resolves (scrambled blocks, dashed edge), a small error mark and one short
+   line. Red here means "this operation failed", never the network, never a
+   turn. 9b reuses 4f's attempt exactly (swell, fan of random guesses, fold).
+   ========================================================================= */
+.flm-fail{position:absolute;left:50%;top:60%;translate:-50% 0;z-index:4;
+  width:min(330px,76cqw);display:grid;grid-template-columns:auto auto auto minmax(0,1fr);align-items:center;
+  gap:min(10px,2.2cqw);padding:min(9px,2cqw);border-radius:var(--r-s);
+  background:rgba(11,14,16,.94);box-shadow:inset 0 0 0 1px rgba(224,96,79,.6);
+  opacity:0;animation:failIn 7000ms var(--ease) both;pointer-events:none}
+@keyframes failIn{0%,66%{opacity:0;transform:translateY(6px)}74%,100%{opacity:1;transform:none}}
+.flm-fail .ff-in{display:block;width:min(40px,9cqw)}
+.flm-fail.fail-colour .ff-in i{display:block;width:100%;aspect-ratio:2 / 1.15;border-radius:8px}
+.flm-fail.fail-key .ff-in svg{display:block;width:100%;height:auto}
+.flm-fail .ff-arrow{color:rgba(231,239,233,.5);font-size:max(11px,min(14px,3cqw))}
+.flm-fail .ff-out{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;width:min(46px,10cqw);aspect-ratio:2 / 1.4;padding:3px;
+  border-radius:8px;outline:1.4px dashed rgba(231,239,233,.35);outline-offset:-1.4px}
+.flm-fail .ff-out i{display:block;opacity:.75;animation:failNoise 300ms steps(1) 8 both}
+.flm-fail .ff-out i:nth-child(3n){animation-delay:100ms}
+.flm-fail .ff-out i:nth-child(3n+1){animation-delay:200ms}
+@keyframes failNoise{0%{filter:none}50%{filter:hue-rotate(140deg) brightness(.8)}}
+.flm-fail .ff-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.flm-fail .ff-txt b{font-size:max(11px,min(12px,2.6cqw));font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#e8897d;
+  display:flex;align-items:center;gap:6px;line-height:1.25}
+.flm-fail .ff-txt b::before{content:"";flex:0 0 auto;width:7px;height:7px;border-radius:999px;background:#e0604f}
+.flm-fail .ff-txt > span{font-size:max(11px,min(12px,2.6cqw));color:var(--ink-2);line-height:1.3}
+.flm.f-unseal .flm-net [data-obj="pkt2"]{position:relative;z-index:2;animation:unmixSwell 7000ms var(--ease) both}
+.flm.is-narrow.f-unseal .flm-unmix i{--a:calc(var(--s) * 13deg);--rad:min(10cqh,12cqw);--k:calc(1 + var(--i) * .24)}
+@media (prefers-reduced-motion:reduce){
+  .flm-fail{animation:none;opacity:1}
+  .flm-fail .ff-out i{animation:none}
+  .flm.f-unseal .flm-net [data-obj="pkt2"]{animation:none;transform:scale(1.3)}
+}
+/* the packet glyph inside the card is a thumbnail: the packet's own sizing
+   rules must not reach it */
+.flm .flm-fail .ff-in{overflow:hidden;height:min(28px,6.4cqw);display:grid;place-items:center}
+.flm .flm-fail.fail-key .ff-in svg{position:static !important;inset:auto;transform:none;width:100% !important;height:100% !important;max-width:none;max-height:100%}
+/* the object that failed carries the same red edge as the card, from the
+   moment the card appears, so the failure reads without the words */
+.flm.f-unmix .flm-net [data-obj="qa2"] .tk-box,
+.flm.f-unseal .flm-net [data-obj="pkt2"] .tk-box{outline:1.4px solid rgba(224,96,79,0);outline-offset:2px;animation:failEdge 7000ms var(--ease) both}
+@keyframes failEdge{0%,66%{outline-color:rgba(224,96,79,0)}74%,100%{outline-color:rgba(224,96,79,.75)}}
+@media (prefers-reduced-motion:reduce){
+  .flm.f-unmix .flm-net [data-obj="qa2"] .tk-box,.flm.f-unseal .flm-net [data-obj="pkt2"] .tk-box{animation:none;outline-color:rgba(224,96,79,.75)}
+}
+/* the narrowest stage keeps the picture and the caps line; the second line
+   would push the card into the phones */
+@container (max-width:280px){.flm-fail .ff-txt > span{display:none}}
+/* on a wide stage the card is the size of a statement, not a footnote */
+@container (min-width:560px){
+  .flm-fail{width:min(420px,60cqw);gap:12px;padding:12px}
+  .flm-fail .ff-in{width:58px;height:34px}
+  .flm-fail .ff-out{width:64px}
+  .flm-fail .ff-arrow{font-size:16px}
+  .flm-fail .ff-txt b{font-size:13px}
+  .flm-fail .ff-txt > span{font-size:13px}
+}
