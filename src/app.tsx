@@ -1501,6 +1501,19 @@
         lead: "qa", moved: "qa", wait: 4200,
         say: "Now each of you has the other’s mixture",
         sub: "Eve has copies of both. Neither private colour ever left." },
+      /* storyboard 4f–4g (pass 57): EVE TRIES TO UNMIX. Same three people,
+         same holdings as 4e: Alice's colour on Alice's phone, Bob's on Bob's,
+         each with the other's mixture, Eve with her two copies. Eve's copy of
+         Alice's mixture swells and comes apart into guesses that flicker and
+         never settle, then closes back into the mixture it was. The guesses
+         are her trying private colours, not anything hidden in the mixture:
+         unmixing is the picture of a one-way calculation, and the copy never
+         turns into either private colour. */
+      { k: "unmix", cam: "wide", arc: "secret", xchg: true, unmix: true,
+        at: { pa: "a", qb: "a", pb: "b", qa: "b", qa2: "eve", qb2: "eve" },
+        lead: "qa2", wait: 7000,
+        say: "Eve tries to unmix a copy",
+        sub: "Every guess fails. Your colour and Bob’s never left your phones." },
 
       /* -- 12-14. both sides combine; the results form covered ----------- */
       { k: "combA", cam: "a", arc: "secret", at: { qb: "a", pa: "a" }, lead: "qb",
@@ -1611,7 +1624,7 @@
       you: "1a", problem: "1a", base: "1b",
       pickA: "2a", mine: "2b", pickB: "2c",
       mixA: "3a", mixAout: "3b", mixB: "3d",
-      sendA: "4a", exchange: "4b", xland: "4e",
+      sendA: "4a", exchange: "4b", xland: "4e", unmix: "4f",
       combA: "5a", combAout: "5b", combB: "5d", reveal: "5f",
       asmath: "6a", pubvals: "6b",
       zsec: "7a", tokey: "7b",
@@ -1622,6 +1635,7 @@
     const REF_SUB = {
       mixAout: [[3360, "3c"]], mixB: [[3360, "3e"]],
       exchange: [[2600, "4c"], [3900, "4d"]],
+      unmix: [[4800, "4g"]],
       combAout: [[3360, "5c"]], combB: [[3360, "5e"]]
     };
     /* WHERE EACH LABEL IS, EXACTLY. For review, not for viewers: the hidden
@@ -1636,6 +1650,7 @@
       "3d": ["mixB", 2350], "3e": ["mixB", 6200],
       "4a": ["sendA", 1200], "4b": ["exchange", 1300], "4c": ["exchange", 3350],
       "4d": ["exchange", 5000], "4e": ["xland", 1600],
+      "4f": ["unmix", 2600], "4g": ["unmix", 6000],
       "5a": ["combA", 1200], "5b": ["combAout", 2350], "5c": ["combAout", 4600],
       "5d": ["combB", 2350], "5e": ["combB", 4600], "5f": ["reveal", 2400],
       "6a": ["asmath", 3600], "6b": ["pubvals", 4400],
@@ -2175,6 +2190,17 @@
           const S = st.getBoundingClientRect(), T = tr.getBoundingClientRect(), E = face.getBoundingClientRect();
           const x = T.left + T.width / 2 - S.left, top = E.bottom - S.top - E.height * .12, y = T.top + T.height / 2 - S.top;
           setTap(y - top > 8 ? { x: Math.round(x), top: Math.round(top), h: Math.round(y - top) } : null);
+          /* THE COPIES BRANCH OFF THE WIRE (pass 57). Each copy starts at the
+             point where Eve's tap meets the wire and climbs the tap into her
+             hands, so the copy is visibly taken from what is passing, while
+             the original keeps going. Measured without the copy's own
+             transform, so it lands on the junction at every size. */
+          for (const c of root.querySelectorAll('.flm-net [data-obj="qa2"], .flm-net [data-obj="qb2"]')) {
+            const R = c.getBoundingClientRect(), m = new DOMMatrixReadOnly(getComputedStyle(c).transform);
+            const cx = R.left + R.width / 2 - m.m41 - S.left, cy = R.top + R.height / 2 - m.m42 - S.top;
+            c.style.setProperty("--jx", Math.round(x - cx) + "px");
+            c.style.setProperty("--jy", Math.round(y - cy) + "px");
+          }
         };
         const r1 = requestAnimationFrame(() => requestAnimationFrame(measure));
         const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
@@ -2205,6 +2231,25 @@
       const qaC   = MIX(base, mine);                     /* documented blend   */
       const qbC   = MIX(base, bprivC);
       const sharedC = MIX(base, mine, bprivC);           /* the same three     */
+      /* EVE'S GUESSES (4f). She holds the mixture and knows the public yellow;
+         what she lacks is the private ingredient, and the only way at it is to
+         guess. Each guess is a colour from real random bytes (the crypto
+         layer's byte -> colour mapping, desaturated toward the room's grey),
+         and any guess near Alice's colour, Bob's, either mixture or the accent
+         is redrawn — so the attempt can never resolve into a private colour.
+         In the protocol the guesses would be private scalars, about 2^256 of
+         them; that is the size of the problem the flicker stands for. */
+      const guesses = useMemo(() => {
+        const near = (c) => { const p = HEX2RGB(c); return [mine, bprivC, MIX(base, mine), MIX(base, bprivC), "#83E3A9"]
+          .some((x) => { const q = HEX2RGB(x); return Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]) < 72; }); };
+        const out = [], buf = new Uint8Array(3);
+        for (let n = 0; out.length < 24 && n < 4000; n++) {
+          crypto.getRandomValues(buf);
+          const c = "#" + [...buf].map((v) => Math.round(v * .55 + 0x5a * .45).toString(16).padStart(2, "0")).join("").toUpperCase();
+          if (!near(c)) out.push(c);
+        }
+        return out;
+      }, [mine, bprivC]);
       const zC    = s ? RGB(s.Z, 0)   : "#3a4449";       /* real Z, panel only */
       const kC    = s ? RGB(s.K, 0)   : "#3a4449";       /* real K             */
       const nonC  = pack ? RGB(pack.iv, 0) : "#3a4449";
@@ -2312,6 +2357,16 @@
               {node}
             </div>
           );
+        if (F.unmix && id === "qa2")
+          node = (<>
+            {node}
+            <span className="flm-unmix" aria-hidden="true">
+              {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+                <i key={i} style={{ "--a0": (i - 3.5) * 13 + "deg", "--i": i, "--k0": i % 2 ? 1.5 : 1, "--s": i % 2 ? 1 : -1, "--d": i * 70 + "ms",
+                  "--c1": guesses[i * 3] || "#3a4449", "--c2": guesses[i * 3 + 1] || "#3a4449", "--c3": guesses[i * 3 + 2] || "#3a4449" }} />
+              ))}
+            </span>
+          </>);
         placed.add(id);
         const cls = (F.copy === id ? "is-copy " : "") + (F.land && w === F.land ? "is-land " : "")
           + (F.born === id ? "is-born " : "") + (F.moved === id ? "is-moved " : "")

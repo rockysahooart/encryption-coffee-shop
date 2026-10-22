@@ -6706,3 +6706,52 @@ details.read summary:hover{color:var(--ink-2)}
 /* the wire and whatever travels on it is the teaching layer: it always passes
    in front of the people and their furniture, never under a table */
 .flm .flm-lane{z-index:3}
+
+/* ============================================================================
+   PASS 57 — EVE'S INTERCEPTION AND THE FAILED UNMIX
+   4c–4d: each copy is born where Eve's tap meets the wire (--jx/--jy are
+   measured in Cinema) and climbs the tap into her hands while the original
+   keeps travelling. 4f–4g: Eve's copy of Alice's mixture swells and comes
+   apart into guesses — real random colours, never a private one — that
+   flicker without settling, then fold back into the unchanged copy. Everything
+   here is in the teaching layer, in front of the people and their furniture,
+   and stays inside Eve's column so neither phone is covered.
+   ========================================================================= */
+.flm.j-both .flm-net [data-obj="qa2"],
+.flm.j-both .flm-net [data-obj="qb2"]{animation:copyBranch 1300ms var(--ease) 3050ms both}
+@keyframes copyBranch{
+  0%{opacity:0;transform:translate(var(--jx,0px),var(--jy,44cqh)) scale(.55)}
+  14%{opacity:.95;transform:translate(var(--jx,0px),var(--jy,44cqh)) scale(.6)}
+  100%{opacity:1;transform:none}
+}
+.flm.f-unmix .flm-net [data-obj="qa2"]{position:relative;z-index:2;animation:unmixSwell 7000ms var(--ease) both}
+@keyframes unmixSwell{
+  0%,8%{transform:none}
+  18%{transform:scale(1.3)}
+  24%{transform:scale(1.3) translateX(-3%)}
+  30%{transform:scale(1.3) translateX(3%)}
+  36%{transform:scale(1.3) translateX(-2%)}
+  42%{transform:scale(1.3) translateX(2%)}
+  48%,58%{transform:scale(1.3)}
+  70%,100%{transform:none}
+}
+.flm.f-unmix .flm-net [data-obj="qb2"]{opacity:.5}
+.flm-unmix{position:absolute;left:50%;top:50%;width:100%;height:0;pointer-events:none}
+.flm-unmix i{position:absolute;left:0;top:0;width:42%;aspect-ratio:2 / 1.15;border-radius:var(--r-s);
+  background:var(--c1);opacity:0;translate:-50% -50%;--rad:min(14cqh,16cqw);--k:var(--k0,1);--a:var(--a0,0deg);
+  animation:unmixFan 7000ms var(--ease) both,unmixGuess 420ms steps(1) var(--d) 14 both}
+@keyframes unmixFan{
+  0%,14%{opacity:0;transform:rotate(calc(var(--a) * var(--spread,1))) translateY(0) rotate(calc(var(--a) * var(--spread,1) * -1))}
+  26%,58%{opacity:.92;transform:rotate(calc(var(--a) * var(--spread,1))) translateY(calc(var(--rad) * var(--k,1))) rotate(calc(var(--a) * var(--spread,1) * -1))}
+  70%,100%{opacity:0;transform:rotate(calc(var(--a) * var(--spread,1))) translateY(0) rotate(calc(var(--a) * var(--spread,1) * -1))}
+}
+@keyframes unmixGuess{0%{background:var(--c1)}33%{background:var(--c2)}66%{background:var(--c3)}}
+/* on a phone the copies stack, so the one being pulled apart goes to the
+   bottom and its guesses open downward into the empty centre column */
+.flm.is-narrow.f-unmix .flm-net .flm-hold > [data-obj="qa2"]{order:2}
+.flm.is-narrow.f-unmix .flm-unmix i{--a:calc(var(--s) * 13deg);--rad:min(10cqh,12cqw);--k:calc(1 + var(--i) * .24)}
+@media (prefers-reduced-motion:reduce){
+  .flm.j-both .flm-net [data-obj="qa2"],.flm.j-both .flm-net [data-obj="qb2"]{animation:none}
+  .flm.f-unmix .flm-net [data-obj="qa2"]{animation:none;transform:scale(1.3)}
+  .flm-unmix i{animation:none;opacity:.92;transform:rotate(calc(var(--a) * var(--spread,1))) translateY(calc(var(--rad) * var(--k,1))) rotate(calc(var(--a) * var(--spread,1) * -1))}
+}

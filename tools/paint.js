@@ -65,7 +65,7 @@ const fill = async (p, id) => p.evaluate((x) => {
 
   /* the private colours never cross, the finals never cross */
   const crossed = [];
-  for (const k of ["exchange","reveal","asmath"]) {
+  for (const k of ["exchange","unmix","reveal","asmath"]) {
     await go(k);
     const lane = await p.evaluate(() =>
       [...document.querySelectorAll('.flm-lane .flm-obj[data-obj]')].map((e) => e.dataset.obj));
@@ -76,6 +76,20 @@ const fill = async (p, id) => p.evaluate((x) => {
   }
   ok(crossed.length === 0, "no private colour and no final colour is ever on the wire or with Eve",
     crossed.join(" "));
+
+  /* 4f: Eve's guesses at Alice's private colour. They are random, and they
+     must never land on either private colour — the attempt fails by
+     construction, so the picture can never show her succeeding */
+  await go("unmix");
+  const guesses = await p.evaluate(() => [...document.querySelectorAll(".flm-unmix i")]
+    .flatMap((e) => ["--c1", "--c2", "--c3"].map((v) => e.style.getPropertyValue(v).trim().toUpperCase())));
+  const dist = (x, y) => { const a = hex2(x), c = hex2(y); return Math.hypot(a[0] - c[0], a[1] - c[1], a[2] - c[2]); };
+  const close = guesses.filter((g) => !/^#[0-9A-F]{6}$/.test(g) || dist(g, A) < 60 || dist(g, B) < 60);
+  ok(guesses.length === 24 && close.length === 0, "Eve's 24 guesses are all far from Alice's and Bob's colours",
+    close.slice(0, 4).join(" "));
+  const eveHolds = await p.evaluate(() => [...document.querySelectorAll(".flm-net .flm-obj[data-obj]")].map((e) => e.dataset.obj).join(","));
+  const local = await p.evaluate(() => [document.querySelector('.flm-a [data-obj="pa"]'), document.querySelector('.flm-b [data-obj="pb"]')].every(Boolean));
+  ok(eveHolds === "qa2,qb2" && local, "while she tries, Eve holds only the two copies and each private colour is on its own phone", eveHolds);
   await p.close(); await b.close();
   console.log(bad ? `\n${bad} PROBLEM(S)` : "\nTHE ANALOGY HOLDS AS ARITHMETIC, NOT JUST AS A PICTURE");
 })();

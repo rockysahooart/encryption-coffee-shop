@@ -160,7 +160,7 @@ finds a new regression, or the change would reach outside what was asked.
 
 `tools/smoke.js` runs `hands`, `touch`, `walk`, `fit`, `validate44` and `labels` in
 parallel, about 4–8 minutes. Between them they cover:
-- all 25 beats, at 1440, 1024, 393, 360 and 320
+- all 26 beats, at 1440, 1024, 393, 360 and 320
 - the five gates by mouse and by touch
 - Bob reading back the typed message
 - the happy path at mobile and desktop
@@ -278,6 +278,18 @@ long under phone and figure in close-ups, standard on desktop shots. Figma:
 "IPHONE INTERACTIVE — CAFÉ 3-LAYER EXPLORATIONS" (explorations, the layer-order
 board) and the storyboard rows (the spec, regenerated with a SCENE layer).
 
+**Eve's interception (pass 57).** In the exchange each copy is born where
+Eve's tap meets the wire (`--jx`/`--jy`, measured with the tap) and climbs the
+tap into her hands while the original keeps travelling: she copies, she does
+not stop anything. In `unmix` (4f–4g) Eve's copy of Alice's mixture swells and
+comes apart into eight guesses that flicker and fold back into the unchanged
+copy. The guesses are real random bytes, desaturated, and any guess near
+either private colour, either mixture or the accent is redrawn, so the attempt
+can never resolve into a private colour (`paint.js` checks this). They stand
+for guessing the private input of a one-way calculation, not for anything
+hidden in the mixture. They stay inside Eve's column: on a phone they
+zig-zag down the centre, never over either phone.
+
 **Object continuity.** Every object has a stable `data-obj` id and is FLIPped
 between frames by that id — objects **transform and move**, they do not
 disappear and reappear. If you add an object, give it an id and add it to
@@ -295,7 +307,7 @@ them in sync):
 
 ```
 problem · base · pickA · mine · pickB · mixA · mixAout · mixB · sendA ·
-exchange · xland · combA · combAout · combB · reveal · asmath · pubvals ·
+exchange · xland · unmix · combA · combAout · combB · reveal · asmath · pubvals ·
 zsec · tokey · type · protect · journey · arrive · open · chain
 ```
 
@@ -414,6 +426,8 @@ like "4c needs a bigger Eve" means the same picture in both places.
 | 4c | Eve copies both mixtures | `exchange`, 2.6–3.9s |
 | 4d | Copies to Eve, originals continue | `exchange`, from 3.9s |
 | 4e | Mixtures arrive | `xland` |
+| 4f | Eve tries to unmix a copy | `unmix`, 0–4.8s (the guesses are out from ~1.8s) |
+| 4g | The copy stays mixed | `unmix`, from 4.8s |
 | 5a | Alice combines | `combA` (gate: drag) |
 | 5b | Alice’s colours blend | `combAout`, 0–3.36s |
 | 5c | Alice’s result (covered at ~4.9s) | `combAout`, from 3.36s |

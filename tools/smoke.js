@@ -17,8 +17,8 @@ const { spawn, execSync } = require("child_process");
 const fs = require("fs"), path = require("path");
 
 const HARNESSES = [
-  ["hands",      "five gates by mouse, all 25 beats in order, Bob reads the typed message"],
-  ["touch",      "five gates by touch, all 25 beats in order, Bob reads the typed message"],
+  ["hands",      "five gates by mouse, all 26 beats in order, Bob reads the typed message"],
+  ["touch",      "five gates by touch, all 26 beats in order, Bob reads the typed message"],
   ["walk",       "happy path at 393 and 1440, no console errors"],
   ["fit",        "every beat at 1440, 1024, 393, 360 and 320: nothing overflows or overlaps"],
   ["validate44", "every beat at 393 and 1440: the nine frame tests, containment, character scales"],
