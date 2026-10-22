@@ -44,7 +44,8 @@ const probe = () => {
   const turn = flm.classList.contains("turn");
   const drops = [...document.querySelectorAll("[data-drop]")].filter(vis).length;
   const grabs = [...document.querySelectorAll(".grab")].filter(vis).length;
-  const buttons = [...document.querySelectorAll(".flm-stage button")].filter(vis).length;
+  /* on a phone the action lives in the dock under the line (pass 54) */
+  const buttons = [...document.querySelectorAll(".flm-stage button, .flm-act button, .flm-act input")].filter(vis).length;
   const moving = [...document.querySelectorAll(".flm-stage *")].filter((e) => {
     const a = getComputedStyle(e).animationName;
     return a && a !== "none" && !/leadDraw|grabPulse/.test(a);

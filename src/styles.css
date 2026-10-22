@@ -6518,3 +6518,100 @@ details.read summary:hover{color:var(--ink-2)}
 @container (max-height:150px){
   .flm.flm.flm.chain .flm-slot .cin-face{display:none}
 }
+
+/* ============================================================================
+   PASS 54 · MOBILE HUD — custom game UI, Apple-grade ergonomics
+   (Figma row "H · …" and "hud54 · spec board"). Below 560px only.
+   Anatomy: phase cue → story stage → action dock at the thumb. Narration is
+   content on the scene; a gate turns the dock into the YOUR TURN panel that
+   holds the one control the moment needs. Targets ≥44pt with 12pt between
+   them; type never under 11px.
+   ========================================================================= */
+@media (max-width:559.98px){
+  /* the page respects the hardware: content inside the safe area, the
+     atmosphere full-bleed, and the film fits without the page scrolling */
+  .page{padding:max(14px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right))
+    max(12px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+}
+@container (max-width:559.98px){
+  /* 1. NARRATION IS CONTENT, NOT A CARD */
+  .flm.flm.flm .flm-rail:not(.is-turn){background:none;box-shadow:none;border:0;padding:0 2px 4px;max-width:none}
+  .flm.flm.flm .flm-rail .flm-rail-t{font-size:22px;line-height:1.25;font-weight:500}
+  .flm.flm.flm .flm-rail .flm-rail-s{font-size:15px;line-height:1.35;margin-top:8px}
+  .flm.flm.flm .flm-rail .flm-rail-m{font-size:14px;margin-top:8px}
+
+  /* 2. A GATE IS THE YOUR-TURN PANEL: the accent edge says "yours", and it
+        holds the control, at the thumb */
+  .flm.flm.flm .flm-rail.is-turn{padding:16px;margin:0 0 8px;border-radius:var(--r);
+    background:rgba(12,24,18,.94);box-shadow:inset 0 0 0 1.4px rgba(131,227,169,.5);max-width:none}
+  .flm.flm.flm .flm-rail.is-turn .rail-turn{font-size:12px;letter-spacing:.12em}
+  .flm.flm.flm .flm-rail.is-turn .flm-rail-t{font-size:20px;line-height:1.3;margin-top:6px}
+  .flm-act{margin-top:16px}
+  .flm-act:empty{display:none}
+
+  /* the tray: six borderless 64×44 swatches, 12pt apart — targets never touch */
+  .flm.flm.flm .flm-act .cin-pick{display:grid;grid-template-columns:repeat(3,64px);gap:12px;
+    justify-content:center;width:auto;margin:0;padding:0}
+  .flm.flm.flm .flm-act .cin-sw{width:64px;height:44px;min-height:44px;aspect-ratio:auto;
+    border-radius:var(--r);box-shadow:none;transform:none}
+  .flm.flm.flm .flm-act .cin-sw::after{width:64px;height:44px}
+
+  /* Send, and the message bar */
+  .flm.flm.flm .flm-act .tap-send{display:block;width:100%;min-height:52px;font-size:17px;font-weight:600;
+    border-radius:26px;margin:0;padding:0 20px}
+  .flm.flm.flm .flm-act .flm-compose{display:flex;flex-direction:row;gap:12px;align-items:stretch;width:100%;margin:0}
+  .flm.flm.flm .flm-act .flm-compose .tap-send{min-height:52px;height:52px}
+  .flm.flm.flm .flm-act .flm-compose .cin-in{flex:1;min-width:0;min-height:52px;font-size:17px;
+    border-radius:var(--r);padding:0 14px}
+  .flm.flm.flm .flm-act .flm-compose .tap-send{width:96px;flex:0 0 96px;padding:0}
+
+  /* secondary HUD buttons: 44pt, quiet, on the right of the dock */
+  .flm.flm.flm .flm-act .flm-peek,
+  .flm.flm.flm .flm-more{display:block;min-height:44px;font-size:15px;padding:0 16px;margin:12px 0 0 auto;
+    border-radius:var(--r);box-shadow:inset 0 0 0 1.4px var(--line-2);color:var(--ink-2);background:none;
+    text-decoration:none;position:static;transform:none}
+  .flm.flm.flm .flm-rail:not(.is-turn) .flm-act{margin-top:0}
+  .flm.flm .cin-ctl-aux{display:flex;justify-content:flex-end}
+  .flm.flm.flm .cin-ctl .cin-go{min-height:48px;font-size:16px;padding:0 24px;text-decoration:none;
+    border-radius:24px;box-shadow:inset 0 0 0 1.4px var(--line-2);color:var(--ink-2)}
+  /* the dock spans the module: one band for the line and its action */
+  .flm.flm.flm .flm-rail{align-self:end;justify-self:stretch;width:auto;max-width:none;margin-left:0;margin-right:0}
+  /* nothing below the dock but what is there: empty rows add no gap */
+  .flm.flm .cin-ctl:empty,.flm.flm .cin-ctl-aux:empty{display:none}
+  .flm.flm.flm .flm-rail.is-turn .flm-rail-t{line-height:1.2}
+  .flm.flm.flm .flm-rail.is-turn .rail-turn{display:block;line-height:16px}
+
+  /* consistent feedback: a pressed control gives way under the thumb */
+  .flm button{transition:transform 120ms var(--ease),filter 120ms linear}
+  .flm button:active:not(:disabled){transform:scale(.96);filter:brightness(.85)}
+  .flm button:disabled{opacity:.4}
+
+  /* 3. TYPE: nothing visible under 11px; names carry the hierarchy */
+  .flm.flm.flm .tk-l,.flm.flm.flm .tk-note b,.flm.flm .flm-xmap-t{font-size:max(11px,1em)}
+  .flm.flm.flm .tk-l{font-size:11px}
+  .flm.flm.flm .cin-who .sur-me{font-size:11px}
+  .flm.flm.flm.flm.flm.flm.cam-a:not(.cast) .flm-slot.on .cin-who,
+  .flm.flm.flm.flm.flm.flm.cam-b:not(.cast) .flm-slot.on .cin-who{font-size:24px}
+  .flm.flm.flm.flm.flm.flm.flm.cam-both:not(.chain) .flm-slot .cin-who{font-size:17px}
+  .flm.flm.flm.flm.flm.flm.flm:is(.cam-wide,.journey) .flm-slot .cin-who{font-size:15px}
+
+  /* 4. COLOUR CLOSE-UPS reserve the tallest gate dock (the tray), so the
+        phone holds one size from the choice to the result */
+  .flm.flm:is(.f-pickA,.f-mine,.f-pickB,.f-mixA,.f-mixAout,.f-mixB,.f-combA,.f-combAout,.f-combB){
+    grid-template-rows:auto minmax(0,1fr) minmax(204px,auto) auto}
+}
+@container (max-width:559.98px){
+  /* 6a: the legend's lines wrap at the 11px floor instead of running out of the stage */
+  .flm.flm .flm-xmap{max-width:calc(100% - 8px)}
+  .flm.flm .flm-xmap-t{white-space:normal}
+}
+@container (max-width:559.98px){
+  /* the last runs under the floor: Bob's own Send label, "you", the hex on a secret */
+  .flm.flm.flm .flm-bsend{font-size:11px}
+  .flm.flm.flm.flm.flm.flm.flm .flm-slot .cin-who .sur-me{font-size:max(11px,.62em) !important}
+  .flm.flm.flm .tk-dg{font-size:11px}
+}
+@container (max-width:559.98px){
+  /* 6a: the legend takes the stage's width so its words have room */
+  .flm.flm.flm .flm-xmap{width:calc(100% - 24px);max-width:none}
+}

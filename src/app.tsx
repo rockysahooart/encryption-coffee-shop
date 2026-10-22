@@ -2126,6 +2126,21 @@
                      tampered, onTamper, onAgain }) => {
       const F = FAT(beat);
       const s = kit ? kit.session : null;
+      /* ON A PHONE THE ACTION LIVES AT THE THUMB (pass 54). Below 560px the
+         film's controls leave the drawn phone for the action dock under the
+         dialogue: a tray of 44pt swatches, a full-width Send, a message bar.
+         Measured from the film's own width, so it follows the module, not
+         the window. Each control is rendered once, in one place. */
+      const rootRef = useRef(null);
+      const [narrow, setNarrow] = useState(false);
+      useLayoutEffect(() => {
+        const el = rootRef.current;
+        if (!el || typeof ResizeObserver === "undefined") return;
+        const ro = new ResizeObserver(() => setNarrow(el.getBoundingClientRect().width < 560));
+        ro.observe(el);
+        setNarrow(el.getBoundingClientRect().width < 560);
+        return () => ro.disconnect();
+      }, []);
       /* THE PUBLIC COLOUR IS YELLOW. Every blend below is computed from it,
          so changing this one value moves the whole analogy with it — the
          mixtures and the shared colour are means of their ingredients, never
@@ -2357,8 +2372,42 @@
       const Shelf = ({ items }) => items.length
         ? <div className="flm-shelf">{items}</div> : null;
 
+      /* The row leaves once the choice is made (pass 53): the slot shows the
+         decision, and a tray of five colours not taken would be history
+         competing with it. */
+      const controls = (<>
+        {beat === "pickA" && (
+          <div className="cin-pick">
+            {SWATCHES.map((c) => (
+              <button key={c} className={"cin-sw" + (pick && mine === c.toUpperCase() ? " on" : "")}
+                style={{ background: c }} aria-label={"choose " + HUE_NAME(c)}
+                onClick={() => { setPick(c); onAct("pick"); }} />
+            ))}
+          </div>
+        )}
+        {beat === "sendA" && (
+          <button className="cin-go in-ph tap-send" onClick={() => onAct("send")}>
+            {narrow ? "Send to Bob →" : "Send →"}
+          </button>
+        )}
+        {beat === "type" && (
+          <div className="flm-compose">
+            <input className="cin-in" ref={inRef} value={text} placeholder="Message Bob…"
+              disabled={busy} onChange={(e) => setText(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") onAct("type"); }} />
+            <button className="cin-go in-ph tap-send" onClick={() => onAct("type")}
+              disabled={!text.trim() || busy}>Send →</button>
+          </div>
+        )}
+      </>);
+      const peekBtn = F.peek && (
+        <button className="flm-peek" onClick={() => setPeeking(true)}>
+          What Eve has
+        </button>
+      );
+
       return (
-        <div className={"flm cam-" + F.cam + " f-" + F.k + (gate ? " turn" : "")
+        <div ref={rootRef} className={"flm cam-" + F.cam + " f-" + F.k + (gate ? " turn" : "") + (narrow ? " is-narrow" : "")
               + (tampered ? " tampered" : "")
               + (F.act === "pick" || F.act === "type" ? " solo" : "")
               + (F.journey ? " journey j-" + F.journey : "")
@@ -2415,33 +2464,7 @@
                     chosen with a tap. A separate tray under the phone could not
                     coexist with a phone this size, and a tap is the plainer gesture
                     for "choose" in any case. */}
-                {beat === "pickA" && (
-                  /* The row leaves once the choice is made (pass 53): the
-                     slot shows the decision, and a tray of five colours not
-                     taken would be history competing with it. */
-                  <div className={"cin-pick" + (beat === "mine" ? " done" : "")}>
-                    {SWATCHES.map((c) => (
-                      <button key={c} className={"cin-sw" + (pick && mine === c.toUpperCase() ? " on" : "")}
-                        style={{ background: c }} aria-label={"choose " + HUE_NAME(c)}
-                        disabled={beat === "mine"} tabIndex={beat === "mine" ? -1 : 0}
-                        onClick={() => { setPick(c); onAct("pick"); }} />
-                    ))}
-                  </div>
-                )}
-                {beat === "sendA" && (
-                  <button className="cin-go in-ph tap-send" onClick={() => onAct("send")}>
-                    Send →
-                  </button>
-                )}
-                {beat === "type" && (
-                  <div className="flm-compose">
-                    <input className="cin-in" ref={inRef} value={text} placeholder="Message Bob…"
-                      disabled={busy} onChange={(e) => setText(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") onAct("type"); }} />
-                    <button className="cin-go in-ph tap-send" onClick={() => onAct("type")}
-                      disabled={!text.trim() || busy}>Send →</button>
-                  </div>
-                )}
+                {!narrow && controls}
                 <Shelf items={dock.a} />
               </Phone>
             </div>
@@ -2460,11 +2483,7 @@
                 {F.noK && <span className="flm-nokey" aria-label="Eve cannot read it" />}
                 <Shelf items={dock.e} />
               </div>
-              {F.peek && (
-                <button className="flm-peek" onClick={() => setPeeking(true)}>
-                  What Eve has
-                </button>
-              )}
+              {!narrow && peekBtn}
             </div>
 
             <div className={"flm-slot flm-b" + (lit("b") ? " on" : " off")}>
@@ -2543,6 +2562,7 @@
                 container as the line that names it, and it never sits on top
                 of the action. */}
             {F.math && <p className="flm-rail-m">{F.math}</p>}
+            {narrow && <div className="flm-act">{controls}{peekBtn}</div>}
           </div>
 
           {F.chain && (

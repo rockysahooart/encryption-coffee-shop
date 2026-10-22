@@ -27,7 +27,7 @@ Chromium through `launch()` in `drive.js`; there is no machine-specific path.
 | `hands.js` | all five gates complete with a mouse, every beat in order, Bob reads the message back |
 | `touch.js` | the same five gates complete with `pointerType: "touch"` |
 | `walk.js` | the happy path, opening scene to decrypted message, at mobile and desktop |
-| `validate44.js` | the nine frame tests: random entry, action, consequence, no-copy, grayscale, squint, cramming, continuity, aesthetic budget — plus character scales and ratios |
+| `validate44.js` | the nine frame tests: random entry, action, consequence, no-copy, grayscale, squint, cramming, continuity, aesthetic budget — plus character scales and ratios. A turn's control may sit in the stage or, on a phone, in the action dock (`.flm-act`) |
 | `silent3.js` | the whole story still reads with every word hidden |
 | `locked.js` | every phone holds 71.9 : 150 on every frame |
 | `paint.js` | the colour analogy is real arithmetic: both finals compute from the same three ingredients |
