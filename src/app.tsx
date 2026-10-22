@@ -1471,7 +1471,9 @@
         say: "Bob does the same with his", sub: "" },
 
       /* -- 9-11. the exchange, with Eve taking a copy of each ------------- */
-      { k: "sendA", cam: "a", arc: "secret", at: { qa: "a" }, lead: "qa", act: "send",
+      /* 4a: her colour stays visibly in its slot while the mixture is offered —
+         this is the frame about what can leave and what cannot */
+      { k: "sendA", cam: "a", arc: "secret", at: { pa: "a", qa: "a" }, lead: "qa", act: "send",
         tap: true, keep: "pa", point: "send",
         say: "Send your mixture to Bob", sub: "" },
       /* -- 10. THE EXCHANGE, IN ONE FRAME ------------------------------

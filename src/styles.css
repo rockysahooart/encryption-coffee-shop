@@ -6144,3 +6144,83 @@ details.read summary:hover{color:var(--ink-2)}
 }
 /* the travelling ingredient's caption would sit on the private one's */
 .flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:not(:has(.tk-private)) .tk-l{visibility:hidden}
+
+/* ============================================================================
+   PASS 51 — deployed ↔ storyboard audit (Figma "DEPLOYED ↔ FIGMA
+   INCONSISTENCIES"): names with hierarchy, the person holding the phone,
+   balanced blend stacks, the takeaway as the lead, one radius
+   ========================================================================= */
+
+/* 1. NAMES CARRY THE SAME HIERARCHY AS THE FIGURES. Subject of a close-up
+      ≈34px, a pair in a two-shot ≈24px, the ends of a network shot ≈17px,
+      and Eve grows while she is the one acting. No pill behind a name. */
+.flm.flm .flm-slot .cin-who{
+  font-family:var(--sans);font-weight:600;letter-spacing:.01em;color:var(--ink);
+  background:none;padding:0;border-radius:0;max-width:none;overflow:visible;line-height:1.1}
+.flm.flm.cam-a:not(.cast) .flm-slot.on .cin-who,
+.flm.flm.cam-b:not(.cast) .flm-slot.on .cin-who{font-size:max(17px,min(34px,6.4cqw))}
+.flm.flm.cam-both .flm-slot.on:is(.flm-a,.flm-b) .cin-who{font-size:max(13px,min(24px,4.4cqw))}
+.flm.flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b,.flm-net) .cin-who{
+  font-size:max(11px,min(17px,3.4cqw));font-weight:500;color:var(--ink-2)}
+.flm.flm.cam-both.eve-in .flm-net .cin-who{font-size:max(11px,min(18px,3.2cqw));font-weight:500;color:var(--ink-3)}
+.flm.flm .flm-slot .cin-who .sur-me{font-size:.62em !important;font-weight:400 !important;color:var(--ink-3) !important}
+/* Eve is the event from the split (4c) to the copies settling (4d), and
+   again when she copies the packet (9a) */
+.flm.f-exchange .flm-net .cin-who{transform-origin:50% 0;animation:eveFocusX 7200ms linear both}
+@keyframes eveFocusX{0%,35%{transform:none;color:var(--ink-2)}41%,100%{transform:scale(1.5);color:var(--ink)}}
+.flm.f-journey .flm-net .cin-who{transform-origin:50% 0;animation:eveFocusJ 7400ms linear both}
+@keyframes eveFocusJ{0%,37%{transform:none;color:var(--ink-2)}43%,100%{transform:scale(1.5);color:var(--ink)}}
+@media (prefers-reduced-motion:reduce){.flm.f-exchange .flm-net .cin-who,.flm.f-journey .flm-net .cin-who{transform:none}}
+
+@container (min-width:560px){
+  /* 2. A PERSON HOLDING A PHONE. The close-up pair closes its gap: the
+        phone stands at the inner edge of its column and the figure overlaps
+        it (~15% of the figure), so the two share one centre of action. */
+  .flm.flm.cam-a:not(.cast) .flm-slot.on .flm-ph{justify-self:end;width:auto}
+  .flm.flm.cam-a:not(.cast) .flm-slot.on .cin-face{justify-self:start;margin-left:calc(var(--face) * -.1)}
+  .flm.flm.cam-a:not(.cast) .flm-slot.on .cin-who{justify-self:start;text-align:center;
+    width:calc(var(--face) * .6826);margin-left:calc(var(--face) * -.1)}
+  .flm.flm.cam-b:not(.cast) .flm-slot.on .flm-ph{justify-self:start;width:auto}
+  .flm.flm.cam-b:not(.cast) .flm-slot.on .cin-face{justify-self:end;margin-right:calc(var(--face) * -.1)}
+  .flm.flm.cam-b:not(.cast) .flm-slot.on .cin-who{justify-self:end;text-align:center;
+    width:calc(var(--face) * .88 * .7752);margin-right:calc(var(--face) * -.1)}
+
+  /* 3. TWO-SHOTS WITHOUT EVE (6a, 7a, 7b): each pair anchors to the inner
+        edge, phone in front of and overlapping its owner — not on the torso,
+        and not leaving a dead centre */
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-a,
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-b{display:flex;flex-direction:row;align-items:flex-end;position:relative}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-a{justify-content:flex-end;padding-right:5%}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-b{justify-content:flex-start;padding-left:5%}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on .cin-face{margin:0 0 -3% 0;flex:0 0 auto}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on .flm-ph{align-self:center;width:auto;flex:0 0 auto}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-a .flm-ph{order:2;margin-left:calc(var(--face) * -.09)}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-a .cin-face{order:1}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-b .flm-ph{order:1;margin-right:calc(var(--face) * -.09)}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-b .cin-face{order:2}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on .cin-who{position:absolute;top:0;z-index:3}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-a .cin-who{right:5%;left:auto}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-b .cin-who{left:5%;right:auto}
+
+  /* 4. THE TAKEAWAY LEADS (10c): the chain sits above the line, larger */
+  .flm.chain .flm-chain{order:2}
+  .flm.chain .flm-rail{order:3}
+  .flm.chain .cin-ctl{order:4}
+  .flm.chain .flm-chain .tk{width:min(168px,15cqw)}
+  .flm.chain .flm-chain .tk-note b{font-size:min(16px,1.6cqw)}
+  .flm.chain .flm-chain .tk-l{font-size:min(13px,1.3cqw)}
+  .flm.chain .flm-chain > b{font-size:min(22px,2cqw)}
+}
+
+/* 5. BLEND FRAMES FIT THE GLASS (3b–3e, 5b–5e): three objects at 78% of the
+      glass, centred, instead of three full-width plates overflowing upward */
+.flm.fusing:not(.gcm) .flm-ph-scr .flm-focal > .flm-obj{width:78%}
+.flm.working.fusing:not(.gcm) .flm-focal{padding-top:0;justify-content:center}
+
+/* 6. THE PUBLIC COLOUR LEADS ITS OWN FRAME (1b) */
+.flm.wide-open .flm-lane .flm-focal > .flm-obj{width:min(30cqh,34cqw);max-width:none}
+
+/* 7. ONE RADIUS: the action button is not the film's only pill */
+.flm .cin-go{border-radius:var(--r)}
+/* the recap is about the chain; the two figures bracket it without captions */
+.flm.chain .cin-who{display:none}
