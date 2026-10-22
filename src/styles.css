@@ -6615,3 +6615,20 @@ details.read summary:hover{color:var(--ink-2)}
   /* 6a: the legend takes the stage's width so its words have room */
   .flm.flm.flm .flm-xmap{width:calc(100% - 24px);max-width:none}
 }
+
+/* THE WHOLE PACKET (pass 55): nonce · ciphertext · tag, every byte drawn */
+.tk-pack .pk-nc,.tk-pack .pk-tg{opacity:.92}
+.tk-pack .pk-tband{fill:rgba(231,239,233,.09)}
+.tk-pack .pk-seal{stroke:var(--line-2);stroke-width:.8;fill:none}
+.flm .tk-locked .tk-pack :is(.pk-nc,.pk-tg){filter:saturate(.08) brightness(.62)}
+
+/* EVE'S TAP (pass 55): her own line, from her down to the middle of Alice
+   and Bob's wire, with the junction marked where it joins */
+.flm-tap{position:absolute;width:1px;margin-left:-.5px;background:var(--line);z-index:0;pointer-events:none;
+  animation:tapIn .5s linear both}
+.flm-tap::after{content:"";position:absolute;left:50%;bottom:-3px;width:6px;height:6px;margin-left:-3px;
+  border-radius:999px;background:var(--line-2)}
+@keyframes tapIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.flm-tap{animation:none}}
+/* the wire Eve taps is always drawn when she is tapped into it */
+.flm.xchg .flm-lane-track{opacity:1}

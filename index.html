@@ -6621,6 +6621,23 @@ details.read summary:hover{color:var(--ink-2)}
   /* 6a: the legend takes the stage's width so its words have room */
   .flm.flm.flm .flm-xmap{width:calc(100% - 24px);max-width:none}
 }
+
+/* THE WHOLE PACKET (pass 55): nonce · ciphertext · tag, every byte drawn */
+.tk-pack .pk-nc,.tk-pack .pk-tg{opacity:.92}
+.tk-pack .pk-tband{fill:rgba(231,239,233,.09)}
+.tk-pack .pk-seal{stroke:var(--line-2);stroke-width:.8;fill:none}
+.flm .tk-locked .tk-pack :is(.pk-nc,.pk-tg){filter:saturate(.08) brightness(.62)}
+
+/* EVE'S TAP (pass 55): her own line, from her down to the middle of Alice
+   and Bob's wire, with the junction marked where it joins */
+.flm-tap{position:absolute;width:1px;margin-left:-.5px;background:var(--line);z-index:0;pointer-events:none;
+  animation:tapIn .5s linear both}
+.flm-tap::after{content:"";position:absolute;left:50%;bottom:-3px;width:6px;height:6px;margin-left:-3px;
+  border-radius:999px;background:var(--line-2)}
+@keyframes tapIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.flm-tap{animation:none}}
+/* the wire Eve taps is always drawn when she is tapped into it */
+.flm.xchg .flm-lane-track{opacity:1}
 </style>
 </head>
 <body>
@@ -9068,20 +9085,33 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       }, [id, target, disabled, onDone]);
       return { ref, live, over };
     };
-    const Pack = ({ bytes, locked }) => /* @__PURE__ */ React.createElement(
-      "svg",
-      {
-        className: "tk-art tk-pack",
-        viewBox: "0 0 60 44",
-        width: "100%",
-        preserveAspectRatio: "xMidYMid meet",
-        "aria-hidden": "true"
-      },
-      /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("clipPath", { id: "pk-clip" }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4" }))),
-      /* @__PURE__ */ React.createElement("g", { clipPath: "url(#pk-clip)" }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", fill: "rgba(231,239,233,.045)" }), (bytes || []).slice(0, 8).map((b2, i) => /* @__PURE__ */ React.createElement("rect", { key: i, className: "pk-b", x: 8 + i * 5.1, y: "15", width: "3.4", height: "16", rx: "1", fill: b2 })), /* @__PURE__ */ React.createElement("path", { className: "pk-seal", d: "M47 10 v26 M47 23 h7" }), /* @__PURE__ */ React.createElement("circle", { className: "pk-dot", cx: "50.5", cy: "23", r: "1.9" })),
-      /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "6", y: "10", width: "48", height: "26", rx: "4", fill: "none" }),
-      locked && /* @__PURE__ */ React.createElement("rect", { className: "pk-lock", x: "6", y: "10", width: "48", height: "26", rx: "4" })
-    );
+    const cellsOf = (bytes) => {
+      const out = [];
+      if (!bytes) return out;
+      for (let i = 0; i < bytes.length; i += 3)
+        out.push(RGB([bytes[i] || 0, bytes[i + 1] || 0, bytes[i + 2] || 0], 0));
+      return out;
+    };
+    const Pack = ({ pk, locked }) => {
+      const grey = (n) => Array(n).fill("#3a4449");
+      const N = pk ? cellsOf(pk.iv) : grey(4), C = pk ? cellsOf(pk.C) : grey(5), T = pk ? cellsOf(pk.tag) : grey(6);
+      const x0 = 5, W = 50, g = 2.8, p = (W - 2 * g) / (N.length + C.length + T.length), bw = p * 0.74;
+      const xN = x0, xC = xN + N.length * p + g, xT = xC + C.length * p + g;
+      return /* @__PURE__ */ React.createElement(
+        "svg",
+        {
+          className: "tk-art tk-pack",
+          viewBox: "0 0 60 44",
+          width: "100%",
+          preserveAspectRatio: "xMidYMid meet",
+          "aria-hidden": "true"
+        },
+        /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("clipPath", { id: "pk-clip" }, /* @__PURE__ */ React.createElement("rect", { x: "2", y: "7", width: "56", height: "30", rx: "5" }))),
+        /* @__PURE__ */ React.createElement("g", { clipPath: "url(#pk-clip)" }, /* @__PURE__ */ React.createElement("rect", { x: "2", y: "7", width: "56", height: "30", fill: "rgba(231,239,233,.045)" }), /* @__PURE__ */ React.createElement("rect", { className: "pk-tband", x: xT - g / 2, y: "7", width: 58 - xT + g / 2, height: "30" }), N.map((c, i) => /* @__PURE__ */ React.createElement("rect", { key: "n" + i, className: "pk-nc", x: xN + i * p, y: "17", width: bw, height: "10", rx: ".9", fill: c })), C.map((c, i) => /* @__PURE__ */ React.createElement("rect", { key: "c" + i, className: "pk-b", x: xC + i * p, y: "11", width: bw, height: "22", rx: ".9", fill: c })), T.map((c, i) => /* @__PURE__ */ React.createElement("rect", { key: "t" + i, className: "pk-tg", x: xT + i * p, y: "11", width: bw, height: "22", rx: ".9", fill: c })), /* @__PURE__ */ React.createElement("path", { className: "pk-seal", d: `M${xC - g / 2} 9 v26 M${xT - g / 2} 7 v30` })),
+        /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "2", y: "7", width: "56", height: "30", rx: "5", fill: "none" }),
+        locked && /* @__PURE__ */ React.createElement("rect", { className: "pk-lock", x: "2", y: "7", width: "56", height: "30", rx: "5" })
+      );
+    };
     const Grab = ({ id, target, onDone, hint, children }) => {
       const { ref, live, over } = useDrag({ id, target, onDone });
       return /* @__PURE__ */ React.createElement(
@@ -9201,6 +9231,29 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         setNarrow(el.getBoundingClientRect().width < 560);
         return () => ro.disconnect();
       }, []);
+      const [tap, setTap] = useState(null);
+      useLayoutEffect(() => {
+        const root = rootRef.current;
+        if (!root) return;
+        const measure = () => {
+          const st = root.querySelector(".flm-stage"), tr = root.querySelector(".flm-lane-track"), face = root.querySelector(".flm-net .cin-face");
+          const shown = (e) => e && e.getBoundingClientRect().width > 1 && getComputedStyle(e).display !== "none" && getComputedStyle(e.closest(".flm-net, .flm-lane") || e).display !== "none";
+          if (!st || !shown(tr) || !shown(face)) {
+            setTap(null);
+            return;
+          }
+          const S = st.getBoundingClientRect(), T = tr.getBoundingClientRect(), E = face.getBoundingClientRect();
+          const x = T.left + T.width / 2 - S.left, top = E.bottom - S.top - E.height * 0.12, y = T.top + T.height / 2 - S.top;
+          setTap(y - top > 8 ? { x: Math.round(x), top: Math.round(top), h: Math.round(y - top) } : null);
+        };
+        const r1 = requestAnimationFrame(() => requestAnimationFrame(measure));
+        const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+        if (ro) ro.observe(root);
+        return () => {
+          cancelAnimationFrame(r1);
+          if (ro) ro.disconnect();
+        };
+      }, [beat, narrow]);
       const base = "#E8C93A";
       const mine = (pick || SWATCHES[0]).toUpperCase();
       const bobPool = SWATCHES.filter((c) => c.toUpperCase() !== mine && c.toUpperCase() !== base.toUpperCase());
@@ -9352,8 +9405,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: d ? "" : "16 bytes"
           }
         ),
-        pkt: (d) => /* @__PURE__ */ React.createElement("div", { className: "tk tk-payload" + (d ? " tk-dock-on" : "") + (F.sink ? " sink" : "") }, /* @__PURE__ */ React.createElement("div", { className: "tk-box" }, /* @__PURE__ */ React.createElement(Pack, { bytes: cbytes })), !d && /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "the protected packet")),
-        pkt2: (d) => /* @__PURE__ */ React.createElement("div", { className: "tk tk-payload tk-locked" + (d ? " tk-dock-on" : "") }, /* @__PURE__ */ React.createElement("div", { className: "tk-box" }, /* @__PURE__ */ React.createElement(Pack, { bytes: cbytes, locked: true })), !d && /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "copied")),
+        pkt: (d) => /* @__PURE__ */ React.createElement("div", { className: "tk tk-payload" + (d ? " tk-dock-on" : "") + (F.sink ? " sink" : "") }, /* @__PURE__ */ React.createElement("div", { className: "tk-box" }, /* @__PURE__ */ React.createElement(Pack, { pk: pack })), !d && /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "nonce \xB7 ciphertext \xB7 tag")),
+        pkt2: (d) => /* @__PURE__ */ React.createElement("div", { className: "tk tk-payload tk-locked" + (d ? " tk-dock-on" : "") }, /* @__PURE__ */ React.createElement("div", { className: "tk-box" }, /* @__PURE__ */ React.createElement(Pack, { pk: pack, locked: true })), !d && /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "copied")),
         vfy: (d) => /* @__PURE__ */ React.createElement(
           Tok,
           {
@@ -9507,7 +9560,14 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           style: mixc ? { "--mixc": mixc } : void 0
         },
         /* @__PURE__ */ React.createElement("div", { className: "flm-arc", "aria-label": "part " + (ARCS.indexOf(F.arc) + 1) + " of 3" }, ARCS.map((a) => /* @__PURE__ */ React.createElement("span", { key: a, className: "flm-arc-i" + (a === F.arc ? " on" : "") }, /* @__PURE__ */ React.createElement("i", { "aria-hidden": "true" }), a === F.arc && /* @__PURE__ */ React.createElement("b", null, ARCNAME[a])))),
-        /* @__PURE__ */ React.createElement("div", { className: "flm-stage" }, /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-a" + (lit("a") ? " on" : " off") }, /* @__PURE__ */ React.createElement("img", { className: "cin-face", src: SPRITE.you, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Alice ", /* @__PURE__ */ React.createElement("i", { className: "sur-me" }, "you")), /* @__PURE__ */ React.createElement(Phone, { who: "a", lit: lit("a"), drop: F.drag && F.drag.to === "phoneA" || beat === "pickA" ? "phoneA" : null }, F.drag && F.drag.to === "openA" && /* @__PURE__ */ React.createElement("span", { className: "flm-open is-drop", "data-drop": "openA", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "flm-focal" }, bin.a), F.drag && F.drag.to === "slot" && /* @__PURE__ */ React.createElement("div", { className: "flm-slot-x is-drop", "data-drop": "slot" }, /* @__PURE__ */ React.createElement("span", { className: "flm-slot-k" }, beat === "hkdf" ? "HKDF" : "AES\u2011GCM"), /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 60 18", className: "flm-slot-a", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M6 9 h40 M40 4 l6 5 l-6 5", fill: "none", strokeWidth: "2.2" }))), !narrow && controls, /* @__PURE__ */ React.createElement(Shelf, { items: dock.a }))), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-net" + (lit("eve") ? " on" : " off") }, /* @__PURE__ */ React.createElement("img", { className: "cin-face", src: SPRITE.atk, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "cin-who evil" }, "Eve"), /* @__PURE__ */ React.createElement("div", { className: "flm-eve" }, /* @__PURE__ */ React.createElement("div", { className: "flm-focal flm-hold" }, bin.eve), F.noK && /* @__PURE__ */ React.createElement("span", { className: "flm-nokey", "aria-label": "Eve cannot read it" }), /* @__PURE__ */ React.createElement(Shelf, { items: dock.e })), !narrow && peekBtn), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-b" + (lit("b") ? " on" : " off") }, /* @__PURE__ */ React.createElement("img", { className: "cin-face", src: SPRITE.fr, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Bob"), /* @__PURE__ */ React.createElement(Phone, { who: "b", lit: lit("b") }, (F.verify || F.opened) && /* @__PURE__ */ React.createElement("span", { className: "flm-seal-cue" }, /* @__PURE__ */ React.createElement(
+        /* @__PURE__ */ React.createElement("div", { className: "flm-stage" }, tap && /* @__PURE__ */ React.createElement(
+          "i",
+          {
+            className: "flm-tap",
+            "aria-hidden": "true",
+            style: { left: tap.x + "px", top: tap.top + "px", height: tap.h + "px" }
+          }
+        ), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-a" + (lit("a") ? " on" : " off") }, /* @__PURE__ */ React.createElement("img", { className: "cin-face", src: SPRITE.you, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Alice ", /* @__PURE__ */ React.createElement("i", { className: "sur-me" }, "you")), /* @__PURE__ */ React.createElement(Phone, { who: "a", lit: lit("a"), drop: F.drag && F.drag.to === "phoneA" || beat === "pickA" ? "phoneA" : null }, F.drag && F.drag.to === "openA" && /* @__PURE__ */ React.createElement("span", { className: "flm-open is-drop", "data-drop": "openA", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "flm-focal" }, bin.a), F.drag && F.drag.to === "slot" && /* @__PURE__ */ React.createElement("div", { className: "flm-slot-x is-drop", "data-drop": "slot" }, /* @__PURE__ */ React.createElement("span", { className: "flm-slot-k" }, beat === "hkdf" ? "HKDF" : "AES\u2011GCM"), /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 60 18", className: "flm-slot-a", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M6 9 h40 M40 4 l6 5 l-6 5", fill: "none", strokeWidth: "2.2" }))), !narrow && controls, /* @__PURE__ */ React.createElement(Shelf, { items: dock.a }))), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-net" + (lit("eve") ? " on" : " off") }, /* @__PURE__ */ React.createElement("img", { className: "cin-face", src: SPRITE.atk, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "cin-who evil" }, "Eve"), /* @__PURE__ */ React.createElement("div", { className: "flm-eve" }, /* @__PURE__ */ React.createElement("div", { className: "flm-focal flm-hold" }, bin.eve), F.noK && /* @__PURE__ */ React.createElement("span", { className: "flm-nokey", "aria-label": "Eve cannot read it" }), /* @__PURE__ */ React.createElement(Shelf, { items: dock.e })), !narrow && peekBtn), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-b" + (lit("b") ? " on" : " off") }, /* @__PURE__ */ React.createElement("img", { className: "cin-face", src: SPRITE.fr, alt: "" }), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Bob"), /* @__PURE__ */ React.createElement(Phone, { who: "b", lit: lit("b") }, (F.verify || F.opened) && /* @__PURE__ */ React.createElement("span", { className: "flm-seal-cue" }, /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "seal",
@@ -9551,8 +9611,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           F.math && /* @__PURE__ */ React.createElement("p", { className: "flm-rail-m" }, F.math),
           narrow && /* @__PURE__ */ React.createElement("div", { className: "flm-act" }, controls, peekBtn)
         ),
-        F.chain && /* @__PURE__ */ React.createElement("div", { className: "flm-chain" }, /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: sharedC, label: "same secret" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement(Tok, { role: "key", hex: kC, label: "one key" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement(Tok, { role: "cipher", bytes: cbytes, label: "protected" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement("div", { className: "tk tk-message" }, /* @__PURE__ */ React.createElement("div", { className: "tk-box tk-note" }, /* @__PURE__ */ React.createElement("b", null, opened && opened.text || text || "\u2014")), /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "Bob reads it"))),
-        F.recap && /* @__PURE__ */ React.createElement("div", { className: "flm-recap" }, /* @__PURE__ */ React.createElement("div", { className: "flm-recap-row" }, /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: sharedC, label: "same secret" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement(Tok, { role: "key", hex: kC, label: "same key" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement(Tok, { role: "cipher", bytes: cbytes, label: "protected message" }))),
+        F.chain && /* @__PURE__ */ React.createElement("div", { className: "flm-chain" }, /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: sharedC, label: "same secret" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement(Tok, { role: "key", hex: kC, label: "one key" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement("div", { className: "tk tk-payload" }, /* @__PURE__ */ React.createElement("div", { className: "tk-box" }, /* @__PURE__ */ React.createElement(Pack, { pk: pack })), /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "protected")), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement("div", { className: "tk tk-message" }, /* @__PURE__ */ React.createElement("div", { className: "tk-box tk-note" }, /* @__PURE__ */ React.createElement("b", null, opened && opened.text || text || "\u2014")), /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "Bob reads it"))),
+        F.recap && /* @__PURE__ */ React.createElement("div", { className: "flm-recap" }, /* @__PURE__ */ React.createElement("div", { className: "flm-recap-row" }, /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: sharedC, label: "same secret" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement(Tok, { role: "key", hex: kC, label: "same key" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement("div", { className: "tk tk-payload" }, /* @__PURE__ */ React.createElement("div", { className: "tk-box" }, /* @__PURE__ */ React.createElement(Pack, { pk: pack })), /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "protected message")))),
         F.bridge && /* @__PURE__ */ React.createElement("div", { className: "flm-bridge" }, /* @__PURE__ */ React.createElement("div", { className: "flm-map" }, /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "bm-sw", style: { background: mine } }), " private colour"), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement("span", null, "private value")), /* @__PURE__ */ React.createElement("div", { className: "flm-map" }, /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "bm-sw", style: { background: qaC } }), " mixture"), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement("span", null, "public value")), /* @__PURE__ */ React.createElement("div", { className: "flm-map" }, /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("i", { className: "bm-sw", style: { background: sharedC } }), " final colour"), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement("span", null, "shared secret"))),
         F.eq && /* @__PURE__ */ React.createElement("div", { className: "cin-real late" }, /* @__PURE__ */ React.createElement(Eq, { parts: F.eq, note: F.eqn })),
         (F.bridge || F.data || F.payoff) && /* @__PURE__ */ React.createElement("div", { className: "cin-ctl-aux" }, /* @__PURE__ */ React.createElement("button", { className: "flm-more", onClick: () => setPeeking("values") }, F.data ? "See the data" : "See the actual values")),

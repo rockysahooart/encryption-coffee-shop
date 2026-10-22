@@ -1997,27 +1997,44 @@
        everything else in the film uses, a band of real ciphertext bytes
        across it, a notch cut from the right edge where the seal closes it,
        and one tick for the single-use nonce. Nothing nested, one hairline. */
-    const Pack = ({ bytes, locked }) => (
-      <svg className="tk-art tk-pack" viewBox="0 0 60 44" width="100%"
-        preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-        <defs>
-          <clipPath id="pk-clip"><rect x="6" y="10" width="48" height="26" rx="4" /></clipPath>
-        </defs>
-        <g clipPath="url(#pk-clip)">
-          <rect x="6" y="10" width="48" height="26" fill="rgba(231,239,233,.045)" />
-          {(bytes || []).slice(0, 8).map((b2, i) => (
-            <rect key={i} className="pk-b" x={8 + i * 5.1} y="15" width="3.4" height="16" rx="1" fill={b2} />
-          ))}
-          {/* the seal: the right end of the packet is closed, and the notch
-              says so without drawing a wax stamp on it */}
-          <path className="pk-seal" d="M47 10 v26 M47 23 h7" />
-          <circle className="pk-dot" cx="50.5" cy="23" r="1.9" />
-        </g>
-        <rect className="tk-ln" x="6" y="10" width="48" height="26" rx="4" fill="none" />
-        {/* one tick, bottom left: used once */}
-        {locked && <rect className="pk-lock" x="6" y="10" width="48" height="26" rx="4" />}
-      </svg>
-    );
+    /* THE WHOLE PACKET, EVERY BYTE OF IT. What crosses the wire is the
+       nonce, the ciphertext and the 16-byte tag, and each is drawn from its
+       own real bytes, three bytes to a cell: the nonce as short bars (it is
+       public, it only has to be fresh), the ciphertext at full height (one
+       cell for every three bytes of the message), the tag on the sealed end.
+       The parts are told apart by shape and by the hairlines between them,
+       not by colour alone. */
+    const cellsOf = (bytes) => {
+      const out = [];
+      if (!bytes) return out;
+      for (let i = 0; i < bytes.length; i += 3)
+        out.push(RGB([bytes[i] || 0, bytes[i + 1] || 0, bytes[i + 2] || 0], 0));
+      return out;
+    };
+    const Pack = ({ pk, locked }) => {
+      const grey = (n) => Array(n).fill("#3a4449");
+      const N = pk ? cellsOf(pk.iv) : grey(4), C = pk ? cellsOf(pk.C) : grey(5), T = pk ? cellsOf(pk.tag) : grey(6);
+      const x0 = 5, W = 50, g = 2.8, p = (W - 2 * g) / (N.length + C.length + T.length), bw = p * .74;
+      const xN = x0, xC = xN + N.length * p + g, xT = xC + C.length * p + g;
+      return (
+        <svg className="tk-art tk-pack" viewBox="0 0 60 44" width="100%"
+          preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <clipPath id="pk-clip"><rect x="2" y="7" width="56" height="30" rx="5" /></clipPath>
+          </defs>
+          <g clipPath="url(#pk-clip)">
+            <rect x="2" y="7" width="56" height="30" fill="rgba(231,239,233,.045)" />
+            <rect className="pk-tband" x={xT - g / 2} y="7" width={58 - xT + g / 2} height="30" />
+            {N.map((c, i) => <rect key={"n" + i} className="pk-nc" x={xN + i * p} y="17" width={bw} height="10" rx=".9" fill={c} />)}
+            {C.map((c, i) => <rect key={"c" + i} className="pk-b" x={xC + i * p} y="11" width={bw} height="22" rx=".9" fill={c} />)}
+            {T.map((c, i) => <rect key={"t" + i} className="pk-tg" x={xT + i * p} y="11" width={bw} height="22" rx=".9" fill={c} />)}
+            <path className="pk-seal" d={`M${xC - g / 2} 9 v26 M${xT - g / 2} 7 v30`} />
+          </g>
+          <rect className="tk-ln" x="2" y="7" width="56" height="30" rx="5" fill="none" />
+          {locked && <rect className="pk-lock" x="2" y="7" width="56" height="30" rx="5" />}
+        </svg>
+      );
+    };
 
     const Grab = ({ id, target, onDone, hint, children }) => {
       const { ref, live, over } = useDrag({ id, target, onDone });
@@ -2141,6 +2158,29 @@
         setNarrow(el.getBoundingClientRect().width < 560);
         return () => ro.disconnect();
       }, []);
+      /* EVE IS ON THE WIRE (pass 55). Wherever Alice and Bob's wire and Eve
+         are both in the frame, a tap runs from Eve down to the middle of their
+         wire and joins it there: what she copies, she copies from that line.
+         Measured from the live layout, so it lands on the wire at every size. */
+      const [tap, setTap] = useState(null);
+      useLayoutEffect(() => {
+        const root = rootRef.current;
+        if (!root) return;
+        const measure = () => {
+          const st = root.querySelector(".flm-stage"), tr = root.querySelector(".flm-lane-track"),
+            face = root.querySelector(".flm-net .cin-face");
+          const shown = (e) => e && e.getBoundingClientRect().width > 1 && getComputedStyle(e).display !== "none"
+            && getComputedStyle(e.closest(".flm-net, .flm-lane") || e).display !== "none";
+          if (!st || !shown(tr) || !shown(face)) { setTap(null); return; }
+          const S = st.getBoundingClientRect(), T = tr.getBoundingClientRect(), E = face.getBoundingClientRect();
+          const x = T.left + T.width / 2 - S.left, top = E.bottom - S.top - E.height * .12, y = T.top + T.height / 2 - S.top;
+          setTap(y - top > 8 ? { x: Math.round(x), top: Math.round(top), h: Math.round(y - top) } : null);
+        };
+        const r1 = requestAnimationFrame(() => requestAnimationFrame(measure));
+        const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+        if (ro) ro.observe(root);
+        return () => { cancelAnimationFrame(r1); if (ro) ro.disconnect(); };
+      }, [beat, narrow]);
       /* THE PUBLIC COLOUR IS YELLOW. Every blend below is computed from it,
          so changing this one value moves the whole analogy with it — the
          mixtures and the shared colour are means of their ingredients, never
@@ -2226,13 +2266,13 @@
                        note={d ? "" : "16 bytes"} />,
         pkt:  (d) => (
           <div className={"tk tk-payload" + (d ? " tk-dock-on" : "") + (F.sink ? " sink" : "")}>
-            <div className="tk-box"><Pack bytes={cbytes} /></div>
-            {!d && <span className="tk-l">the protected packet</span>}
+            <div className="tk-box"><Pack pk={pack} /></div>
+            {!d && <span className="tk-l">nonce · ciphertext · tag</span>}
           </div>
         ),
         pkt2: (d) => (
           <div className={"tk tk-payload tk-locked" + (d ? " tk-dock-on" : "")}>
-            <div className="tk-box"><Pack bytes={cbytes} locked /></div>
+            <div className="tk-box"><Pack pk={pack} locked /></div>
             {!d && <span className="tk-l">copied</span>}
           </div>
         ),
@@ -2440,6 +2480,8 @@
             ))}
           </div>
           <div className="flm-stage">
+            {tap && <i className="flm-tap" aria-hidden="true"
+              style={{ left: tap.x + "px", top: tap.top + "px", height: tap.h + "px" }} />}
             {/* the middle of a blend needs no caption (pass 53): the two
                 plates converging on one footprint is the evidence */}
 
@@ -2571,7 +2613,10 @@
               <b>→</b>
               <Tok role="key" hex={kC} label="one key" />
               <b>→</b>
-              <Tok role="cipher" bytes={cbytes} label="protected" />
+              <div className="tk tk-payload">
+                <div className="tk-box"><Pack pk={pack} /></div>
+                <span className="tk-l">protected</span>
+              </div>
               <b>→</b>
               <div className="tk tk-message">
                 <div className="tk-box tk-note"><b>{(opened && opened.text) || text || "—"}</b></div>
@@ -2586,7 +2631,10 @@
                 <b>→</b>
                 <Tok role="key" hex={kC} label="same key" />
                 <b>→</b>
-                <Tok role="cipher" bytes={cbytes} label="protected message" />
+                <div className="tk tk-payload">
+                  <div className="tk-box"><Pack pk={pack} /></div>
+                  <span className="tk-l">protected message</span>
+                </div>
               </div>
             </div>
           )}
