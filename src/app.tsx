@@ -2485,8 +2485,10 @@
             {/* the middle of a blend needs no caption (pass 53): the two
                 plates converging on one footprint is the evidence */}
 
+            {/* each figure is one staged unit (pass 56): chair behind, the
+                sprite, the table in front — see "CAFÉ STAGING" in styles.css */}
             <div className={"flm-slot flm-a" + (lit("a") ? " on" : " off")}>
-              <img className="cin-face" src={SPRITE.you} alt="" />
+              <span className="cin-face" aria-hidden="true"><i className="cu-chair" /><img src={SPRITE.you} alt="" /><i className="cu-table" /></span>
               <span className="cin-who">Alice <i className="sur-me">you</i></span>
               <Phone who="a" lit={lit("a")} drop={(F.drag && F.drag.to === "phoneA") || beat === "pickA" ? "phoneA" : null}>
                 {F.drag && F.drag.to === "openA" && (
@@ -2518,7 +2520,7 @@
                 a face, a name, and the objects she holds, on the same stage,
                 with the wire running under her. */}
             <div className={"flm-slot flm-net" + (lit("eve") ? " on" : " off")}>
-              <img className="cin-face" src={SPRITE.atk} alt="" />
+              <span className="cin-face" aria-hidden="true"><img src={SPRITE.atk} alt="" /><i className="cu-table" /></span>
               <span className="cin-who evil">Eve</span>
               <div className="flm-eve">
                 <div className="flm-focal flm-hold">{bin.eve}</div>
@@ -2529,7 +2531,7 @@
             </div>
 
             <div className={"flm-slot flm-b" + (lit("b") ? " on" : " off")}>
-              <img className="cin-face" src={SPRITE.fr} alt="" />
+              <span className="cin-face" aria-hidden="true"><i className="cu-chair" /><img src={SPRITE.fr} alt="" /><i className="cu-table" /></span>
               <span className="cin-who">Bob</span>
               <Phone who="b" lit={lit("b")}>
                 {(F.verify || F.opened) && (

@@ -202,7 +202,7 @@ comparison — set by `--face`; a fourth is a regression. `validate44.js` checks
 both the ratios and the scale count.
 
 **Close-up framing.** In a single-character close-up the slot is a two-column
-grid: phone in one column, figure in the other at `--face: min(41cqw,230px)` (`min(40cqw,340px)` on a module ≥560px wide — pass 48),
+grid: phone in one column, figure in the other at `--face: min(41cqw,230px)` (`min(46cqw,391px,97cqh)` on a module ≥560px wide — pass 56; it was 340px),
 bottom-aligned and overlapping the device by 14%, with the stage cropping them
 at the knees. Bob's side mirrors. The phone is sized from **its column**
 (`min(78cqh,106cqw)`), not from the stage — sizing it from the stage is what
@@ -260,6 +260,23 @@ words remain for screen readers (`a11y2.js`).
 Figma holds the design (desktop frames 1a–10c, the mobile row, and the
 "FIGMA ↔ DEPLOYED PARITY AUDIT" section with every decision by label). Design
 there first, implement, then check each changed label against its frame.
+
+**Café staging (pass 56).** Every figure is one staged unit: `.cin-face` is
+a sprite-sized box holding the chair (behind), the sprite `<img>` and the table
+(in front). Furniture is placed in the sprite's own percentages, so the
+tabletop always lands on the sprite's last rows (Alice 279/293, Bob 246/258,
+Eve 246/260) and the waist cut never shows at any scale. Never size or move
+the furniture against the stage, and never put a phone inside the unit. Layer
+order, front to back: phones, plates, packets, the wire (`.flm-lane`, z 3),
+names and controls → the unit (faces z 0–1) → the dim café on
+`.flm-stage::before` (z −1). The stage crops with `contain:paint`, not
+`overflow:hidden`, so a table bleeding off-frame is not counted as clipped
+content. Desktop is its own composition: close-ups ×1.15 with a drop that only
+spends room the stage has; the whole network row ×1.2 (`--face:30cqw`), Eve
+included, so the scales stay three. Tables: narrow on mobile network shots,
+long under phone and figure in close-ups, standard on desktop shots. Figma:
+"IPHONE INTERACTIVE — CAFÉ 3-LAYER EXPLORATIONS" (explorations, the layer-order
+board) and the storyboard rows (the spec, regenerated with a SCENE layer).
 
 **Object continuity.** Every object has a stable `data-obj` id and is FLIPped
 between frames by that id — objects **transform and move**, they do not
