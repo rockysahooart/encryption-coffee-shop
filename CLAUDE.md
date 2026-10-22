@@ -225,6 +225,19 @@ left, `.rail-b` right, wide/both centred. It carries one line, an optional
 second line, and (only on the beats that have earned it) one formula. Only a
 turn wears a box. Font floor: nothing in the film is under 9px.
 
+**Cleanup rules (pass 52).** No connector lines from dialogue to objects —
+proximity, scale and motion carry the reference. Plates (swatches, mixtures,
+secrets, keys) are borderless. The one draggable plate on a gate pulses in
+its **own** colour (`--own`, `grabPulse`, 1.8s) and nothing else marks it: no
+ring, no hint chip; the pulse stops when the gate is done. `validate44.js`
+exempts `grabPulse` from the moving-element count. Names are 8px-radius
+plates with a 1px inside stroke, in three sizes by emphasis (close-up,
+two-shot, wide). Spacing inside the phone uses one unit,
+`--u: calc(var(--ph-h)/50)`. Removed and not to return: vault padlock header,
+history shelf, the packet's "1x" tag, "you chose this one", the grab hint.
+The Figma frames 1a–10c are generated from production geometry; when the
+film changes, regenerate them rather than hand-editing them apart.
+
 **Object continuity.** Every object has a stable `data-obj` id and is FLIPped
 between frames by that id — objects **transform and move**, they do not
 disappear and reappear. If you add an object, give it an id and add it to

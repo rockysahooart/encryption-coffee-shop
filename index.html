@@ -6230,6 +6230,103 @@ details.read summary:hover{color:var(--ink-2)}
 .flm .cin-go{border-radius:var(--r)}
 /* the recap is about the chain; the two figures bracket it without captions */
 .flm.chain .cin-who{display:none}
+
+/* ============================================================================
+   PASS 52 — fewer, better elements; one spacing system; one design in both
+   Figma and production (see Figma "DEPLOYED ↔ FIGMA INCONSISTENCIES")
+   ========================================================================= */
+
+/* 1. SWATCHES ARE PURE COLOUR. No hairline around a colour plate; the role
+      marks that carry meaning stay (the slot rail under a private colour,
+      the short ticks beside a mixture that can travel). */
+.flm .tk-private .tk-art rect.tk-ln,
+.flm .tk-secret .tk-art rect.tk-ln,
+.flm .tk-key .tk-art rect.tk-ln,
+.flm .tk-public .tk-art path.tk-ln:nth-of-type(-n+2){display:none}
+.flm .cin-sw{box-shadow:none}
+.flm .cin-pick.done .cin-sw{box-shadow:none}
+
+/* 2. ONE SPACING SCALE INSIDE THE PHONE, derived from the phone's height so
+      a close-up and a network shot keep the same proportions:
+      u = phone height / 50; screen inset 4u top (clears the island),
+      2.5u sides, 3u bottom; 2.5u between objects; 0.8u object → caption */
+.flm .flm-ph-body{--u:calc(var(--ph-h) / 50)}
+.flm .flm-ph-scr{padding:calc(var(--u) * 4) calc(var(--u) * 2.5) calc(var(--u) * 3);gap:calc(var(--u) * 2)}
+.flm .flm-ph-scr .flm-focal{gap:calc(var(--u) * 2.5)}
+.flm .flm-ph-scr .tk{gap:calc(var(--u) * .8)}
+.flm .flm-ph-scr .tk-l{font-size:max(9px,calc(var(--u) * 1.3));line-height:1.25;color:var(--ink-3);
+  margin:0;letter-spacing:.01em}
+.flm .flm-vault{gap:0;padding:0;box-shadow:none}
+/* the slot is the svg rail under the colour; the second CSS underline goes,
+   except where it is the place the viewer may drop (accent, on a turn) */
+.flm .flm-vault > .tk::after{display:none}
+.flm.turn [data-drop] > .flm-vault > .tk::after{display:block}
+/* history on a shelf competes with the event; it is still in the values panel */
+.flm .flm-ph-scr .flm-shelf{display:none}
+/* secondary captions and instruction clutter */
+.flm .cin-pick.done::after{content:none}
+.flm .grab-hint{display:none}
+.flm .cin-pick{gap:calc(var(--u) * 1.6)}
+.flm .cin-sw{border-radius:var(--r-s)}
+.flm-compose{gap:calc(var(--u) * 1.6)}
+.flm-seal-cue{margin:0 auto calc(var(--u) * 1)}
+
+/* 3. A DRAGGABLE SWATCH PULSES IN ITS OWN COLOUR. No outline: brightness,
+      saturation and a soft local glow from --own, ~1.8s, until it is dropped.
+      Only the one object the viewer may move. */
+.flm.turn .flm-obj.is-grab .tk-box{outline:none}
+.flm.turn .flm-obj.is-drop .tk-box{outline:none}
+.flm.flm.turn .flm-obj.is-grab .tk-box{animation:grabPulse 1800ms ease-in-out infinite !important}
+@keyframes grabPulse{
+  0%,100%{filter:brightness(1) saturate(1) drop-shadow(0 0 0 rgba(0,0,0,0))}
+  50%{filter:brightness(1.16) saturate(1.14)
+    drop-shadow(0 0 calc(var(--u, 8px) * 1.4) color-mix(in srgb, var(--own) 62%, transparent))}
+}
+@media (prefers-reduced-motion:reduce){.flm.flm.turn .flm-obj.is-grab .tk-box{animation:none !important}}
+
+/* 4. NAMES ARE NAMEPLATES. A clean inner hairline, an even inset, the same
+      8px radius as everything else; brightness and size follow emphasis. */
+.flm.flm.flm.flm.flm .flm-slot .cin-who{
+  padding:.3em .62em .34em;border-radius:var(--r-s);
+  box-shadow:inset 0 0 0 1px var(--line-2);background:rgba(10,13,15,.6)}
+.flm.flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b,.flm-net) .cin-who,
+.flm.flm.cam-both.eve-in .flm-net .cin-who{box-shadow:inset 0 0 0 1px var(--line)}
+.flm.f-exchange .flm-net .cin-who,.flm.f-journey .flm-net .cin-who{box-shadow:inset 0 0 0 1px var(--line-2)}
+
+/* 5. THE BLEND STACK IS CARD ON CARD: the moving plate and the private plate
+      share one footprint exactly (same width, same box, same radius), and
+      neither carries a border to show a mismatch. */
+.flm.fusing:not(.gcm) .flm-ph-scr .flm-focal > .flm-obj .tk{width:100%}
+/* the claim ends on the slot rail, not inside a drawn box */
+.flm.claiming .flm-vault{animation:none;box-shadow:none}
+/* a nameplate is as wide as its name, centred over the figure */
+@container (min-width:560px){
+  .flm.flm.flm.cam-a:not(.cast) .flm-slot.on .cin-who{width:auto;
+    margin-left:calc(var(--face) * .2413);transform:translateX(-50%)}
+  .flm.flm.flm.cam-b:not(.cast) .flm-slot.on .cin-who{width:auto;
+    margin-right:calc(var(--face) * .2411);transform:translateX(50%)}
+}
+@container (min-width:560px){
+  /* Alice's plate leans to the figure's outer side so it clears the phone */
+  .flm.flm.flm.cam-a:not(.cast) .flm-slot.on .cin-who{transform:translateX(-30%)}
+  /* two-shots without Eve: the name stands over its own figure, not the phone */
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-a,
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-b{
+    display:grid;grid-template-rows:auto minmax(0,1fr);grid-template-columns:auto auto;
+    align-items:end;column-gap:0}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-a{justify-content:end}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-b{justify-content:start}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on .cin-who{
+    position:static;justify-self:center;margin-bottom:calc(var(--face) * .03)}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-a .cin-face{grid-area:2 / 1}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-a .flm-ph{grid-area:2 / 2;align-self:center}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-a .cin-who{grid-area:1 / 1}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-b .flm-ph{grid-area:2 / 1;align-self:center}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-b .cin-face{grid-area:2 / 2}
+  .flm.cam-both:not(.eve-in):not(.chain) .flm-slot.on.flm-b .cin-who{grid-area:1 / 2}
+}
+/* the exchange stage reveals the glass contents; the history shelf stays hidden */
+.flm.flm.xchg .flm-ph-scr .flm-shelf{display:none}
 </style>
 </head>
 <body>
@@ -8686,8 +8783,6 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("clipPath", { id: "pk-clip" }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4" }))),
       /* @__PURE__ */ React.createElement("g", { clipPath: "url(#pk-clip)" }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", fill: "rgba(231,239,233,.045)" }), (bytes || []).slice(0, 8).map((b2, i) => /* @__PURE__ */ React.createElement("rect", { key: i, className: "pk-b", x: 8 + i * 5.1, y: "15", width: "3.4", height: "16", rx: "1", fill: b2 })), /* @__PURE__ */ React.createElement("path", { className: "pk-seal", d: "M47 10 v26 M47 23 h7" }), /* @__PURE__ */ React.createElement("circle", { className: "pk-dot", cx: "50.5", cy: "23", r: "1.9" })),
       /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "6", y: "10", width: "48", height: "26", rx: "4", fill: "none" }),
-      /* @__PURE__ */ React.createElement("path", { className: "pk-n", d: "M8 39 h4" }),
-      /* @__PURE__ */ React.createElement("text", { className: "pk-t", x: "14.5", y: "40.5" }, "1x"),
       locked && /* @__PURE__ */ React.createElement("rect", { className: "pk-lock", x: "6", y: "10", width: "48", height: "26", rx: "4" })
     );
     const Grab = ({ id, target, onDone, hint, children }) => {
@@ -8708,7 +8803,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
     const FLIPS = /* @__PURE__ */ new Map();
     const flipReset = () => FLIPS.clear();
     const REDUCE = () => typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const Obj = ({ id, frame, cls, drop, children }) => {
+    const Obj = ({ id, frame, cls, drop, style, children }) => {
       const ref = useRef(null);
       useLayoutEffect(() => {
         const el = ref.current;
@@ -8736,6 +8831,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           className: "flm-obj " + (cls || ""),
           "data-obj": id,
           "data-drop": drop || void 0,
+          style,
           ref
         },
         children
@@ -8961,6 +9057,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         ),
         plain: (d) => opened && opened.ok ? d ? /* @__PURE__ */ React.createElement(Tok, { role: "message", dock: true, label: "accepted" }) : /* @__PURE__ */ React.createElement("div", { className: "tk tk-message out" }, /* @__PURE__ */ React.createElement("div", { className: "tk-box tk-note" }, /* @__PURE__ */ React.createElement("b", { className: "cin-plain" }, opened.text)), /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "accepted")) : null
       };
+      const OWN = { base, pa: mine, pb: bprivC, qa: qaC, qb: qbC };
       const IDS = [
         "base",
         "pa",
@@ -8991,7 +9088,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         let node = CAST[id](false);
         if (!node) continue;
         if (id === "pa" || id === "pb")
-          node = /* @__PURE__ */ React.createElement("div", { className: "flm-vault" + (id === "pa" ? " mine" : "") }, /* @__PURE__ */ React.createElement("span", { className: "flm-vault-k" }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 12 14", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M3 6 V4.2 a3 3 0 0 1 6 0 V6", fill: "none", strokeWidth: "1.6" }), /* @__PURE__ */ React.createElement("rect", { x: "1.6", y: "6", width: "8.8", height: "7", rx: "1.8" })), id === "pa" ? "private" : "private"), node);
+          node = /* @__PURE__ */ React.createElement("div", { className: "flm-vault" + (id === "pa" ? " mine" : "") }, node);
         placed.add(id);
         const cls = (F.copy === id ? "is-copy " : "") + (F.land && w === F.land ? "is-land " : "") + (F.born === id ? "is-born " : "") + (F.moved === id ? "is-moved " : "") + (F.fuse && !F.rev && (id === "sa" || id === "sb") ? "covers-late " : "");
         const isLead = F.lead ? F.lead === id : Object.keys(F.at)[0] === id;
@@ -9006,7 +9103,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               id,
               frame: beat,
               cls: cls + "is-focal " + (isLead ? "is-lead" : "is-input") + (grabs ? " is-grab" : "") + (drops ? " is-drop" : ""),
-              drop: drops ? id : null
+              drop: drops ? id : null,
+              style: grabs ? { "--own": OWN[id] || "#e7efe9" } : void 0
             },
             wrapped
           )
@@ -9030,7 +9128,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         const pair = (x, y) => x === y ? ["", ""] : [x + " ", y + " "];
         const [pb, pm1] = pair(nb, nm);
         const [pq, pm2] = pair(nq, nm);
-        return (s2 || "").replace("{BASE} ", pb).replace("{MINE} public", (pm1 || "") + "public").replace("{QB} ", pq).replace("{MINE} ", s2.indexOf("{QB}") >= 0 ? pm2 || "private " : pm1 || "private ").replace("{BASE}", nb).replace("{MINE}", nm).replace("{QB}", nq).replace("{QA}", HUE_NAME(qaC));
+        return (s2 || "").replace("{BASE} ", pb).replace("{MINE} public", (pm1 || "") + "public").replace("{QB} ", pq).replace("{MINE} ", s2.indexOf("{QB}") >= 0 ? pm2 || "private " : pm1 || "private ").replace("{BASE}", nb).replace("{MINE}", nm).replace("{QB}", nq).replace("{QA}", HUE_NAME(qaC)).replace(/^\s*[a-z]/, (m) => m.toUpperCase());
       };
       const mixc = F.fuse && !F.gcm ? F.k === "mixAout" ? qaC : F.k === "mixB" ? qbC : sharedC : null;
       useLayoutEffect(() => {
@@ -9136,15 +9234,6 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           [qaC, "Q", "a public value: Q = d\xB7G"],
           [sharedC, "Z", "the shared secret"]
         ].map(([c, sym, t], i) => /* @__PURE__ */ React.createElement("div", { className: "flm-xmap-r", key: sym, style: { animationDelay: 400 + i * 650 + "ms" } }, /* @__PURE__ */ React.createElement("i", { className: "flm-xmap-c", style: { background: c } }), /* @__PURE__ */ React.createElement("b", { className: "flm-xmap-a", "aria-hidden": "true" }, "\u2192"), /* @__PURE__ */ React.createElement("span", { className: "flm-xmap-s" }, sym), /* @__PURE__ */ React.createElement("span", { className: "flm-xmap-t" }, t))))),
-        gate && (F.drag || F.point) && /* @__PURE__ */ React.createElement(
-          Lead,
-          {
-            frame: beat,
-            from: ".flm-rail",
-            to: F.drag ? '[data-obj="' + F.drag.from + '"]' : F.point === "picker" ? ".cin-pick" : F.point === "send" ? ".tap-send" : F.point === "compose" && text.trim() ? ".tap-send" : ".flm-compose"
-          }
-        ),
-        !gate && !F.payoff && !F.opened && !F.chain && F.lead && F.at[F.lead] && /* @__PURE__ */ React.createElement(Lead, { frame: beat, from: ".flm-rail", to: '[data-obj="' + F.lead + '"]' }),
         /* @__PURE__ */ React.createElement(
           "div",
           {

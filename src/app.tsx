@@ -2012,8 +2012,6 @@
         </g>
         <rect className="tk-ln" x="6" y="10" width="48" height="26" rx="4" fill="none" />
         {/* one tick, bottom left: used once */}
-        <path className="pk-n" d="M8 39 h4" />
-        <text className="pk-t" x="14.5" y="40.5">1x</text>
         {locked && <rect className="pk-lock" x="6" y="10" width="48" height="26" rx="4" />}
       </svg>
     );
@@ -2045,7 +2043,7 @@
     const flipReset = () => FLIPS.clear();
     const REDUCE = () => typeof window !== "undefined" &&
       window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const Obj = ({ id, frame, cls, drop, children }) => {
+    const Obj = ({ id, frame, cls, drop, style, children }) => {
       const ref = useRef(null);
       useLayoutEffect(() => {
         const el = ref.current;
@@ -2068,7 +2066,7 @@
         });
       }, [frame]);
       return <div className={"flm-obj " + (cls || "")} data-obj={id} data-drop={drop || undefined}
-        ref={ref}>{children}</div>;
+        style={style} ref={ref}>{children}</div>;
     };
 
     /* the device, at the proportions this project has locked everywhere else */
@@ -2225,6 +2223,8 @@
               </div>)
           : null),
       };
+      /* the colour a draggable swatch pulses in: its own */
+      const OWN = { base, pa: mine, pb: bprivC, qa: qaC, qb: qbC };
       const IDS = ["base","pa","pb","qa","qb","qa2","qb2","sa","sb","ka","kb",
                    "non","msg","ct","seal","pkt","pkt2","vfy","plain"];
       const bin = { a: [], b: [], lane: [], eve: [] };
@@ -2244,13 +2244,8 @@
         if (id === "pa" || id === "pb")
           node = (
             <div className={"flm-vault" + (id === "pa" ? " mine" : "")}>
-              <span className="flm-vault-k">
-                <svg viewBox="0 0 12 14" aria-hidden="true">
-                  <path d="M3 6 V4.2 a3 3 0 0 1 6 0 V6" fill="none" strokeWidth="1.6" />
-                  <rect x="1.6" y="6" width="8.8" height="7" rx="1.8" />
-                </svg>
-                {id === "pa" ? "private" : "private"}
-              </span>
+              {/* the slot is the rail under the colour and the caption under
+                  that; the padlock header said it a third time (pass 52) */}
               {node}
             </div>
           );
@@ -2273,7 +2268,8 @@
           <Obj key={id} id={id} frame={beat}
             cls={cls + "is-focal " + (isLead ? "is-lead" : "is-input")
               + (grabs ? " is-grab" : "") + (drops ? " is-drop" : "")}
-            drop={drops ? id : null}>{wrapped}</Obj>);
+            drop={drops ? id : null}
+            style={grabs ? { "--own": OWN[id] || "#e7efe9" } : undefined}>{wrapped}</Obj>);
       }
       /* PERSISTENCE. Everything already made stays on its owner's device,
          docked small. An object is never absent from the world once it exists. */
@@ -2315,7 +2311,9 @@
           .replace("{QB} ", pq)
           .replace("{MINE} ", s.indexOf("{QB}") >= 0 ? (pm2 || "private ") : (pm1 || "private "))
           .replace("{BASE}", nb).replace("{MINE}", nm).replace("{QB}", nq)
-          .replace("{QA}", HUE_NAME(qaC));
+          .replace("{QA}", HUE_NAME(qaC))
+          /* a line that begins with a colour name still begins with a capital */
+          .replace(/^\s*[a-z]/, (m) => m.toUpperCase());
       };
 
       /* THE BLEND IS A TRANSFORMATION, NOT A TOUCH (storyboard 3b/3d/5b/5d).
@@ -2519,21 +2517,9 @@
 
 
 
-          {/* the line from the words to the thing they name */}
-          {gate && (F.drag || F.point) && (
-            <Lead frame={beat} from=".flm-rail"
-              to={F.drag ? '[data-obj="' + F.drag.from + '"]'
-                : F.point === "picker" ? ".cin-pick"
-                : F.point === "send" ? ".tap-send"
-                : (F.point === "compose" && text.trim()) ? ".tap-send" : ".flm-compose"} />
-          )}
-          {/* a narrative line still points, when it is about one thing: the
-              viewer should never have to hunt for the thing being described */}
-          {/* a payoff needs no pointer: the line would cross the very thing it
-              is pointing at, and the result is already unmistakable */}
-          {!gate && !F.payoff && !F.opened && !F.chain && F.lead && F.at[F.lead] && (
-            <Lead frame={beat} from=".flm-rail" to={'[data-obj="' + F.lead + '"]'} />
-          )}
+          {/* NO CONNECTORS (pass 52). A line from the words to the object made
+              the film read as a diagram. Proximity, scale and the object's own
+              motion say which thing the line is about. */}
 
           {/* THE DIALOGUE RAIL. It used to be a fixed footer, which made the eye
               travel from the object to the bottom of the viewport and back on

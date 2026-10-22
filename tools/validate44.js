@@ -47,7 +47,7 @@ const probe = () => {
   const buttons = [...document.querySelectorAll(".flm-stage button")].filter(vis).length;
   const moving = [...document.querySelectorAll(".flm-stage *")].filter((e) => {
     const a = getComputedStyle(e).animationName;
-    return a && a !== "none" && !/leadDraw/.test(a);
+    return a && a !== "none" && !/leadDraw|grabPulse/.test(a);
   }).length;
 
   const clipEls = [...document.querySelectorAll(".flm *")].filter((e) => {
