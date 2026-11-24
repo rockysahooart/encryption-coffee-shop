@@ -13,7 +13,7 @@ const probe = () => {
     const r = e.getBoundingClientRect(); return r.width > 0 && getComputedStyle(e).display !== "none"; });
   if (ls.length !== 1) return { n: ls.length, text: ls.map((e) => e.textContent).join(",") };
   const e = ls[0], cs = getComputedStyle(e), r = e.getBoundingClientRect();
-  const hit = [...document.querySelectorAll(".flm-rail, .flm-arc-i b, button, input, .insp-say, .cin-who")]
+  const hit = [...document.querySelectorAll(".flm-rail, .flm-arc-t, button, input, .insp-say, .cin-who")]
     .filter((o) => { const q = o.getBoundingClientRect(); return q.width && q.height &&
       Math.min(r.right, q.right) - Math.max(r.left, q.left) > 0 && Math.min(r.bottom, q.bottom) - Math.max(r.top, q.top) > 0; })
     .map((o) => (o.className || o.tagName).toString().slice(0, 24));

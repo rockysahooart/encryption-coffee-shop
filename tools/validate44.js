@@ -31,7 +31,7 @@ const probe = () => {
   objs.sort((a, b) => b.pc - a.pc);
 
   /* text in the frame: how much, and is any of it squeezed */
-  const texts = [...document.querySelectorAll(".flm-rail-t,.flm-rail-s,.tk-l,.tk-h,.tk-n,.flm-vault-k,.grab-hint,.flm-arc-i b")]
+  const texts = [...document.querySelectorAll(".flm-rail-t,.flm-rail-s,.tk-l,.tk-h,.tk-n,.flm-vault-k,.grab-hint,.flm-arc-t")]
     .filter(vis);
   const chars = texts.reduce((n, e) => n + (e.textContent || "").trim().length, 0);
   const tiny = texts.filter((e) => { const fs = parseFloat(getComputedStyle(e).fontSize); return fs > 0 && fs < 8.5; }).length;
@@ -82,7 +82,7 @@ const probe = () => {
     return { zone, w: +r.width.toFixed(1), h: +r.height.toFixed(1), ratio: +(r.width / r.height).toFixed(4) };
   });
 
-  return { arc: (document.querySelector(".flm-arc-i.on b") || {}).textContent || "",
+  return { arc: (document.querySelector(".flm-arc-t") || {}).textContent || "",
     who: subj.map((e) => (e.querySelector(".cin-who") || {}).textContent || "?"),
     cast: on.length, objs, chars, tiny, clipped, clipWho, turn, drops, grabs, buttons, moving,
     glow, accent, radii: radii.size, rounded, faces,

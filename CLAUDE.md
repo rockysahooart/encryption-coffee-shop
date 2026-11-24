@@ -213,7 +213,12 @@ act on now*. The turn word, the object you may move, the place it may go, and
 the connector between them. It is not a border, not a success state, not the
 network. Colours painted from real bytes (the key, the ciphertext, the nonce)
 are desaturated so they can never land on the accent and borrow its meaning.
-`validate44.js` caps accent usage per frame.
+`validate44.js` caps accent usage per frame. Formulas are ink, not accent.
+**Byte colours (pass 60)** go through one display mapping (`BYTE_HSL` /
+`HSL_HEX` in `app.tsx`): hue from the bytes, carried around the accent band
+(125–165°) and the failure-red band (340–20°), saturation and lightness held
+quiet. `real.js` recomputes it and checks 4096 values never land in a band.
+A glyph on a painted plate uses `INK_ON` (black or white, ≥4.5:1).
 
 **One hairline, one radius, no glow.** 1.4px strokes, `--r`/`--r-s` = 8px,
 999px for pills, the device's own percentage corners. Selection rings are
@@ -221,9 +226,13 @@ are desaturated so they can never land on the accent and borrow its meaning.
 with a coloured outer shadow.
 
 **Dialogue placement.** The rail travels with whoever is acting: `.rail-a`
-left, `.rail-b` right, wide/both centred. It carries one line, an optional
-second line, and (only on the beats that have earned it) one formula. Only a
-turn wears a box. Font floor: nothing in the film is under 9px.
+left, `.rail-b` right, wide/both centred. The film is a grid, so on desktop
+the side is `justify-self` (pass 60; `align-self` never moved it sideways).
+It carries one line, an optional second line, and (only on the beats that
+have earned it) one formula. Only a turn wears a box — at every width;
+desktop narration is unboxed like mobile (pass 60). Font floor: nothing in
+the film is under 9px. Names sit below the dialogue line in size: close-up
+≈22px, two-shot ≈17px, wide ≈15px.
 
 **Cleanup rules (pass 52).** No connector lines from dialogue to objects —
 proximity, scale and motion carry the reference. Plates (swatches, mixtures,
@@ -306,6 +315,23 @@ shows what came in on top and its own private colour below — the order the
 colour close-ups use — in the wide shots too (`xland`, `unmix`), so the
 private plate never moves at 5a. An object measured while its side of the
 stage is hidden (width 0) never becomes a FLIP origin.
+
+**Design team review V4 (pass 60).** The film can be held: a Pause on the
+chapter line (44pt on a phone), and an open overlay ("What Eve has", "See the
+actual values") also holds it — the beat clock (`hold`) stops and every film
+animation freezes, then both resume. Overlays are modal dialogs: focus in,
+Esc out, focus back. While the film is open the café scrubber and nav are
+`inert`. A trip back to the café keeps the viewer's colour and resumes at the
+last gate (`FILM_MEMO`); only Start over forgets. Each gate takes focus when
+it arrives. The chapter line is the name first (on the inset), then three
+ticks. 1a shows the premise: an empty dashed "no shared key yet" slot. 7a/7b
+show the first bytes of each phone's own Z and K. At 8b K stays on Alice's
+phone (a key is not used up). Reduced motion steps through a changing beat
+(inputs → result at 3.36s → cover/failure at 4.8s) and shows a crossing at
+its end, inside the stage. On a phone held sideways the page heading steps
+aside; the film is composed upright and says so quietly. Eve is "she"
+everywhere. Figma: "IPHONE INTERACTIVE — DESIGN TEAM REVIEW V4" (spec, before,
+after per finding).
 
 **Object continuity.** Every object has a stable `data-obj` id and is FLIPped
 between frames by that id — objects **transform and move**, they do not

@@ -7,6 +7,19 @@
    tag yields no plaintext at all. */
 const { launch } = require("./drive");
 
+/* the page's display mapping for bytes (app.tsx BYTE_HSL / HSL_HEX), restated
+   here so the test recomputes it rather than trusting the page's own copy */
+const SHOWN = (hex6) => {
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex6.slice(i, i + 2), 16));
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  let h = r / 255 * 360;
+  if (d > 0) { if (mx === r) h = 60 * (((g - b) / d) % 6); else if (mx === g) h = 60 * ((b - r) / d + 2); else h = 60 * ((r - g) / d + 4); if (h < 0) h += 360; }
+  let hh = 20 + h * 280 / 360; if (hh >= 125) hh += 40;
+  const s = .16 + .16 * (mx ? d / mx : 0), l = .38 + .24 * ((r + g + b) / 765);
+  const k = (n) => (n + hh / 30) % 12, a = s * Math.min(l, 1 - l);
+  const f = (n) => Math.round(255 * (l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))));
+  return { hex: "#" + [f(0), f(8), f(4)].map((x) => x.toString(16).padStart(2, "0").toUpperCase()).join(""), hue: hh };
+};
 (async () => {
   const b = await launch();
   const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
@@ -49,6 +62,8 @@ const { launch } = require("./drive");
   ok(r.qaSwatch !== r.qbSwatch, "the two public swatches differ", r.qaSwatch + " / " + r.qbSwatch);
   ok(/^#[0-9A-F]{6}$/.test(r.sharedSwatch), "RGB(K,0) is a well-formed swatch", r.sharedSwatch);
   ok(r.sharedSwatch === "#" + r.kA.slice(0, 6).toUpperCase(), "and the mapping is arithmetic, not decoration");
+  ok(SHOWN(r.kA.slice(0, 6)).hex === SHOWN(r.kA.slice(0, 6)).hex && /^#[0-9A-F]{6}$/.test(SHOWN(r.kA.slice(0, 6)).hex),
+    "and the colour shown for it is a fixed function of those bytes", SHOWN(r.kA.slice(0, 6)).hex);
   ok(r.ivA !== r.ivB, "each encryption gets a fresh nonce", r.ivA + " / " + r.ivB);
   ok(r.ctA !== r.ctB, "so the same text encrypts to different ciphertext");
   ok(r.chip0 === "#" + r.ctA.slice(0, 6).toUpperCase(), "the first swatch is the first 3 ciphertext bytes", r.chip0);
@@ -86,8 +101,14 @@ const { launch } = require("./drive");
      the crypto layer is still painted from real bytes, and that the real
      values are reachable rather than merely asserted. */
   const kPix = await paint("tokey", '[data-obj="ka"] svg > rect[fill]:not([fill="none"])');
-  ok(kPix === "#" + r.kA.slice(0, 6).toUpperCase(),
-    "the key token is painted from the real K bytes", kPix + " vs #" + r.kA.slice(0, 6).toUpperCase());
+  ok(kPix === SHOWN(r.kA.slice(0, 6)).hex,
+    "the key token is painted from the real K bytes, through the one display mapping", kPix + " vs " + SHOWN(r.kA.slice(0, 6)).hex);
+  /* R9: a value painted from bytes never takes the accent's hue or the
+     failure red's, for any bytes at all */
+  let banned = 0;
+  for (let i = 0; i < 4096; i++) { const x = (i * 2654435761 >>> 0).toString(16).padStart(8, "0").slice(0, 6); const h = SHOWN(x).hue % 360;
+    if ((h >= 125 && h < 165) || h >= 340 || h < 20) banned++; }
+  ok(banned === 0, "no byte value is ever painted in the accent band or the failure red", banned + " of 4096");
   const ctPix = await paint("protect", '[data-obj="pkt"] .tk-pack rect.pk-b');
   ok(/^#[0-9A-F]{6}$/.test(ctPix || ""), "the ciphertext strip is painted from real bytes", ctPix);
 

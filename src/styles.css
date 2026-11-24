@@ -33,7 +33,7 @@
   /* --- type --- */
   --ink:#e9f4ef;
   --ink-2:#93aaa3;
-  --ink-3:#65807a;
+  --ink-3:#728e88;
 
   /* --- meaning: one job per hue --- */
   --alice:#ff8a3d;        /* Alice: the warm red-orange of her jacket */
@@ -4786,8 +4786,8 @@ details.read summary:hover{color:var(--ink-2)}
 .flm{
   /* ---- ink and ground ---------------------------------------------------- */
   --ink:    #e7efe9;
-  --ink-2:  rgba(231,239,233,.60);
-  --ink-3:  rgba(231,239,233,.36);
+  --ink-2:  rgba(231,239,233,.74);
+  --ink-3:  rgba(231,239,233,.55);
   --line:   rgba(231,239,233,.15);
   --line-2: rgba(231,239,233,.30);
   --ground: #0a0d0f;
@@ -5199,8 +5199,6 @@ details.read summary:hover{color:var(--ink-2)}
 /* ============================================================== motion ==== */
 /* nothing moves while the viewer is expected to act */
 .flm.turn .flm-stage *{animation:none !important}
-.flm.turn .flm-lead-p{animation:leadDraw 1500ms linear infinite !important}
-@keyframes leadDraw{to{stroke-dashoffset:-14}}
 .flm.turn .flm-slot.off{opacity:.1}
 
 /* an object is born where its parents are */
@@ -5797,11 +5795,6 @@ details.read summary:hover{color:var(--ink-2)}
 /* 2. A DRAGGABLE THING LOOKS LIKE ONE.
       One breath, 2.4s, three per cent — the object lifts a little and settles,
       the way something loose sits. No glow, no outline flashing. */
-.flm.turn .flm-obj.is-grab{animation:liftBreath 2400ms ease-in-out infinite}
-@keyframes liftBreath{
-  0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 4px 10px rgba(0,0,0,.45))}
-  50%{transform:translateY(-2.5%) scale(1.03);filter:drop-shadow(0 12px 20px rgba(0,0,0,.55))}
-}
 .flm.turn .flm-obj.is-grab .tk-box{outline:1.5px solid var(--act-2);outline-offset:3px;
   border-radius:var(--r-s)}
 .grab{cursor:grab}
@@ -5809,9 +5802,10 @@ details.read summary:hover{color:var(--ink-2)}
 .flm.turn .flm-obj.is-grab:hover{animation-play-state:paused}
 /* and the place it goes says "here", quietly and continuously */
 .flm.turn [data-drop] > .flm-vault > .tk::after{
-  height:2px;background:var(--act);animation:dropWait 2400ms ease-in-out infinite;
+  height:2px;background:var(--act);
 }
-@keyframes dropWait{0%,100%{opacity:.45;transform:scaleX(.82)}50%{opacity:1;transform:scaleX(1)}}
+/* R25 one loop per gate: the grabbed plate's own-colour pulse is the only
+   thing that moves; the place it goes is marked, still */
 .flm.turn .flm-obj.is-drop .tk-box{outline:2px dashed var(--act-2);outline-offset:4px;
   border-radius:var(--r-s)}
 @media (prefers-reduced-motion:reduce){
@@ -6152,17 +6146,18 @@ details.read summary:hover{color:var(--ink-2)}
    ========================================================================= */
 
 /* 1. NAMES CARRY THE SAME HIERARCHY AS THE FIGURES. Subject of a close-up
-      ≈34px, a pair in a two-shot ≈24px, the ends of a network shot ≈17px,
+      ≈22px, a pair in a two-shot ≈17px, the ends of a network shot ≈15px —
+      always below the dialogue line (review V4, R14) —
       and Eve grows while she is the one acting. No pill behind a name. */
 .flm.flm .flm-slot .cin-who{
   font-family:var(--sans);font-weight:600;letter-spacing:.01em;color:var(--ink);
   background:none;padding:0;border-radius:0;max-width:none;overflow:visible;line-height:1.1}
 .flm.flm.cam-a:not(.cast) .flm-slot.on .cin-who,
-.flm.flm.cam-b:not(.cast) .flm-slot.on .cin-who{font-size:max(17px,min(34px,6.4cqw))}
-.flm.flm.cam-both .flm-slot.on:is(.flm-a,.flm-b) .cin-who{font-size:max(13px,min(24px,4.4cqw))}
+.flm.flm.cam-b:not(.cast) .flm-slot.on .cin-who{font-size:max(17px,min(22px,6.4cqw))}
+.flm.flm.cam-both .flm-slot.on:is(.flm-a,.flm-b) .cin-who{font-size:max(13px,min(17px,4.4cqw))}
 .flm.flm:is(.cam-wide,.journey) .flm-slot:is(.flm-a,.flm-b,.flm-net) .cin-who{
-  font-size:max(11px,min(17px,3.4cqw));font-weight:500;color:var(--ink-2)}
-.flm.flm.cam-both.eve-in .flm-net .cin-who{font-size:max(11px,min(18px,3.2cqw));font-weight:500;color:var(--ink-3)}
+  font-size:max(11px,min(15px,3.4cqw));font-weight:500;color:var(--ink-2)}
+.flm.flm.cam-both.eve-in .flm-net .cin-who{font-size:max(11px,min(15px,3.2cqw));font-weight:500;color:var(--ink-3)}
 .flm.flm .flm-slot .cin-who .sur-me{font-size:.62em !important;font-weight:400 !important;color:var(--ink-3) !important}
 /* Eve is the event from the split (4c) to the copies settling (4d), and
    again when she copies the packet (9a) */
@@ -6825,3 +6820,154 @@ details.read summary:hover{color:var(--ink-2)}
   .flm-fail .ff-txt b{font-size:13px}
   .flm-fail .ff-txt > span{font-size:13px}
 }
+
+/* ---- DESIGN TEAM REVIEW V4 (pass 60) ------------------------------------
+   R7  only a turn wears a box, at every width: desktop narration sits on the
+       scene unboxed, exactly as mobile has since pass 54.
+   R8  the rail travels with whoever is acting. The film is a grid, so the
+       side is justify-self, not align-self (which only ever moved it down).
+   R15 a formula is read, not acted on: ink, never the accent. */
+@container (min-width:560px){
+  .flm.flm .flm-rail:not(.is-turn){background:none;box-shadow:none;padding:4px 2px}
+  .flm.flm .flm-rail.rail-a{justify-self:start}
+  .flm.flm .flm-rail.rail-b{justify-self:end}
+  .flm.flm .flm-rail:is(.rail-wide,.rail-eve,.rail-both){justify-self:center;text-align:center}
+  .flm.flm.chain .flm-rail{justify-self:stretch}
+}
+.flm .flm-rail .flm-rail-m{color:var(--ink-2)}
+/* R5 the empty key slot at 1a: the plate's own size and radius, a dashed
+   hairline, quiet ink — an absence, not an object */
+.flm .flm-nokey{flex:none;width:78%;margin:calc(var(--u,8px)*2) auto 0;height:calc(var(--u,8px)*8);display:grid;place-items:center;
+  border-radius:var(--r-s,8px);outline:1.4px dashed rgba(231,239,233,.42);outline-offset:-1.4px;
+  animation:nokeyIn 600ms var(--ease) 900ms both}
+.flm .flm-nokey span{text-transform:none;letter-spacing:0;font-size:max(11px,min(13px,2.2cqh));color:var(--ink-2);text-align:center;line-height:1.2;padding:0 6px}
+@keyframes nokeyIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.flm .flm-nokey{animation:none}}
+/* R10 the byte excerpt under Z and K: mono, readable, never below the floor */
+.flm .flm-slot:is(.flm-a,.flm-b) .tk-n{font-family:var(--mono,ui-monospace,monospace);font-size:max(11px,min(13px,2.2cqh));
+  color:var(--ink-2);letter-spacing:.04em;white-space:nowrap;max-width:none}
+/* R12 the key seals the message and stays: K is an input that holds (and
+   brightens while it works), like a private value, while the message falls
+   into the packet. A key is not used up by encrypting. */
+.flm.flm.fusing .flm-focal > .flm-obj.is-input:has(.tk-key){overflow:visible;animation:fuseHold 6000ms linear both}
+@media (prefers-reduced-motion:reduce){.flm.flm.fusing .flm-focal > .flm-obj.is-input:has(.tk-key){animation:none}}
+/* R13 the failure card reads in deliberate lines ("KEY REQUIRED" /
+   "DECRYPTION FAILED"), with room for them; and the red edge is drawn ON the
+   attempted copy's own plate, so it is concentric at every size */
+.flm .flm-fail .ff-txt b{display:grid;grid-template-columns:auto 1fr;gap:0 6px;align-items:start}
+.flm .flm-fail .ff-txt b > span{grid-column:2;white-space:nowrap}
+.flm .flm-fail .ff-txt b::before{grid-row:1;margin-top:.32em}
+@container (min-width:560px){ .flm .flm-fail{width:min(480px,64cqw)} }
+.flm.f-unmix .flm-net [data-obj="qa2"] .tk-box,
+.flm.f-unseal .flm-net [data-obj="pkt2"] .tk-box{outline:none;animation:none}
+.flm.f-unmix .flm-net [data-obj="qa2"] .tk-art > rect:first-of-type,
+.flm.f-unseal .flm-net [data-obj="pkt2"] .tk-art > rect.tk-ln{stroke:rgba(224,96,79,0);stroke-width:1.6px;
+  vector-effect:non-scaling-stroke;animation:failStroke 7000ms var(--ease) both}
+@keyframes failStroke{0%,66%{stroke:rgba(224,96,79,0)}74%,100%{stroke:rgba(224,96,79,.85)}}
+@media (prefers-reduced-motion:reduce){
+  .flm.f-unmix .flm-net [data-obj="qa2"] .tk-art > rect:first-of-type,
+  .flm.f-unseal .flm-net [data-obj="pkt2"] .tk-art > rect.tk-ln{animation:none;stroke:rgba(224,96,79,.85)}
+}
+/* R18 a long message stays inside Bob's phone: at most four lines shown */
+.flm .cin-plain{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;overflow-wrap:anywhere}
+/* R24 the chapter line: name first, on the inset; three ticks after it */
+.flm .flm-arc-t{font-size:max(11px,1em);font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+.flm .flm-arc-ticks{display:flex;align-items:center;gap:6px}
+.flm .flm-arc-ticks i{display:block;width:14px;height:1.5px;background:var(--line)}
+.flm .flm-arc-ticks i.on{width:20px;background:var(--line-2)}
+/* R2 the film's own Pause: a quiet control at the end of the chapter line.
+   Not the accent — it is not a step of the story. */
+.flm .flm-pause{margin-left:auto;font:inherit;font-size:max(12px,.8em);letter-spacing:.04em;color:var(--ink-2);
+  background:none;border:0;box-shadow:inset 0 0 0 1px var(--line-2);border-radius:999px;padding:4px 14px;min-height:28px;cursor:pointer}
+.flm .flm-pause:hover{color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink-3)}
+.flm .flm-pause:focus-visible{outline:2px solid var(--act);outline-offset:2px}
+.flm .flm-pause[aria-pressed="true"]{color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink-2)}
+@container (max-width:559.98px){
+  .flm.flm .flm-arc-ticks i{width:10px} .flm.flm .flm-arc-ticks i.on{width:14px}
+  .flm.flm .flm-arc-t{letter-spacing:.06em}
+  /* 28px drawn, 44pt touched: the hit area extends past the pill so the
+     chapter line, and so the stage, keep their height */
+  .flm.flm .flm-arc{position:relative}
+  .flm.flm .flm-pause{position:absolute;right:0;top:50%;transform:translateY(-50%);height:44px;min-height:44px;min-width:64px;
+    padding:0 14px;font-size:13px;box-shadow:none;background:none}
+  .flm.flm .flm-pause::before{content:"";position:absolute;inset:8px 0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line-2);pointer-events:none}
+  .flm.flm .flm-pause[aria-pressed="true"]::before{box-shadow:inset 0 0 0 1px var(--ink-2)}
+  /* the chapter name clears the review label in the corner */
+  .flm.flm .flm-arc-t{margin-left:14px}
+}
+/* R19 focus on the field is as visible as everywhere else */
+.flm .cin-in:focus-visible{outline:2px solid var(--act);outline-offset:2px}
+/* R17 reduced motion shows where a crossing ENDS, side by side on the wire
+   and inside the stage, instead of stacking the travellers on its centre */
+@media (prefers-reduced-motion:reduce){
+  .flm.flm.j-both .flm-lane [data-obj="qa"]{left:70% !important;top:50% !important;transform:translate(-50%,-50%) !important}
+  .flm.flm.j-both .flm-lane [data-obj="qb"]{left:30% !important;top:50% !important;transform:translate(-50%,-50%) !important}
+  .flm.flm.journey .flm-lane [data-obj="pkt"]{left:70% !important;top:50% !important;transform:translate(-50%,-50%) !important}
+}
+@media (prefers-reduced-motion:reduce){
+  .flm.flm.fusing:not(.gcm):not(.rm-s1) .flm-focal > .flm-obj.is-input:not(:has(.tk-private)){opacity:1 !important}
+  .flm.flm.fusing:not(.gcm):not(.rm-s1) .flm-focal > .flm-obj.is-lead{opacity:0 !important}
+  .flm.flm:not(.rm-s2) .flm-obj.covers-late .tk-box::before{opacity:0}
+  .flm.flm:is(.f-unmix,.f-unseal):not(.rm-s2) .flm-fail{opacity:0}
+  .flm.flm.f-unmix:not(.rm-s2) .flm-net [data-obj="qa2"] .tk-art > rect:first-of-type,
+  .flm.flm.f-unseal:not(.rm-s2) .flm-net [data-obj="pkt2"] .tk-art > rect.tk-ln{stroke:rgba(224,96,79,0)}
+}
+/* R4 A PHONE HELD SIDEWAYS. Width says "desktop", but it is a phone: a
+   thumb, a short screen, and the same floors as portrait (44pt targets,
+   11px type, a 16px field so iOS does not zoom). The heading steps aside so
+   the film starts at the top of the screen. */
+@media (pointer:coarse) and (orientation:landscape) and (max-height:500px){
+  .head{display:none}
+  .page{padding-top:max(8px,env(safe-area-inset-top));padding-bottom:max(8px,env(safe-area-inset-bottom))}
+  .pips{margin-bottom:6px}
+  .flm :is(.flm-peek,.flm-more,.tap-send,.cin-go,.flm-pause){min-height:44px;font-size:13px;padding-inline:14px}
+  .flm .cin-in{font-size:16px;min-height:44px}
+  .flm :is(.tk-l,.tk-n,.tk-h,.flm-arc-t,.rail-turn,.flm-rail-s){font-size:11px}
+  .flm .flm-rail-t{font-size:15px}
+  .flm .flm-slot .cin-who{font-size:max(11px,min(17px,3.4cqw))}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:500px){
+  /* the film is composed upright; say so quietly, never block it */
+  .pips{display:flex;align-items:center}
+  .pips::after{content:"Best held upright";margin-left:auto;font-size:12px;color:var(--ink-3);letter-spacing:.02em}
+}
+/* R20 6a: the legend is read on a clear ground — the captions and names
+   of the stepped-back scene behind it are hidden while it is up — its
+   symbols keep the 11px floor, and a formula never breaks */
+.flm.f-asmath .flm-slot:is(.flm-a,.flm-b) :is(.tk-l,.tk-n,.tk-h){visibility:hidden}
+.flm.f-asmath.is-narrow .flm-slot:is(.flm-a,.flm-b) .cin-who{visibility:hidden}
+.flm .flm-xmap-s{font-size:max(11px,min(18px,3.6cqw))}
+.flm .nw{white-space:nowrap}
+/* R20 8a on the narrowest phones: the field takes the room; Send becomes a
+   44pt arrow with the same accessible name */
+@media (max-width:359.98px){
+  .flm.flm.flm .flm-act .flm-compose .tap-send{width:52px;flex:0 0 52px;font-size:22px}
+  .flm.flm.flm .flm-act .flm-compose .tap-send .send-t{display:none}
+}
+/* R23 every hairline is the hairline: drawn in screen pixels, so a token
+   drawn large does not thicken its stroke */
+.tk-ln{vector-effect:non-scaling-stroke;stroke-width:1.4px}
+/* the recap: four equal cells */
+.flm.flm.chain .flm-chain .tk-box{aspect-ratio:60 / 44;height:auto;overflow:hidden}
+.flm.flm.chain .flm-chain .tk-note{display:grid;place-items:center;padding:6%}
+.flm.flm.chain .flm-chain .tk-note b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;text-align:center}
+@container (max-width:559.98px){
+  /* two by two, read left to right: no arrow left hanging at a row's end */
+  .flm.flm.chain .flm-chain{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+  .flm.flm.chain .flm-chain > b:nth-of-type(2){display:none}
+  .flm.flm.chain .flm-rail-t{text-wrap:balance}
+}
+/* the way to the real values is readable and a real target on desktop too */
+@container (min-width:560px){
+  .flm .flm-more,.flm .flm-peek{font-size:13px;min-height:32px;padding:4px 12px}
+}
+/* R12 containment: while the message is still on screen beside the packet
+   being born, the key that seals them sits smaller, so all three stay
+   inside the glass */
+.flm.flm.gcm .flm-focal > .flm-obj:has(.tk-key){width:52%;margin-inline:auto}
+.flm.flm.gcm .flm-focal > .flm-obj:has(.tk-key) .tk-l{display:none}
+@container (max-width:359.98px){ .flm.flm.gcm .flm-focal > .flm-obj:has(.tk-key){width:40%} }
+/* R10 on a phone the real bytes under K are the caption: the role label
+   gives them its line, so the phone keeps its height */
+.flm.f-tokey.is-narrow :is([data-obj="ka"],[data-obj="kb"]) .tk-l{display:none}
+@container (max-width:359.98px){ .flm.flm.gcm .flm-focal > .flm-obj:has(.tk-key){width:34%} }
