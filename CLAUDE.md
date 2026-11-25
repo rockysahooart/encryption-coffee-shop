@@ -333,6 +333,20 @@ aside; the film is composed upright and says so quietly. Eve is "she"
 everywhere. Figma: "IPHONE INTERACTIVE — DESIGN TEAM REVIEW V4" (spec, before,
 after per finding).
 
+**Usability pass V5 (pass 61, mobile first).** Bob still chooses, but never
+a colour whose mixture sits within RGB 55 of Alice's or whose final colour
+sits within 30 of either mixture (≥3 choices always remain; `paint.js` checks
+the session). While two colours stack in a blend, the private plate's
+caption reads "mixing on top · the private colour is underneath"; a covered
+result says "hidden until both are done". From 6a the d/Q/Z plates carry a
+6px strip of the paint they stood for. 10c restates the lesson (your colour
+never left; Eve copied what crossed) and, at ≥360, that Eve here only
+listens (certificates); Start over comes after the recap. The copy says
+plainly that real paint could be unmixed and the one-way step is P‑256's.
+The values overlay scrolls inside the film with Back pinned; overlays trap
+Tab and close on Esc or a backdrop tap. Testing is mobile first: phones
+(393/360/320 touch, 852×393) before desktop.
+
 **Object continuity.** Every object has a stable `data-obj` id and is FLIPped
 between frames by that id — objects **transform and move**, they do not
 disappear and reappear. If you add an object, give it an id and add it to

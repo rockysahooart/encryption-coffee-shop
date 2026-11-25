@@ -84,6 +84,10 @@ const fill = async (p, id) => p.evaluate((x) => {
   const guesses = await p.evaluate(() => [...document.querySelectorAll(".flm-unmix i")]
     .flatMap((e) => ["--c1", "--c2", "--c3"].map((v) => e.style.getPropertyValue(v).trim().toUpperCase())));
   const dist = (x, y) => { const a = hex2(x), c = hex2(y); return Math.hypot(a[0] - c[0], a[1] - c[1], a[2] - c[2]); };
+  /* V5: on a phone the two mixtures must read as two things, and the shared
+     colour must not look like either mixture Eve copied */
+  ok(dist(QA, QB) >= 55 && Math.min(dist(SA, QA), dist(SA, QB)) >= 30,
+    "the two mixtures are far apart, and the shared colour looks like neither", `${QA} ${QB} ${SA}`);
   const close = guesses.filter((g) => !/^#[0-9A-F]{6}$/.test(g) || dist(g, A) < 60 || dist(g, B) < 60);
   ok(guesses.length === 24 && close.length === 0, "Eve's 24 guesses are all far from Alice's and Bob's colours",
     close.slice(0, 4).join(" "));

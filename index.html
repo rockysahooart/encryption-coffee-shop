@@ -6816,7 +6816,7 @@ details.read summary:hover{color:var(--ink-2)}
 }
 /* the narrowest stage keeps the picture and the caps line; the second line
    would push the card into the phones */
-@container (max-width:280px){.flm-fail .ff-txt > span{display:none}}
+
 /* on a wide stage the card is the size of a statement, not a footnote */
 @container (min-width:560px){
   .flm-fail{width:min(420px,60cqw);gap:12px;padding:12px}
@@ -6843,12 +6843,12 @@ details.read summary:hover{color:var(--ink-2)}
 .flm .flm-rail .flm-rail-m{color:var(--ink-2)}
 /* R5 the empty key slot at 1a: the plate's own size and radius, a dashed
    hairline, quiet ink — an absence, not an object */
-.flm .flm-nokey{flex:none;width:78%;margin:calc(var(--u,8px)*2) auto 0;height:calc(var(--u,8px)*8);display:grid;place-items:center;
+.flm .flm-noshared{flex:none;width:78%;margin:calc(var(--u,8px)*2) auto 0;height:calc(var(--u,8px)*8);display:grid;place-items:center;
   border-radius:var(--r-s,8px);outline:1.4px dashed rgba(231,239,233,.42);outline-offset:-1.4px;
   animation:nokeyIn 600ms var(--ease) 900ms both}
-.flm .flm-nokey span{text-transform:none;letter-spacing:0;font-size:max(11px,min(13px,2.2cqh));color:var(--ink-2);text-align:center;line-height:1.2;padding:0 6px}
+.flm .flm-noshared span{text-transform:none;letter-spacing:0;font-size:max(11px,min(13px,2.2cqh));color:var(--ink-2);text-align:center;line-height:1.2;padding:0 6px}
 @keyframes nokeyIn{from{opacity:0}to{opacity:1}}
-@media (prefers-reduced-motion:reduce){.flm .flm-nokey{animation:none}}
+@media (prefers-reduced-motion:reduce){.flm .flm-noshared{animation:none}}
 /* R10 the byte excerpt under Z and K: mono, readable, never below the floor */
 .flm .flm-slot:is(.flm-a,.flm-b) .tk-n{font-family:var(--mono,ui-monospace,monospace);font-size:max(11px,min(13px,2.2cqh));
   color:var(--ink-2);letter-spacing:.04em;white-space:nowrap;max-width:none}
@@ -6887,7 +6887,7 @@ details.read summary:hover{color:var(--ink-2)}
   background:none;border:0;box-shadow:inset 0 0 0 1px var(--line-2);border-radius:999px;padding:4px 14px;min-height:28px;cursor:pointer}
 .flm .flm-pause:hover{color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink-3)}
 .flm .flm-pause:focus-visible{outline:2px solid var(--act);outline-offset:2px}
-.flm .flm-pause[aria-pressed="true"]{color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink-2)}
+.flm .flm-pause[data-on]{color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink-2)}
 @container (max-width:559.98px){
   .flm.flm .flm-arc-ticks i{width:10px} .flm.flm .flm-arc-ticks i.on{width:14px}
   .flm.flm .flm-arc-t{letter-spacing:.06em}
@@ -6897,7 +6897,7 @@ details.read summary:hover{color:var(--ink-2)}
   .flm.flm .flm-pause{position:absolute;right:0;top:50%;transform:translateY(-50%);height:44px;min-height:44px;min-width:64px;
     padding:0 14px;font-size:13px;box-shadow:none;background:none}
   .flm.flm .flm-pause::before{content:"";position:absolute;inset:8px 0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line-2);pointer-events:none}
-  .flm.flm .flm-pause[aria-pressed="true"]::before{box-shadow:inset 0 0 0 1px var(--ink-2)}
+  .flm.flm .flm-pause[data-on]::before{box-shadow:inset 0 0 0 1px var(--ink-2)}
   /* the chapter name clears the review label in the corner */
   .flm.flm .flm-arc-t{margin-left:14px}
 }
@@ -6977,6 +6977,95 @@ details.read summary:hover{color:var(--ink-2)}
    gives them its line, so the phone keeps its height */
 .flm.f-tokey.is-narrow :is([data-obj="ka"],[data-obj="kb"]) .tk-l{display:none}
 @container (max-width:359.98px){ .flm.flm.gcm .flm-focal > .flm-obj:has(.tk-key){width:34%} }
+/* ---- USABILITY PASS V5 (pass 61) ----------------------------------------- */
+/* the closing caveat: a third, quieter line under the takeaway */
+.flm .flm-rail-n{margin:6px 0 0;font-size:max(11px,min(13px,2.3cqh));line-height:1.35;color:var(--ink-3)}
+/* a formula is one line on a phone too: smaller, never broken mid-argument */
+@media (max-width:420px){.flm.flm.flm.flm .flm-rail .flm-rail-m{white-space:nowrap;font-size:12px}}
+/* P-V5 the public colour in the chooser's phone stays yellow: it steps back
+   by brightness, not by going see-through over dark glass (which read olive) */
+.flm:is(.f-pickA,.f-mine,.f-pickB) .flm-ph-scr .flm-focal > [data-obj="base"]{opacity:1;filter:brightness(.94)}
+/* P-V5 while the two colours stack, the plate underneath is not relabelled
+   as if it had changed: its caption says what is happening on top of it */
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:has(.tk-private) .tk-l{position:relative;animation:privCapOff 6000ms linear both}
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:has(.tk-private) .tk-l::after{content:"mixing on top · the private colour is underneath";
+  position:absolute;left:50%;top:0;translate:-50% 0;width:max-content;max-width:150%;white-space:normal;color:var(--ink-2);opacity:0;animation:privCapOn 6000ms linear both}
+@keyframes privCapOff{0%,19.5%{color:var(--ink-3)}20%,59.5%{color:transparent}60%,100%{color:var(--ink-3)}}
+@keyframes privCapOn{0%,19.5%{opacity:0}20%,59.5%{opacity:1}60%,100%{opacity:0}}
+/* P-V5 a covered result says it is covered on purpose */
+.flm .flm-obj.covers-late .tk-box::after{content:"hidden until both are done";position:absolute;left:10%;right:10%;top:22.7%;bottom:18.2%;z-index:2;
+  display:grid;place-items:center;text-align:center;font-size:max(11px,min(12px,2.2cqh));line-height:1.2;color:var(--ink-2);padding:0 4%;
+  opacity:0;animation:coverOn 6000ms linear both;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.flm.flm:not(.rm-s2) .flm-obj.covers-late .tk-box::after{opacity:0}.flm.flm.rm-s2 .flm-obj.covers-late .tk-box::after{opacity:1}}
+/* P-V5 the letters keep the colour they stood for: a strip of the viewer's
+   own paint on the left of each plate, so 6b–7a can be read without the
+   legend (the plate itself stays painted from real bytes) */
+.tk-paint{opacity:.95}
+/* P-V5 the failure card keeps its sentence on the narrowest phones: the
+   picture on one row, the words below it */
+@container (max-width:340px){
+  .flm .flm-fail{grid-template-columns:auto auto auto 1fr}
+  .flm .flm-fail .ff-txt{grid-column:1 / -1}
+}
+.flm .flm-fail .ff-txt > span{font-size:max(12px,min(13px,2.8cqw))}
+/* P-V5 the chapter name gives way to Pause, never under it */
+.flm .flm-arc{min-width:0}
+.flm .flm-arc-t{min-width:0;overflow:hidden;text-overflow:ellipsis}
+@container (max-width:559.98px){ .flm.flm .flm-arc{padding-right:72px} }
+@container (max-width:359.98px){
+  .flm.flm .flm-arc-ticks{display:none}
+}
+@container (max-width:559.98px){
+  /* 10c: the takeaway, then the recap, then the way out */
+  .flm.flm.flm.flm.chain .cin-ctl{grid-row:5}
+  .flm.flm.flm.flm.chain .flm-chain{grid-row:4}
+  .flm.flm.flm.chain .flm-rail .flm-rail-t{font-size:19px;line-height:1.25}
+  .flm.flm.flm.chain .flm-rail .flm-rail-s{font-size:13px;margin-top:6px}
+  .flm.flm.flm.chain .flm-rail .flm-rail-n{font-size:11px;margin-top:4px}
+}
+@media (max-width:359.98px){
+  /* 320: the figures keep their place at 10c; the caveat lives in "How it
+     works" and the values panel on the narrowest phones */
+  .flm.flm.flm.chain .flm-rail .flm-rail-n{display:none}
+  .flm.flm.flm.chain .flm-chain .tk{width:min(72px,100%)}
+  .flm.flm.flm.flm.flm.chain .flm-rail .flm-rail-t{font-size:18px;line-height:1.22}
+  .flm.flm.flm.flm.flm.chain .flm-rail .flm-rail-s{font-size:13px;margin-top:6px}
+}
+/* D1 (P0) the values overlay reads and closes on every phone: terms wrap in
+   a capped column, values get the rest, and the pane scrolls inside the film
+   with "Back to the story" always reachable */
+.flm .flm-peek-pane{overflow-y:auto;overscroll-behavior:contain;align-items:flex-start}
+.flm .flm-peek-in{margin:auto 0;max-width:100%}
+.flm .flm-dl{grid-template-columns:minmax(0,42%) minmax(0,1fr)}
+.flm .flm-dl dt{white-space:normal;overflow-wrap:anywhere;line-height:1.3}
+/* D3 Pause's 44pt hit area lies wholly inside the film: it hangs from the top
+   of the chapter line, and the drawn pill stays centred on the line */
+@container (max-width:559.98px){
+  .flm.flm .flm-pause{top:0;transform:none}
+  .flm.flm .flm-pause::before{inset:-1px 0 auto 0;height:28px}
+}
+/* D4 sideways phones: the secondary buttons meet 44pt too */
+@media (pointer:coarse) and (orientation:landscape) and (max-height:500px){
+  .flm :is(.flm-more,.flm-peek){min-height:44px}
+}
+.flm .flm-peek-pane .flm-peek-in > .cin-go{position:sticky;bottom:0;z-index:1}
+@media (max-width:359.98px){
+  .flm.flm.flm.flm .flm-rail .flm-rail-m{font-size:11px;letter-spacing:0}
+  .flm.flm.flm .flm-arc-t{font-size:14px;letter-spacing:.04em}
+}
+/* the Pause word sits in the middle of its drawn pill, not of its hit area */
+@container (max-width:559.98px){
+  .flm.flm .flm-pause{display:flex;align-items:flex-start;justify-content:center;padding-top:4px;line-height:20px}
+}
+@container (max-width:559.98px){
+  .flm.flm .flm-pause::before{inset:1px 0 auto 0;height:28px}
+  .flm.flm .flm-pause{padding-top:5px}
+}
+/* 6a: nothing of the stepped-back scene competes with the legend */
+.flm.f-asmath .flm-slot:is(.flm-a,.flm-b) :is(.tk-dg,.tk-sym){visibility:hidden}
+@container (max-width:559.98px){ .flm.flm .flm-arc{z-index:6} }
+.flm .flm-peek-in{background:rgb(8,11,13)}
+.flm .flm-dl dd{word-break:normal;overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -7447,8 +7536,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       landed: { s: "Bob read it. Eve saw the same traffic and did not." },
       whatEve: { s: "So what does the person watching the network actually have?" },
       router: { s: "Everything anyone sends here passes through this router." },
-      plainDemo: { s: "Alice sends a plain note across it, with no protection." },
-      plainSeen: { s: "Eve reads the same sentence off the wire. Nothing was broken into." },
+      plainDemo: { s: "Alice sends \u201CMeet me outside at 5\u201D across it, with no protection." },
+      plainSeen: { s: "Eve reads \u201CMeet me outside at 5\u201D off the wire. Nothing was broken into." },
       startsNow: { s: "So nothing can be sent in the open. This is where the protection starts." },
       same: {
         t: "Public starting value",
@@ -7558,7 +7647,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         throw new Error(`cipher length mismatch: "${ln}" vs "${m.enc[i]}"`);
     }));
     const WIRE = MSGS[0];
-    const CLOSER = "Alice and Bob have never met. They are strangers on the same caf\xE9 Wi-Fi, and so is Eve, who can read everything that crosses it. Both laptops start from the same public number. Each of them then picks a private number and keeps it \u2014 those two numbers never leave the machines they were chosen on. Each feeds their private number and the public one through a calculation that is quick to run forwards and impractical to run backwards, and sends only the result. Eve sees both results. She cannot work back from them to either private number, so when Alice combines Bob\u2019s result with her private number, and Bob combines Alice\u2019s with his, they land on the same secret that was never sent. Alice scrambles her message with it before it leaves her laptop. Eve reads the packet off the wire and gets nothing but characters; Bob, holding the same secret, gets the sentence back. Here Eve only listens. If she could also swap the public results on the way, Alice and Bob would need proof of whose result they received; real connections get that proof from certificates.";
+    const CLOSER = "Alice and Bob have never met. They are strangers on the same caf\xE9 Wi-Fi, and so is Eve, who can read everything that crosses it. Both phones start from the same public number. Each of them then picks a private number and keeps it \u2014 those two numbers never leave the phones they were chosen on. Each feeds their private number and the public one through a calculation that is quick to run forwards and impractical to run backwards, and sends only the result. Eve sees both results. She cannot work back from them to either private number, so when Alice combines Bob\u2019s result with her private number, and Bob combines Alice\u2019s with his, they land on the same secret that was never sent. Each phone turns that secret into the same key (HKDF), and Alice\u2019s phone locks her message with it (AES-GCM) before it leaves. Eve copies the packet, but without the key the check fails and nothing comes out. Bob\u2019s key passes the check, and he reads the sentence. Here Eve only listens. If she could also swap the public results on the way, Alice and Bob would need proof of whose result they received; real connections get that proof from certificates.";
     const SPRITE = {
       you: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAElCAMAAACWK11EAAAAqFBMVEXy1a9dIx6bKR338OHTsZyhaF7gTiDHbkSxm5KiTizhmF0pICVjWFTxlzLdOh+th3f9zXBxRC1aPESGOEU0Nkc4QzinfYH+wTkAAAAOCQsrGBjLc0JJKCMaERTVOyE6IiGPFxbFazuxJRr76czlSCTQNh05IB7aQiRvNSXwVCd0FBVMJBuTRSnKcT2uWDK6ZTlNFxSHOiWmHBcsCgrIqJbFLBtsDA9tKRpakpYYAAAAOHRSTlP///////////////////////////////8A//////////////////////////////////////////Wap1EAADdmSURBVHja1Z2JYtrI0qiR2AzYOJ5zzn8jgZDAIBTEIpAx7/9mt7beJIFx4mRmeiaO9+ijlq6urq5uff+bR17keT5NwzSMf+n3tP52kBBA8hBAwn83CCCkBYCE/3KQvAhTkAioVvxrJH8zSO55UzPifylIDs+eT22QX9CvPwgCTwoWDS5qKtaB7qoGMgqj6J8PkofpVIOUCDKtgoRh8I+XCJg0+qg8FYngDKJQYnr7rwDJPDKJFB9ZJDKtDAQNR1HwjwbJthkOL03jmNxTEBJIntKIcRBIHAXBPxgkvxAHaA+BkA5NkQBEFAMHk7Bq/ZNBwBhYIPjwMdtCCOLAuZBx0ioIfPhPlEhBIB6qFjxzGBFIjj4MxaG0ywYJ1fjHgXiEAooEEglCYJmS00IAVC0Qy78CpECn5XkIEsZKtcjxsp1rzfqHg1CcDn84zk2ZQXmsVBCQIQiiKApp+uTvuNNU/hwITYbp1BZGip8CnQodEHovFhBy0X8rSM5Lv9ABiesgrFSpAYnMd6QCco+C/UaQvApCc6F+zJgeMI1jFyQyILlo4N8NUhQQ34bWQjA1qkVPP2U4x87RQCD+hWkfNO4fIZGLvJiKg1aBqbz0KlJEA4mvq9b0HyCRPKMgcZqyK51SggEfld7NMglY8ClFHCgG7dEknkwpxOT55W8BgSchjhhA8BkpGEkZBHVGQLTeEAj4qzRWAKJU7J7/PonEIYOgREDrg9SWCFpKEwhJBL9ombmZZf4eEPiHBWRKILGjWggCc7xSLcZgieC6S08f+EUSyT8HZNoAMnUkAt+EIClLZGqDhH8viEev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",
       fr: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAECCAMAAACMgmjKAAAAqFBMVEXVZC6gUCnw06rtmVBXLR/Or5YqHyL48d5hW1/tmi+nmZEpXJdvRy6RdGMbMlijiXOWNx3heET7yWssSXJTb49th6AGPIShydm2hDdEPEFyyOZ8qsk4gruNtM54g3j/wjmQf4CvwLcAAAAJBwolWZj758kwGRX8q2pOJxtsNiP9s3EpYqQWExYVOGwNFysZSYgxJyklXaFVLCEQKE8aQnkcU5X2l1b6pzOAaKsuAAAAOHRSTlP/////////////////////////////////////////////AP///////////////////////////24PXI0AAC5cSURBVHja7Z0Le9pKsq4REm1AF0xwsldmz545J8JCgBA3gf//Pzv1VfVNIN9i7Kw5z+61ktgJYL2qa1dXt3q//uQoy5t9VO9/Qf4XxI3o8P8HyHK5/FuDvOE2l2WwBMbfWiJR+armF2WZLHn8zUFee0lRRMu/P8gbPFEZlctlkiTLv7NqLQ9vMXIeSVkUf08QVpaiW0wylsvosLTjPxEkMiCH/wSQiGy4+9qiqIjKqNAw/xEgL6tWRDgCEf2NQfgCO68tCO7x/33ghFGWh0N+wx/euyUEg7irO0QHGQRBFPSP9/8BIFF0CXI4GIW6vwcIUbQlUub53w8kugYpy5dBSgLJteGQV7v6wLJ8T5Z/I5DIKE3igViJBHZcSiQvIhmX16zf+cUgfKlyu5NCFb7VeAyBgT3Q/S/04NDCHrkrJBVfDoJrTLRq5Yr/7gpkaTlIGsSQc1jht8krrhygfNIXghQMIpeqcmg+3U62magDJNIgJA768mBxl5E1NP1CVXw5yNKCFLkx4edASgdiAn03SKG+XiLJNUj5HAgFlmVEGIokUhQORJt95IWkL5dIsXQ2om/1wbMRc2WB87w6YaGJiSW9d+/QIF8eR2TGJwmu05lDeYi0IhlNc6/wNOjey1w87VPvi5a3k0i0vAAhez9IiaHlsOQVlL4QGxQJ0bIL5J1R/2YgkQ9yEBCyhuhiKmVRI/nrCBL5oyB0kbaaQyCRBmF3FGkQbQZlF4gOIdC4TtUqvgrETyGMakECuE5hQNkKkiLVijpAiBxWjcQ4uL8C+bKkMfB+oDEK8UTla6MdQoy7lVz5oK3o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",
@@ -8210,7 +8299,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           onClick: () => go(last ? 1 : act + 1),
           "aria-live": "polite"
         },
-        waiting ? "Your turn" : playing ? "Playing\u2026" : last ? "Watch again" : "Continue",
+        waiting ? "Your turn" : playing ? "Playing\u2026" : last ? "Watch again" : "On to the message",
         !playing && !waiting && /* @__PURE__ */ React.createElement("span", { className: "ct" }, act, "/", ACTS.length)
       )));
     };
@@ -8870,7 +8959,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         wait: 7200,
         bobSends: true,
         say: "You swap mixtures. Eve copies both.",
-        sub: "Eve can see the mixed colours, but not the original private colours."
+        sub: "Eve can see both mixtures. In the real maths, working back to a private value is the hard part."
       },
       /* storyboard 4e: the census. Each mixture finishes its trip INTO the
          other phone, so the frame says, without words, who now holds what:
@@ -8905,7 +8994,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         lead: "qa2",
         wait: 7e3,
         say: "Eve tries to unmix a copy",
-        sub: "No guess turns back into your colour or Bob\u2019s. Working backwards is the hard direction."
+        sub: "No guess gets back to your colour or Bob\u2019s. This paint is a simple average and could be unmixed; the real maths is built so that can\u2019t practically be done."
       },
       /* -- 12-14. both sides combine; the results form covered ----------- */
       {
@@ -8964,7 +9053,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         eveIn: true,
         wait: 6e3,
         say: "Same colour. Never sent.",
-        sub: "Eve has both mixtures. In the real maths, that still isn't enough to make this one."
+        sub: "Eve has both mixtures. With paint she could subtract the yellow and cheat; in the real maths there is no known shortcut."
       },
       /* -- 16. one transition out of the analogy, and only one ------------ */
       {
@@ -8980,7 +9069,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         bridge: true,
         wait: 6200,
         say: "Computers do this with numbers instead of paint",
-        sub: "Each colour stands for a number your phone really computed."
+        sub: "Each colour stands in for a real value your phone holds."
       },
       /* storyboard 6b: the same exchange, once, in the real vocabulary and on
          the same stage — the private numbers stay in their slots, the two
@@ -9013,7 +9102,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         wait: 6e3,
         math: "Z = d_A Q_B = d_B Q_A",
         say: "Both phones reach the same Z",
-        sub: "Z never crossed the network."
+        sub: "Like the paint: your private number with Bob\u2019s public value, his with yours. Z never crossed the network."
       },
       /* -- 17-18. the key, derived locally, identical on both ------------- */
       /* "each phone derives a key" and "both phones have the same key" were
@@ -9035,7 +9124,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         wait: 6e3,
         math: "K = HKDF(Z)",
         say: "Each phone turns that into the same key",
-        sub: "HKDF turns the raw shared secret into a proper AES key."
+        sub: "A standard recipe (HKDF) turns the shared secret into the key that locks messages."
       },
       /* -- 19-20. the message, and the packet it becomes ----------------- */
       {
@@ -9104,7 +9193,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         bare: true,
         wait: 7e3,
         say: "Eve tries to open her copy",
-        sub: "Without K every try fails the check, and no message comes out."
+        sub: "Without K she can\u2019t decrypt: there are far too many keys to guess, and every try fails the tag check."
       },
       /* -- 22-23. Bob checks it, and the message comes back ------------- */
       {
@@ -9145,7 +9234,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         chain: true,
         end: true,
         say: "Same secret \u2192 one key \u2192 protected message \u2192 Bob reads it",
-        sub: ""
+        sub: "Your colour never left your phone. Eve copied what crossed and still can\u2019t read a word.",
+        note: "Here Eve only listens. If she could swap what crosses, real connections also check who sent it (certificates)."
       }
     ];
     const FKEY = FILM.map((f) => f.k);
@@ -9350,7 +9440,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       return "#" + sum.map((x) => Math.round(x / n).toString(16).padStart(2, "0").toUpperCase()).join("");
     };
     const SWATCHES = ["#3276E8", "#E8734A", "#22C98A", "#B968E8", "#E0457B", "#3AC7E8"];
-    const Tok = ({ role, hex, label, note, masked, state, bytes, dock, digits, sym }) => {
+    const Tok = ({ role, hex, label, note, masked, state, bytes, dock, digits, sym, paint }) => {
       const c = masked ? "none" : hex || "#3a4449";
       const S = {
         className: "tk-art",
@@ -9390,8 +9480,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
              closed edge + a rail under it   it stays where it is
              edge broken at both sides       it leaves, and comes back
              doubled edge                    it was made from two things     */
-        private: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "6", y: "10", width: "48", height: "26", rx: "4", fill: "none" }), /* @__PURE__ */ React.createElement("rect", { className: "tk-rail", x: "11", y: "39", width: "38", height: "2", rx: "1" }), sym && /* @__PURE__ */ React.createElement("text", { className: "tk-sym", x: "30", y: "27.6", textAnchor: "middle", style: { fill: c === "none" ? void 0 : INK_ON(c) } }, String(sym).split(/(_[A-Za-z])/).map((x, i) => x[0] === "_" ? /* @__PURE__ */ React.createElement("tspan", { key: i, baselineShift: "sub", fontSize: "72%" }, x.slice(1)) : x))),
-        public: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M6 20 V14 a4 4 0 0 1 4 -4 H50 a4 4 0 0 1 4 4 V20", fill: "none" }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M54 26 V32 a4 4 0 0 1 -4 4 H10 a4 4 0 0 1 -4 -4 V26", fill: "none" }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M1.6 23 H5 M55 23 H58.4", fill: "none" }), sym && /* @__PURE__ */ React.createElement("text", { className: "tk-sym", x: "30", y: "27.6", textAnchor: "middle", style: { fill: c === "none" ? void 0 : INK_ON(c) } }, String(sym).split(/(_[A-Za-z])/).map((x, i) => x[0] === "_" ? /* @__PURE__ */ React.createElement("tspan", { key: i, baselineShift: "sub", fontSize: "72%" }, x.slice(1)) : x))),
+        private: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "6", y: "10", width: "48", height: "26", rx: "4", fill: "none" }), /* @__PURE__ */ React.createElement("rect", { className: "tk-rail", x: "11", y: "39", width: "38", height: "2", rx: "1" }), sym && paint && /* @__PURE__ */ React.createElement("rect", { className: "tk-paint", x: "6", y: "10", width: "6", height: "26", rx: "2", fill: paint }), sym && /* @__PURE__ */ React.createElement("text", { className: "tk-sym", x: "30", y: "27.6", textAnchor: "middle", style: { fill: c === "none" ? void 0 : INK_ON(c) } }, String(sym).split(/(_[A-Za-z])/).map((x, i) => x[0] === "_" ? /* @__PURE__ */ React.createElement("tspan", { key: i, baselineShift: "sub", fontSize: "72%" }, x.slice(1)) : x))),
+        public: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M6 20 V14 a4 4 0 0 1 4 -4 H50 a4 4 0 0 1 4 4 V20", fill: "none" }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M54 26 V32 a4 4 0 0 1 -4 4 H10 a4 4 0 0 1 -4 -4 V26", fill: "none" }), /* @__PURE__ */ React.createElement("path", { className: "tk-ln", d: "M1.6 23 H5 M55 23 H58.4", fill: "none" }), sym && paint && /* @__PURE__ */ React.createElement("rect", { className: "tk-paint", x: "6", y: "10", width: "6", height: "26", rx: "2", fill: paint }), sym && /* @__PURE__ */ React.createElement("text", { className: "tk-sym", x: "30", y: "27.6", textAnchor: "middle", style: { fill: c === "none" ? void 0 : INK_ON(c) } }, String(sym).split(/(_[A-Za-z])/).map((x, i) => x[0] === "_" ? /* @__PURE__ */ React.createElement("tspan", { key: i, baselineShift: "sub", fontSize: "72%" }, x.slice(1)) : x))),
         secret: /* @__PURE__ */ React.createElement("svg", { ...S }, /* @__PURE__ */ React.createElement("rect", { x: "6", y: "10", width: "48", height: "26", rx: "4", fill: c }), /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "6", y: "10", width: "48", height: "26", rx: "4", fill: "none" }), !digits && !sym && /* @__PURE__ */ React.createElement("rect", { className: "tk-ln", x: "3", y: "7", width: "54", height: "32", rx: "6.5", fill: "none", opacity: ".55" }), digits && /* @__PURE__ */ React.createElement(
           "text",
           {
@@ -9403,7 +9493,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             lengthAdjust: "spacingAndGlyphs"
           },
           digits
-        ), sym && /* @__PURE__ */ React.createElement("text", { className: "tk-sym", x: "30", y: "27.6", textAnchor: "middle", style: { fill: c === "none" ? void 0 : INK_ON(c) } }, String(sym).split(/(_[A-Za-z])/).map((x, i) => x[0] === "_" ? /* @__PURE__ */ React.createElement("tspan", { key: i, baselineShift: "sub", fontSize: "72%" }, x.slice(1)) : x)), masked && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("rect", { className: "tk-cover", x: "6", y: "10", width: "48", height: "26", rx: "4" }), /* @__PURE__ */ React.createElement("text", { className: "tk-q", x: "30", y: "27", textAnchor: "middle" }, "?"))),
+        ), sym && paint && /* @__PURE__ */ React.createElement("rect", { className: "tk-paint", x: "6", y: "10", width: "6", height: "26", rx: "2", fill: paint }), sym && /* @__PURE__ */ React.createElement("text", { className: "tk-sym", x: "30", y: "27.6", textAnchor: "middle", style: { fill: c === "none" ? void 0 : INK_ON(c) } }, String(sym).split(/(_[A-Za-z])/).map((x, i) => x[0] === "_" ? /* @__PURE__ */ React.createElement("tspan", { key: i, baselineShift: "sub", fontSize: "72%" }, x.slice(1)) : x)), masked && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("rect", { className: "tk-cover", x: "6", y: "10", width: "48", height: "26", rx: "4" }), /* @__PURE__ */ React.createElement("text", { className: "tk-q", x: "30", y: "27", textAnchor: "middle" }, "?"))),
         /* The key was a keyhole cut out of the plate — a quieter drawing than
            the cartoon key it replaced, but still a picture of a lock in a
            system where nothing else is a picture of anything. It is the same
@@ -9671,7 +9761,11 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           const a = document.activeElement;
           if (a && a !== document.body && !a.closest(".flm")) return;
           const el = sel && document.querySelector(sel);
-          if (el) el.focus({ preventScroll: true });
+          if (el) {
+            el.focus({ preventScroll: true });
+            if (window.matchMedia && matchMedia("(pointer:coarse) and (orientation:landscape) and (max-height:500px)").matches)
+              el.scrollIntoView({ block: "center", behavior: "smooth" });
+          }
         }, 700);
         return () => clearTimeout(t);
       }, [beat]);
@@ -9683,7 +9777,21 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         const first = pane && pane.querySelector("button");
         first && first.focus({ preventScroll: true });
         const esc = (e) => {
-          if (e.key === "Escape") setPeeking(false);
+          if (e.key === "Escape") {
+            setPeeking(false);
+            return;
+          }
+          if (e.key !== "Tab" || !pane) return;
+          const f = [...pane.querySelectorAll("button,[href],input,[tabindex]:not([tabindex='-1'])")].filter((x) => !x.disabled);
+          if (!f.length) return;
+          const i = f.indexOf(document.activeElement);
+          if (e.shiftKey && i <= 0) {
+            e.preventDefault();
+            f[f.length - 1].focus();
+          } else if (!e.shiftKey && (i === f.length - 1 || i < 0)) {
+            e.preventDefault();
+            f[0].focus();
+          }
         };
         window.addEventListener("keydown", esc);
         return () => {
@@ -9739,7 +9847,16 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       }, [beat, narrow]);
       const base = "#E8C93A";
       const mine = (pick || SWATCHES[0]).toUpperCase();
-      const bobPool = SWATCHES.filter((c) => c.toUpperCase() !== mine && c.toUpperCase() !== base.toUpperCase());
+      const DIST = (x, y) => {
+        const p0 = HEX2RGB(x), q0 = HEX2RGB(y);
+        return Math.hypot(p0[0] - q0[0], p0[1] - q0[1], p0[2] - q0[2]);
+      };
+      const bobAll = SWATCHES.filter((c) => c.toUpperCase() !== mine && c.toUpperCase() !== base.toUpperCase());
+      const bobFar = pick ? bobAll.filter((c) => {
+        const qa0 = MIX(base, mine), qb0 = MIX(base, c), f0 = MIX(base, mine, c);
+        return DIST(qa0, qb0) >= 55 && Math.min(DIST(f0, qa0), DIST(f0, qb0)) >= 30;
+      }) : bobAll;
+      const bobPool = bobFar.length >= 3 ? bobFar : bobAll;
       const bobIx = s && s.dLraw ? s.dLraw[0] % bobPool.length : 2 % bobPool.length;
       const bprivC = (bobPool[bobIx] || "#3a4449").toUpperCase();
       const qaC = MIX(base, mine);
@@ -9789,7 +9906,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        pa: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "private", hex: N, sym: "d_A", dock: d, label: "your private number" }) : /* @__PURE__ */ React.createElement(
+        pa: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "private", hex: N, sym: "d_A", paint: pick ? mine : null, dock: d, label: "your private number" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "private",
@@ -9800,7 +9917,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        pb: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "private", hex: N, sym: "d_B", dock: d, label: "Bob\u2019s private number" }) : /* @__PURE__ */ React.createElement(
+        pb: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "private", hex: N, sym: "d_B", paint: bprivC, dock: d, label: "Bob\u2019s private number" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "private",
@@ -9810,7 +9927,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        qa: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N, sym: "Q_A", dock: d, label: "your public value" }) : /* @__PURE__ */ React.createElement(
+        qa: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N, sym: "Q_A", paint: qaC, dock: d, label: "your public value" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "public",
@@ -9820,7 +9937,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        qb: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N, sym: "Q_B", dock: d, label: "Bob\u2019s public value" }) : /* @__PURE__ */ React.createElement(
+        qb: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N, sym: "Q_B", paint: qbC, dock: d, label: "Bob\u2019s public value" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "public",
@@ -9830,14 +9947,14 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        qa2: (d) => /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N || qaC, sym: N ? "Q_A" : null, dock: d, label: N ? "Q A, copied" : "Alice\u2019s mixture, copied" }),
-        qb2: (d) => /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N || qbC, sym: N ? "Q_B" : null, dock: d, label: N ? "Q B, copied" : "Bob\u2019s mixture, copied" }),
+        qa2: (d) => /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N || qaC, sym: N ? "Q_A" : null, paint: qaC, dock: d, label: N ? "Q A, copied" : "Alice\u2019s mixture, copied" }),
+        qb2: (d) => /* @__PURE__ */ React.createElement(Tok, { role: "public", hex: N || qbC, sym: N ? "Q_B" : null, paint: qbC, dock: d, label: N ? "Q B, copied" : "Bob\u2019s mixture, copied" }),
         /* AT THE MORPH THE PLATE STOPS BEING PAINT. It keeps its place, its
            size and its position — the same object — while the colour drains
            out of it and the number the browser actually computed appears on
            its face. That is the whole transition, in one object, with no
            mapping legend and no second diagram. */
-        sa: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: N, sym: "Z", dock: d, label: "the shared secret", note: F.k === "zsec" && s ? BYTES(s.Z, 4) : "" }) : /* @__PURE__ */ React.createElement(
+        sa: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: N, sym: "Z", paint: sharedC, dock: d, label: "the shared secret", note: F.k === "zsec" && s ? BYTES(s.Z, 4) : "" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "secret",
@@ -9849,7 +9966,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             note: ""
           }
         ),
-        sb: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: N, sym: "Z", dock: d, label: "the same Z", note: F.k === "zsec" && s ? BYTES(s.Zl, 4) : "" }) : /* @__PURE__ */ React.createElement(
+        sb: (d) => N ? /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: N, sym: "Z", paint: sharedC, dock: d, label: "the same Z", note: F.k === "zsec" && s ? BYTES(s.Zl, 4) : "" }) : /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "secret",
@@ -10094,7 +10211,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           "data-arc": F.arc || "",
           style: mixc ? { "--mixc": mixc } : void 0
         },
-        /* @__PURE__ */ React.createElement("div", { className: "flm-arc" }, /* @__PURE__ */ React.createElement("b", { className: "flm-arc-t" }, ARCNAME[F.arc]), /* @__PURE__ */ React.createElement("span", { className: "flm-arc-ticks", role: "img", "aria-label": "part " + (ARCS.indexOf(F.arc) + 1) + " of 3" }, ARCS.map((a) => /* @__PURE__ */ React.createElement("i", { key: a, className: a === F.arc ? "on" : "" }))), onPause && !F.end && /* @__PURE__ */ React.createElement("button", { className: "flm-pause", onClick: onPause, "aria-pressed": !!paused }, paused ? "Play" : "Pause")),
+        /* @__PURE__ */ React.createElement("div", { className: "flm-arc" }, /* @__PURE__ */ React.createElement("b", { className: "flm-arc-t" }, ARCNAME[F.arc]), /* @__PURE__ */ React.createElement("span", { className: "flm-arc-ticks", role: "img", "aria-label": "part " + (ARCS.indexOf(F.arc) + 1) + " of 3" }, ARCS.map((a) => /* @__PURE__ */ React.createElement("i", { key: a, className: a === F.arc ? "on" : "" }))), onPause && !F.end && /* @__PURE__ */ React.createElement("button", { className: "flm-pause", onClick: onPause, "data-on": paused ? "1" : void 0 }, paused ? "Resume" : "Pause")),
         /* @__PURE__ */ React.createElement("div", { className: "flm-stage" }, tap && /* @__PURE__ */ React.createElement(
           "i",
           {
@@ -10113,8 +10230,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           /* @__PURE__ */ React.createElement("span", { className: "ff-in", "aria-hidden": "true" }, F.unseal ? /* @__PURE__ */ React.createElement(Pack, { pk: pack, locked: true }) : /* @__PURE__ */ React.createElement("i", { style: { background: MIX(base, mine) } })),
           /* @__PURE__ */ React.createElement("span", { className: "ff-arrow", "aria-hidden": "true" }, "\u2192"),
           /* @__PURE__ */ React.createElement("span", { className: "ff-out", "aria-hidden": "true" }, (F.unseal ? keyGuesses : guesses).slice(0, 12).map((c, i) => /* @__PURE__ */ React.createElement("i", { key: i, style: { background: c } }))),
-          /* @__PURE__ */ React.createElement("span", { className: "ff-txt" }, /* @__PURE__ */ React.createElement("b", null, (F.unseal ? ["Key required", "decryption failed"] : ["Private input", "not recovered"]).map((l, i) => /* @__PURE__ */ React.createElement("span", { key: i }, l, i ? "" : " "))), /* @__PURE__ */ React.createElement("span", null, F.unseal ? "Eve has the packet. Without K nothing readable comes out." : "Eve has the mixture, not the private colour that made it."))
-        ), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-a" + (lit("a") ? " on" : " off") }, /* @__PURE__ */ React.createElement("span", { className: "cin-face", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("i", { className: "cu-chair" }), /* @__PURE__ */ React.createElement("img", { src: SPRITE.you, alt: "" }), /* @__PURE__ */ React.createElement("i", { className: "cu-table" })), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Alice ", /* @__PURE__ */ React.createElement("i", { className: "sur-me" }, "you")), /* @__PURE__ */ React.createElement(Phone, { who: "a", lit: lit("a"), drop: F.drag && F.drag.to === "phoneA" || beat === "pickA" ? "phoneA" : null }, F.drag && F.drag.to === "openA" && /* @__PURE__ */ React.createElement("span", { className: "flm-open is-drop", "data-drop": "openA", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "flm-focal" }, bin.a, beat === "problem" && /* @__PURE__ */ React.createElement("div", { className: "flm-nokey", role: "note" }, /* @__PURE__ */ React.createElement("span", null, "no shared key yet"))), F.drag && F.drag.to === "slot" && /* @__PURE__ */ React.createElement("div", { className: "flm-slot-x is-drop", "data-drop": "slot" }, /* @__PURE__ */ React.createElement("span", { className: "flm-slot-k" }, beat === "hkdf" ? "HKDF" : "AES\u2011GCM"), /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 60 18", className: "flm-slot-a", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M6 9 h40 M40 4 l6 5 l-6 5", fill: "none", strokeWidth: "2.2" }))), !narrow && controls, /* @__PURE__ */ React.createElement(Shelf, { items: dock.a }))), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-net" + (lit("eve") ? " on" : " off") }, /* @__PURE__ */ React.createElement("span", { className: "cin-face", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("img", { src: SPRITE.atk, alt: "" }), /* @__PURE__ */ React.createElement("i", { className: "cu-table" })), /* @__PURE__ */ React.createElement("span", { className: "cin-who evil" }, "Eve"), /* @__PURE__ */ React.createElement("div", { className: "flm-eve" }, /* @__PURE__ */ React.createElement("div", { className: "flm-focal flm-hold" }, bin.eve), F.noK && /* @__PURE__ */ React.createElement("span", { className: "flm-nokey", "aria-label": "Eve cannot read it" }), /* @__PURE__ */ React.createElement(Shelf, { items: dock.e })), !narrow && peekBtn), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-b" + (lit("b") ? " on" : " off") }, /* @__PURE__ */ React.createElement("span", { className: "cin-face", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("i", { className: "cu-chair" }), /* @__PURE__ */ React.createElement("img", { src: SPRITE.fr, alt: "" }), /* @__PURE__ */ React.createElement("i", { className: "cu-table" })), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Bob"), /* @__PURE__ */ React.createElement(Phone, { who: "b", lit: lit("b") }, (F.verify || F.opened) && /* @__PURE__ */ React.createElement("span", { className: "flm-seal-cue" }, /* @__PURE__ */ React.createElement(
+          /* @__PURE__ */ React.createElement("span", { className: "ff-txt" }, /* @__PURE__ */ React.createElement("b", null, (F.unseal ? ["Key required", "decryption failed"] : ["Private colour", "not recovered"]).map((l, i) => /* @__PURE__ */ React.createElement("span", { key: i }, l, i ? "" : " "))), /* @__PURE__ */ React.createElement("span", null, F.unseal ? "Eve has the packet. Without K the check fails, and nothing comes out." : "Eve has the mixture, not the private colour that made it."))
+        ), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-a" + (lit("a") ? " on" : " off") }, /* @__PURE__ */ React.createElement("span", { className: "cin-face", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("i", { className: "cu-chair" }), /* @__PURE__ */ React.createElement("img", { src: SPRITE.you, alt: "" }), /* @__PURE__ */ React.createElement("i", { className: "cu-table" })), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Alice ", /* @__PURE__ */ React.createElement("i", { className: "sur-me" }, "you")), /* @__PURE__ */ React.createElement(Phone, { who: "a", lit: lit("a"), drop: F.drag && F.drag.to === "phoneA" || beat === "pickA" ? "phoneA" : null }, F.drag && F.drag.to === "openA" && /* @__PURE__ */ React.createElement("span", { className: "flm-open is-drop", "data-drop": "openA", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "flm-focal" }, bin.a, beat === "problem" && /* @__PURE__ */ React.createElement("div", { className: "flm-noshared", role: "note" }, /* @__PURE__ */ React.createElement("span", null, "no shared key yet"))), F.drag && F.drag.to === "slot" && /* @__PURE__ */ React.createElement("div", { className: "flm-slot-x is-drop", "data-drop": "slot" }, /* @__PURE__ */ React.createElement("span", { className: "flm-slot-k" }, beat === "hkdf" ? "HKDF" : "AES\u2011GCM"), /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 60 18", className: "flm-slot-a", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("path", { d: "M6 9 h40 M40 4 l6 5 l-6 5", fill: "none", strokeWidth: "2.2" }))), !narrow && controls, /* @__PURE__ */ React.createElement(Shelf, { items: dock.a }))), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-net" + (lit("eve") ? " on" : " off") }, /* @__PURE__ */ React.createElement("span", { className: "cin-face", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("img", { src: SPRITE.atk, alt: "" }), /* @__PURE__ */ React.createElement("i", { className: "cu-table" })), /* @__PURE__ */ React.createElement("span", { className: "cin-who evil" }, "Eve"), /* @__PURE__ */ React.createElement("div", { className: "flm-eve" }, /* @__PURE__ */ React.createElement("div", { className: "flm-focal flm-hold" }, bin.eve), F.noK && /* @__PURE__ */ React.createElement("span", { className: "flm-nokey", "aria-label": "Eve cannot read it" }), /* @__PURE__ */ React.createElement(Shelf, { items: dock.e })), !narrow && peekBtn), /* @__PURE__ */ React.createElement("div", { className: "flm-slot flm-b" + (lit("b") ? " on" : " off") }, /* @__PURE__ */ React.createElement("span", { className: "cin-face", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("i", { className: "cu-chair" }), /* @__PURE__ */ React.createElement("img", { src: SPRITE.fr, alt: "" }), /* @__PURE__ */ React.createElement("i", { className: "cu-table" })), /* @__PURE__ */ React.createElement("span", { className: "cin-who" }, "Bob"), /* @__PURE__ */ React.createElement(Phone, { who: "b", lit: lit("b") }, (F.verify || F.opened) && /* @__PURE__ */ React.createElement("span", { className: "flm-seal-cue" }, /* @__PURE__ */ React.createElement(
           Tok,
           {
             role: "seal",
@@ -10156,6 +10273,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           /* @__PURE__ */ React.createElement("p", { className: "flm-rail-t" }, beat === "type" ? text.trim() ? "Tap Send to send your message to Bob" : "Type a message for Bob" : say(F.say)),
           !gate && F.sub && /* @__PURE__ */ React.createElement("p", { className: "flm-rail-s" }, F.sub),
           F.math && /* @__PURE__ */ React.createElement("p", { className: "flm-rail-m" }, SUBS(F.math)),
+          F.note && /* @__PURE__ */ React.createElement("p", { className: "flm-rail-n" }, F.note),
           narrow && /* @__PURE__ */ React.createElement("div", { className: "flm-act" }, controls, peekBtn)
         ),
         F.chain && /* @__PURE__ */ React.createElement("div", { className: "flm-chain" }, /* @__PURE__ */ React.createElement(Tok, { role: "secret", hex: sharedC, label: "same secret" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement(Tok, { role: "key", hex: kC, label: "one key" }), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement("div", { className: "tk tk-payload" }, /* @__PURE__ */ React.createElement("div", { className: "tk-box" }, /* @__PURE__ */ React.createElement(Pack, { pk: pack })), /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "protected")), /* @__PURE__ */ React.createElement("b", null, "\u2192"), /* @__PURE__ */ React.createElement("div", { className: "tk tk-message" }, /* @__PURE__ */ React.createElement("div", { className: "tk-box tk-note" }, /* @__PURE__ */ React.createElement("b", null, opened && opened.text || text || "\u2014")), /* @__PURE__ */ React.createElement("span", { className: "tk-l" }, "Bob reads it"))),
@@ -10164,8 +10282,32 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         F.eq && /* @__PURE__ */ React.createElement("div", { className: "cin-real late" }, /* @__PURE__ */ React.createElement(Eq, { parts: F.eq, note: F.eqn })),
         (F.bridge || F.data || F.payoff) && /* @__PURE__ */ React.createElement("div", { className: "cin-ctl-aux" }, /* @__PURE__ */ React.createElement("button", { className: "flm-more", onClick: () => setPeeking("values"), "aria-expanded": peeking === "values", "aria-haspopup": "dialog" }, F.data ? "See the data" : "See the actual values")),
         /* @__PURE__ */ React.createElement("div", { className: "cin-ctl" }, F.end && /* @__PURE__ */ React.createElement("button", { className: "cin-go ghost", onClick: onReplay }, "\u21BA Start over")),
-        peeking === "values" && /* @__PURE__ */ React.createElement("div", { className: "flm-peek-pane", role: "dialog", "aria-modal": "true", "aria-label": "The actual values" }, /* @__PURE__ */ React.createElement("div", { className: "flm-peek-in flm-vals" }, /* @__PURE__ */ React.createElement("span", { className: "flm-peek-t" }, "The actual cryptography, running underneath"), /* @__PURE__ */ React.createElement("dl", { className: "flm-dl" }, /* @__PURE__ */ React.createElement("dt", null, "Curve"), /* @__PURE__ */ React.createElement("dd", null, "NIST P\u2011256 (ECDH)"), /* @__PURE__ */ React.createElement("dt", null, "Alice\u2019s private scalar"), /* @__PURE__ */ React.createElement("dd", null, s ? BYTES(s.dMraw, 6) : "\u2014"), /* @__PURE__ */ React.createElement("dt", null, "Alice\u2019s public point Q\u2090"), /* @__PURE__ */ React.createElement("dd", null, s ? BYTES(s.Qm, 6) : "\u2014"), /* @__PURE__ */ React.createElement("dt", null, "Bob\u2019s public point Q\u0299"), /* @__PURE__ */ React.createElement("dd", null, s ? BYTES(s.Ql, 6) : "\u2014"), /* @__PURE__ */ React.createElement("dt", null, "Shared secret Z (x\u2011coordinate of d", /* @__PURE__ */ React.createElement("sub", null, "A"), "\xB7Q", /* @__PURE__ */ React.createElement("sub", null, "B"), ")"), /* @__PURE__ */ React.createElement("dd", null, s ? BYTES(s.Z, 8) : "\u2014"), /* @__PURE__ */ React.createElement("dt", null, "Key K = HKDF\u2011SHA256(Z, zero salt, \u201Ccafe-cipher/aes-gcm\u201D)"), /* @__PURE__ */ React.createElement("dd", null, s ? BYTES(s.K, 8) : "\u2014"), pack && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("dt", null, "Nonce (96\u2011bit, this message)"), /* @__PURE__ */ React.createElement("dd", null, HEX(pack.iv, 6))), pack && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("dt", null, "Auth tag (128\u2011bit)"), /* @__PURE__ */ React.createElement("dd", null, HEX(pack.tag, 6))), pack && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("dt", null, "Ciphertext"), /* @__PURE__ */ React.createElement("dd", null, HEX(pack.C, 8)))), /* @__PURE__ */ React.createElement("span", { className: "flm-peek-n" }, "The colours on screen are an analogy for mixing. These are the values the browser actually computed. Blending colours is not what P\u2011256 does, and the colour you picked is not a key. Here Eve only watches. If she could swap the public values on the way, Alice and Bob would also need proof of whose value they got; real connections get it from certificates."), /* @__PURE__ */ React.createElement("button", { className: "cin-go", onClick: () => setPeeking(false) }, "Back to the story"))),
-        peeking === true && /* @__PURE__ */ React.createElement("div", { className: "flm-peek-pane", role: "dialog", "aria-modal": "true", "aria-label": "What Eve has" }, /* @__PURE__ */ React.createElement("div", { className: "flm-peek-in" }, /* @__PURE__ */ React.createElement("span", { className: "flm-peek-t" }, "Everything Eve holds, right now"), /* @__PURE__ */ React.createElement("div", { className: "flm-peek-row" }, dock.e.length || bin.eve.length ? [...bin.eve, ...dock.e].map((n, i) => /* @__PURE__ */ React.createElement("div", { className: "flm-peek-i", key: i }, n)) : /* @__PURE__ */ React.createElement("span", { className: "flm-peek-n" }, "nothing yet")), /* @__PURE__ */ React.createElement("span", { className: "flm-peek-n" }, "Public values and protected payloads. No private value, and no K \\u2014 so none of it decrypts."), /* @__PURE__ */ React.createElement("button", { className: "cin-go", onClick: () => setPeeking(false) }, "Back to the story")))
+        peeking === "values" && /* @__PURE__ */ React.createElement(
+          "div",
+          {
+            className: "flm-peek-pane",
+            role: "dialog",
+            "aria-modal": "true",
+            "aria-label": "The actual values",
+            onClick: (e) => {
+              if (e.target === e.currentTarget) setPeeking(false);
+            }
+          },
+          /* @__PURE__ */ React.createElement("div", { className: "flm-peek-in flm-vals" }, /* @__PURE__ */ React.createElement("span", { className: "flm-peek-t" }, "The actual cryptography, running underneath"), /* @__PURE__ */ React.createElement("dl", { className: "flm-dl" }, /* @__PURE__ */ React.createElement("dt", null, "Curve"), /* @__PURE__ */ React.createElement("dd", null, "NIST P\u2011256 (ECDH)"), /* @__PURE__ */ React.createElement("dt", null, "Alice\u2019s private number d", /* @__PURE__ */ React.createElement("sub", null, "A")), /* @__PURE__ */ React.createElement("dd", null, s ? BYTES(s.dMraw, 6) : "\u2014"), /* @__PURE__ */ React.createElement("dt", null, "Alice\u2019s public point Q", /* @__PURE__ */ React.createElement("sub", null, "A"), " (04 = uncompressed)"), /* @__PURE__ */ React.createElement("dd", null, s ? BYTES(s.Qm, 6) : "\u2014"), /* @__PURE__ */ React.createElement("dt", null, "Bob\u2019s public point Q", /* @__PURE__ */ React.createElement("sub", null, "B")), /* @__PURE__ */ React.createElement("dd", null, s ? BYTES(s.Ql, 6) : "\u2014"), /* @__PURE__ */ React.createElement("dt", null, "Shared secret Z (x\u2011coordinate of d", /* @__PURE__ */ React.createElement("sub", null, "A"), "\xB7Q", /* @__PURE__ */ React.createElement("sub", null, "B"), ")"), /* @__PURE__ */ React.createElement("dd", null, s ? BYTES(s.Z, 8) : "\u2014"), /* @__PURE__ */ React.createElement("dt", null, "Key K = HKDF\u2011SHA256(Z; salt: zeros; info: \u201Ccafe-cipher/aes-gcm\u201D) \u2192 256\u2011bit key"), /* @__PURE__ */ React.createElement("dd", null, s ? BYTES(s.K, 8) : "\u2014"), pack && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("dt", null, "Nonce (96\u2011bit, this message)"), /* @__PURE__ */ React.createElement("dd", null, HEX(pack.iv, 6))), pack && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("dt", null, "Auth tag (128\u2011bit)"), /* @__PURE__ */ React.createElement("dd", null, HEX(pack.tag, 6))), pack && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("dt", null, "Ciphertext"), /* @__PURE__ */ React.createElement("dd", null, HEX(pack.C, 8)))), /* @__PURE__ */ React.createElement("span", { className: "flm-peek-n" }, "The colours on screen are an analogy for mixing. These are the values the browser actually computed. Blending colours is not what P\u2011256 does, and the colour you picked is not a key. On screen the paint is a simple average, which anyone could undo; the one-way step belongs to P\u2011256, not the paint. The nonce is public but never repeats with the same K, and AES\u2011GCM hides the words, not their length. Every visit makes fresh key pairs, so every visit has a new K. Here Eve only watches. If she could swap the public values on the way, Alice and Bob would also need proof of whose value they got; real connections get it from certificates."), /* @__PURE__ */ React.createElement("button", { className: "cin-go", onClick: () => setPeeking(false) }, "Back to the story"))
+        ),
+        peeking === true && /* @__PURE__ */ React.createElement(
+          "div",
+          {
+            className: "flm-peek-pane",
+            role: "dialog",
+            "aria-modal": "true",
+            "aria-label": "What Eve has",
+            onClick: (e) => {
+              if (e.target === e.currentTarget) setPeeking(false);
+            }
+          },
+          /* @__PURE__ */ React.createElement("div", { className: "flm-peek-in" }, /* @__PURE__ */ React.createElement("span", { className: "flm-peek-t" }, "Everything Eve holds, right now"), /* @__PURE__ */ React.createElement("div", { className: "flm-peek-row" }, dock.e.length || bin.eve.length ? [...bin.eve, ...dock.e].map((n, i) => /* @__PURE__ */ React.createElement("div", { className: "flm-peek-i", key: i }, n)) : /* @__PURE__ */ React.createElement("span", { className: "flm-peek-n" }, "nothing yet")), /* @__PURE__ */ React.createElement("span", { className: "flm-peek-n" }, "Public values and protected payloads. No private value, and no K \u2014 so none of it decrypts."), /* @__PURE__ */ React.createElement("button", { className: "cin-go", onClick: () => setPeeking(false) }, "Back to the story"))
+        )
       );
     };
     const EcdhStage = ({ scene, beat, sess, rate, onReplay, setRate, onNext, pending }) => {
@@ -10575,6 +10717,9 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         };
       }, [refPin, cbeat]);
       const [pick, setPickState] = useState(FILM_MEMO ? FILM_MEMO.pick : null);
+      useEffect(() => {
+        if (FILM_MEMO && FILM_MEMO.text && !text) setText(FILM_MEMO.text);
+      }, []);
       const setPick = (v) => setPickState((p0) => {
         const n = typeof v === "function" ? v(p0) : v;
         FILM_MEMO = { ...FILM_MEMO || {}, pick: n };
@@ -10674,7 +10819,10 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             FILM_MEMO = { ...FILM_MEMO || {}, gate: F2.k };
             return;
           }
-          if (F2.end) return;
+          if (F2.end) {
+            FILM_MEMO = { ...FILM_MEMO || {}, gate: F2.k };
+            return;
+          }
           if (F2.k === "open") {
             const r = await kit.open(packRef.current);
             if (cRun.current !== run) return;
@@ -10703,6 +10851,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             acting.current = false;
             return;
           }
+          FILM_MEMO = { ...FILM_MEMO || {}, text };
           const p3 = await kit.encrypt(text);
           packRef.current = p3;
           setPack(p3);
@@ -11895,7 +12044,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
               who: "a-atk",
               sprite: SPRITE.atk,
               idle: -1400,
-              name: "Eve (intruder)",
+              name: "Eve",
               state: stateOf("atk", vis),
               inv,
               cls: near("atk"),

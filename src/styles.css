@@ -6810,7 +6810,7 @@ details.read summary:hover{color:var(--ink-2)}
 }
 /* the narrowest stage keeps the picture and the caps line; the second line
    would push the card into the phones */
-@container (max-width:280px){.flm-fail .ff-txt > span{display:none}}
+
 /* on a wide stage the card is the size of a statement, not a footnote */
 @container (min-width:560px){
   .flm-fail{width:min(420px,60cqw);gap:12px;padding:12px}
@@ -6837,12 +6837,12 @@ details.read summary:hover{color:var(--ink-2)}
 .flm .flm-rail .flm-rail-m{color:var(--ink-2)}
 /* R5 the empty key slot at 1a: the plate's own size and radius, a dashed
    hairline, quiet ink — an absence, not an object */
-.flm .flm-nokey{flex:none;width:78%;margin:calc(var(--u,8px)*2) auto 0;height:calc(var(--u,8px)*8);display:grid;place-items:center;
+.flm .flm-noshared{flex:none;width:78%;margin:calc(var(--u,8px)*2) auto 0;height:calc(var(--u,8px)*8);display:grid;place-items:center;
   border-radius:var(--r-s,8px);outline:1.4px dashed rgba(231,239,233,.42);outline-offset:-1.4px;
   animation:nokeyIn 600ms var(--ease) 900ms both}
-.flm .flm-nokey span{text-transform:none;letter-spacing:0;font-size:max(11px,min(13px,2.2cqh));color:var(--ink-2);text-align:center;line-height:1.2;padding:0 6px}
+.flm .flm-noshared span{text-transform:none;letter-spacing:0;font-size:max(11px,min(13px,2.2cqh));color:var(--ink-2);text-align:center;line-height:1.2;padding:0 6px}
 @keyframes nokeyIn{from{opacity:0}to{opacity:1}}
-@media (prefers-reduced-motion:reduce){.flm .flm-nokey{animation:none}}
+@media (prefers-reduced-motion:reduce){.flm .flm-noshared{animation:none}}
 /* R10 the byte excerpt under Z and K: mono, readable, never below the floor */
 .flm .flm-slot:is(.flm-a,.flm-b) .tk-n{font-family:var(--mono,ui-monospace,monospace);font-size:max(11px,min(13px,2.2cqh));
   color:var(--ink-2);letter-spacing:.04em;white-space:nowrap;max-width:none}
@@ -6881,7 +6881,7 @@ details.read summary:hover{color:var(--ink-2)}
   background:none;border:0;box-shadow:inset 0 0 0 1px var(--line-2);border-radius:999px;padding:4px 14px;min-height:28px;cursor:pointer}
 .flm .flm-pause:hover{color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink-3)}
 .flm .flm-pause:focus-visible{outline:2px solid var(--act);outline-offset:2px}
-.flm .flm-pause[aria-pressed="true"]{color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink-2)}
+.flm .flm-pause[data-on]{color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink-2)}
 @container (max-width:559.98px){
   .flm.flm .flm-arc-ticks i{width:10px} .flm.flm .flm-arc-ticks i.on{width:14px}
   .flm.flm .flm-arc-t{letter-spacing:.06em}
@@ -6891,7 +6891,7 @@ details.read summary:hover{color:var(--ink-2)}
   .flm.flm .flm-pause{position:absolute;right:0;top:50%;transform:translateY(-50%);height:44px;min-height:44px;min-width:64px;
     padding:0 14px;font-size:13px;box-shadow:none;background:none}
   .flm.flm .flm-pause::before{content:"";position:absolute;inset:8px 0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line-2);pointer-events:none}
-  .flm.flm .flm-pause[aria-pressed="true"]::before{box-shadow:inset 0 0 0 1px var(--ink-2)}
+  .flm.flm .flm-pause[data-on]::before{box-shadow:inset 0 0 0 1px var(--ink-2)}
   /* the chapter name clears the review label in the corner */
   .flm.flm .flm-arc-t{margin-left:14px}
 }
@@ -6971,3 +6971,92 @@ details.read summary:hover{color:var(--ink-2)}
    gives them its line, so the phone keeps its height */
 .flm.f-tokey.is-narrow :is([data-obj="ka"],[data-obj="kb"]) .tk-l{display:none}
 @container (max-width:359.98px){ .flm.flm.gcm .flm-focal > .flm-obj:has(.tk-key){width:34%} }
+/* ---- USABILITY PASS V5 (pass 61) ----------------------------------------- */
+/* the closing caveat: a third, quieter line under the takeaway */
+.flm .flm-rail-n{margin:6px 0 0;font-size:max(11px,min(13px,2.3cqh));line-height:1.35;color:var(--ink-3)}
+/* a formula is one line on a phone too: smaller, never broken mid-argument */
+@media (max-width:420px){.flm.flm.flm.flm .flm-rail .flm-rail-m{white-space:nowrap;font-size:12px}}
+/* P-V5 the public colour in the chooser's phone stays yellow: it steps back
+   by brightness, not by going see-through over dark glass (which read olive) */
+.flm:is(.f-pickA,.f-mine,.f-pickB) .flm-ph-scr .flm-focal > [data-obj="base"]{opacity:1;filter:brightness(.94)}
+/* P-V5 while the two colours stack, the plate underneath is not relabelled
+   as if it had changed: its caption says what is happening on top of it */
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:has(.tk-private) .tk-l{position:relative;animation:privCapOff 6000ms linear both}
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:has(.tk-private) .tk-l::after{content:"mixing on top · the private colour is underneath";
+  position:absolute;left:50%;top:0;translate:-50% 0;width:max-content;max-width:150%;white-space:normal;color:var(--ink-2);opacity:0;animation:privCapOn 6000ms linear both}
+@keyframes privCapOff{0%,19.5%{color:var(--ink-3)}20%,59.5%{color:transparent}60%,100%{color:var(--ink-3)}}
+@keyframes privCapOn{0%,19.5%{opacity:0}20%,59.5%{opacity:1}60%,100%{opacity:0}}
+/* P-V5 a covered result says it is covered on purpose */
+.flm .flm-obj.covers-late .tk-box::after{content:"hidden until both are done";position:absolute;left:10%;right:10%;top:22.7%;bottom:18.2%;z-index:2;
+  display:grid;place-items:center;text-align:center;font-size:max(11px,min(12px,2.2cqh));line-height:1.2;color:var(--ink-2);padding:0 4%;
+  opacity:0;animation:coverOn 6000ms linear both;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.flm.flm:not(.rm-s2) .flm-obj.covers-late .tk-box::after{opacity:0}.flm.flm.rm-s2 .flm-obj.covers-late .tk-box::after{opacity:1}}
+/* P-V5 the letters keep the colour they stood for: a strip of the viewer's
+   own paint on the left of each plate, so 6b–7a can be read without the
+   legend (the plate itself stays painted from real bytes) */
+.tk-paint{opacity:.95}
+/* P-V5 the failure card keeps its sentence on the narrowest phones: the
+   picture on one row, the words below it */
+@container (max-width:340px){
+  .flm .flm-fail{grid-template-columns:auto auto auto 1fr}
+  .flm .flm-fail .ff-txt{grid-column:1 / -1}
+}
+.flm .flm-fail .ff-txt > span{font-size:max(12px,min(13px,2.8cqw))}
+/* P-V5 the chapter name gives way to Pause, never under it */
+.flm .flm-arc{min-width:0}
+.flm .flm-arc-t{min-width:0;overflow:hidden;text-overflow:ellipsis}
+@container (max-width:559.98px){ .flm.flm .flm-arc{padding-right:72px} }
+@container (max-width:359.98px){
+  .flm.flm .flm-arc-ticks{display:none}
+}
+@container (max-width:559.98px){
+  /* 10c: the takeaway, then the recap, then the way out */
+  .flm.flm.flm.flm.chain .cin-ctl{grid-row:5}
+  .flm.flm.flm.flm.chain .flm-chain{grid-row:4}
+  .flm.flm.flm.chain .flm-rail .flm-rail-t{font-size:19px;line-height:1.25}
+  .flm.flm.flm.chain .flm-rail .flm-rail-s{font-size:13px;margin-top:6px}
+  .flm.flm.flm.chain .flm-rail .flm-rail-n{font-size:11px;margin-top:4px}
+}
+@media (max-width:359.98px){
+  /* 320: the figures keep their place at 10c; the caveat lives in "How it
+     works" and the values panel on the narrowest phones */
+  .flm.flm.flm.chain .flm-rail .flm-rail-n{display:none}
+  .flm.flm.flm.chain .flm-chain .tk{width:min(72px,100%)}
+  .flm.flm.flm.flm.flm.chain .flm-rail .flm-rail-t{font-size:18px;line-height:1.22}
+  .flm.flm.flm.flm.flm.chain .flm-rail .flm-rail-s{font-size:13px;margin-top:6px}
+}
+/* D1 (P0) the values overlay reads and closes on every phone: terms wrap in
+   a capped column, values get the rest, and the pane scrolls inside the film
+   with "Back to the story" always reachable */
+.flm .flm-peek-pane{overflow-y:auto;overscroll-behavior:contain;align-items:flex-start}
+.flm .flm-peek-in{margin:auto 0;max-width:100%}
+.flm .flm-dl{grid-template-columns:minmax(0,42%) minmax(0,1fr)}
+.flm .flm-dl dt{white-space:normal;overflow-wrap:anywhere;line-height:1.3}
+/* D3 Pause's 44pt hit area lies wholly inside the film: it hangs from the top
+   of the chapter line, and the drawn pill stays centred on the line */
+@container (max-width:559.98px){
+  .flm.flm .flm-pause{top:0;transform:none}
+  .flm.flm .flm-pause::before{inset:-1px 0 auto 0;height:28px}
+}
+/* D4 sideways phones: the secondary buttons meet 44pt too */
+@media (pointer:coarse) and (orientation:landscape) and (max-height:500px){
+  .flm :is(.flm-more,.flm-peek){min-height:44px}
+}
+.flm .flm-peek-pane .flm-peek-in > .cin-go{position:sticky;bottom:0;z-index:1}
+@media (max-width:359.98px){
+  .flm.flm.flm.flm .flm-rail .flm-rail-m{font-size:11px;letter-spacing:0}
+  .flm.flm.flm .flm-arc-t{font-size:14px;letter-spacing:.04em}
+}
+/* the Pause word sits in the middle of its drawn pill, not of its hit area */
+@container (max-width:559.98px){
+  .flm.flm .flm-pause{display:flex;align-items:flex-start;justify-content:center;padding-top:4px;line-height:20px}
+}
+@container (max-width:559.98px){
+  .flm.flm .flm-pause::before{inset:1px 0 auto 0;height:28px}
+  .flm.flm .flm-pause{padding-top:5px}
+}
+/* 6a: nothing of the stepped-back scene competes with the legend */
+.flm.f-asmath .flm-slot:is(.flm-a,.flm-b) :is(.tk-dg,.tk-sym){visibility:hidden}
+@container (max-width:559.98px){ .flm.flm .flm-arc{z-index:6} }
+.flm .flm-peek-in{background:rgb(8,11,13)}
+.flm .flm-dl dd{word-break:normal;overflow-wrap:anywhere}
