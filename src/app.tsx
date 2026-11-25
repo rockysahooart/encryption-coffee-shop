@@ -1536,7 +1536,7 @@
         sub: "Eve has both mixtures. With paint she could subtract the yellow and cheat; in the real maths there is no known shortcut." },
 
       /* -- 16. one transition out of the analogy, and only one ------------ */
-      { k: "asmath", cam: "both", arc: "key", at: { sa: "a", sb: "b" }, lead: "sa",
+      { k: "asmath", cam: "both", arc: "key", at: { sa: "a", sb: "b" }, lead: "sa", lab: true,
         rev: true, bare: true, converge: true, toMath: true, bridge: true, wait: 6200,
         say: "Computers do this with numbers instead of paint",
         sub: "Each colour stands in for a real value your phone holds." },
@@ -1613,7 +1613,7 @@
         say: "And here is your message", sub: "" },
 
       /* -- 24. the end ---------------------------------------------------- */
-      { k: "chain", cam: "both", arc: "send", at: {}, chain: true, end: true,
+      { k: "chain", cam: "both", arc: "send", at: {}, chain: true, end: true, lab: true,
         say: "Same secret → one key → protected message → Bob reads it",
         sub: "Your colour never left your phone. Eve copied what crossed and still can’t read a word.",
         note: "Here Eve only listens. If she could swap what crosses, real connections also check who sent it (certificates)." }
@@ -2221,6 +2221,212 @@
       );
     };
 
+    /* ============================================ THE FORMULA LAB (pass 62) ==
+       Optional depth behind two quiet entries (6a, 10c). It opens as the
+       film's own overlay, so the film is held while it is open and nothing in
+       the story moves. Two steps, never mixed:
+         1 COLOUR EXPERIMENT — the viewer's two real colours as hex, four
+           teaching formulas worked out channel by channel on those exact
+           values. None of them is ECDH, and the copy says so.
+         2 REAL ECDH — this visit's real P-256 values, revealed in the order
+           the story told them: public values, the shared secret made on each
+           side, then K = HKDF(Z). Private values stay in their column, public
+           values cross, Z and K are made in place and never move.
+       Every output on screen is computed from the inputs on screen. Review
+       labels L1–L8 mark its deterministic states (L0 is the closed entry). */
+    let LAB_INIT = null;
+    const H2 = (n) => n.toString(16).padStart(2, "0").toUpperCase();
+    const HEXB = (u) => [...(u || [])].map((x) => x.toString(16).padStart(2, "0")).join("");
+    /* a 65-byte public point is SEC1: 04, then x, then y — not one integer */
+    const SHORT = (u) => { const h = HEXB(u); if (u && u.length === 65 && u[0] === 4) return "04 " + h.slice(2, 6) + "…" + h.slice(-4);
+      return h.length > 12 ? "0x" + h.slice(0, 4) + "…" + h.slice(-4) : "0x" + h; };
+    const GROUPS = (u) => (HEXB(u).match(/.{1,8}/g) || []).join(" ");
+    const SYM = (t) => String(t).split(/(_[A-Za-z])/).map((x, i) => x[0] === "_" ? <sub key={i}>{x.slice(1)}</sub> : x);
+    const LAB_FORMULAS = [
+      { id: "avg", name: "Average", sub: "what the film did", head: "average = (yellow + yours) ÷ 2, each channel",
+        op: (p, a) => Math.round((p + a) / 2), row: (p, a) => "(" + H2(p) + " + " + H2(a) + ") ÷ 2", exact: (p, a) => (p + a) % 2 === 0,
+        note: "The mixture from the film. Anyone who knows the yellow can undo it: your colour ≈ 2 × result − yellow." },
+      { id: "w", name: "Weighted", sub: "¼ yellow, ¾ yours", head: "weighted = ¼ × yellow + ¾ × yours, each channel",
+        op: (p, a) => Math.round(p / 4 + a * 3 / 4), row: (p, a) => "¼·" + H2(p) + " + ¾·" + H2(a), exact: (p, a) => (p + 3 * a) % 4 === 0,
+        note: "A different mix, undone the same way once the weights are known: your colour ≈ (4 × result − yellow) ÷ 3." },
+      { id: "xor", name: "XOR", sub: "flip the bits", head: "xor = yellow ⊕ yours, each channel",
+        op: (p, a) => p ^ a, row: (p, a) => H2(p) + " ⊕ " + H2(a), exact: () => true,
+        note: "XOR undoes itself: result ⊕ yellow = your colour, exactly." },
+      { id: "sha", name: "SHA‑256", sub: "scramble", head: "sha = SHA‑256 of the six bytes; its first 3 bytes, painted with the film’s byte palette",
+        note: "A hash is hard to run backwards only when the input is hard to guess. Yours is one of a few million colours, so Eve could simply try them all. And a hash is not a key exchange: Bob can’t reach this colour without yours." }
+    ];
+    const LAB_STATES = { L1: [1, null, "idle", 0, 5], L2: [1, "avg", "sel", 0, 5], L3: [1, "avg", "run", 2, 5], L4: [1, "avg", "done", 3, 5],
+      L5: [2, null, "idle", 0, 5], L6: [2, null, "idle", 0, 6], L7: [2, null, "idle", 0, 7], L8: [2, null, "idle", 0, 8] };
+    const FormulaLab = ({ s, base, mine, paints, onClose }) => {
+      const init = LAB_INIT && LAB_STATES[LAB_INIT];
+      const pinned = !!init;
+      const [step, setStep] = useState(init ? init[0] : 1);
+      const [fid, setFid] = useState(init ? init[1] : null);
+      const [phase, setPhase] = useState(init ? init[2] : "idle");
+      const [n, setN] = useState(init ? init[3] : 0);
+      const [stage, setStage] = useState(init ? init[4] : 5);
+      const [rgb, setRgb] = useState({});
+      const [peek, setPeek] = useState(null);
+      const [sha, setSha] = useState(null);
+      useEffect(() => { LAB_INIT = null; }, []);
+      const P = HEX2RGB(base), A = HEX2RGB(mine);
+      /* SHA-256 over the six bytes of the two colours, computed by the browser */
+      useEffect(() => {
+        if (!(window.crypto && crypto.subtle)) return;
+        crypto.subtle.digest("SHA-256", new Uint8Array([...P, ...A])).then((d) => setSha(new Uint8Array(d)));
+      }, [base, mine]);
+      const F0 = LAB_FORMULAS.find((f) => f.id === fid);
+      const rm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+      /* choose → the inputs fill the formula channel by channel → the result */
+      useEffect(() => {
+        if (pinned || !fid) return;
+        if (rm) { setN(3); setPhase("done"); return; }
+        setN(0); setPhase("sel");
+        const ts = [setTimeout(() => { setPhase("run"); setN(1); }, 320), setTimeout(() => setN(2), 600),
+          setTimeout(() => setN(3), 880), setTimeout(() => setPhase("done"), 1180)];
+        return () => ts.forEach(clearTimeout);
+      }, [fid]);
+      /* on a phone the worked result may sit below the fold: bring it up */
+      const outRef = useRef(null);
+      useEffect(() => {
+        if (phase !== "done") return;
+        const t = setTimeout(() => outRef.current && outRef.current.scrollIntoView({ block: "nearest", behavior: rm || pinned ? "auto" : "smooth" }), pinned ? 250 : 60);
+        return () => clearTimeout(t);
+      }, [phase]);
+      /* each ECDH step brings its newest row, and the line it proves, into view */
+      const lastRef = useRef(null);
+      useEffect(() => {
+        if (step === 2 && stage >= 6 && lastRef.current)
+          { const t = setTimeout(() => lastRef.current && lastRef.current.scrollIntoView({ block: "end", behavior: rm || pinned ? "auto" : "smooth" }), pinned ? 250 : 450);
+            return () => clearTimeout(t); }
+      }, [stage, step]);
+      let out = null, rows = [];
+      if (F0 && F0.id !== "sha") {
+        const r = P.map((p, i) => F0.op(p, A[i]));
+        out = "#" + r.map(H2).join("");
+        rows = ["R", "G", "B"].map((c, i) => [c, F0.row(P[i], A[i]), (F0.exact(P[i], A[i]) ? "= " : "≈ ") + H2(r[i])]);
+      } else if (F0 && sha) {
+        const b3 = [...sha.slice(0, 3)];
+        out = HSL_HEX(BYTE_HSL(b3[0], b3[1], b3[2]));
+        rows = [["", "SHA‑256 of bytes " + [...P, ...A].map(H2).join(" "), "= " + HEXB(sha).slice(0, 8) + "…"],
+          ["", "first 3 bytes", b3.map(H2).join(" ")], ["", "film’s byte palette", "→ " + out]];
+      }
+      const label = step === 1 ? (!fid ? "L1" : phase === "sel" ? "L2" : phase === "run" ? "L3" : "L4") : "L" + stage;
+      const input = (key, name, hexv, rgbv) => (
+        <div className="lab-in">
+          <i className="lab-sw" style={{ background: hexv }} aria-hidden="true" />
+          <span className="lab-in-t"><span className="lab-in-n">{name}</span><b className="lab-hex">{hexv}</b></span>
+          <button className="lab-rgb" aria-expanded={!!rgb[key]} onClick={() => setRgb((o) => ({ ...o, [key]: !o[key] }))}
+            aria-label={"Show the red, green and blue bytes of " + name}>RGB {rgb[key] ? "▾" : "▸"}</button>
+          {rgb[key] && (
+            <span className="lab-ch">{["R", "G", "B"].map((c, i) => <span key={c}>{c} {H2(rgbv[i])} = {rgbv[i]}</span>)}</span>
+          )}
+        </div>);
+      const val = (id, u) => (
+        <span className="lab-val-w">
+          <button className="lab-val" aria-expanded={peek === id} onClick={() => setPeek(peek === id ? null : id)}
+            aria-label={"Show the full value" + (peek === id ? " (shown)" : "")}>{SHORT(u)}</button>
+          {peek === id && <span className="lab-full">{u.length === 65 && u[0] === 4 ? "04 = uncompressed · x: " + GROUPS(u.slice(1, 33)) + " · y: " + GROUPS(u.slice(33)) : GROUPS(u)}</span>}
+        </span>);
+      const cell = (id, sym, tag, u, cls, paint) => (
+        <div className={"lab-cell " + (cls || "")}>
+          <span className="lab-sym">{paint && <i className="lab-paint" style={{ background: paint }} aria-hidden="true" />}{SYM(sym)}</span><span className="lab-tag">{tag}</span>{val(id, u)}
+        </div>);
+      const past = (k) => stage > k ? " past" : "";
+      return (
+        <div className={"lab lab-s" + step} data-lab={label} tabIndex={-1} data-autofocus="">
+          <span className="lab-ref" aria-hidden="true">{label}</span>
+          <span className="lab-title">Formula Lab</span>
+          <div className="lab-steps">
+            <button aria-current={step === 1 ? "step" : undefined} onClick={() => setStep(1)}>1 Colour<span className="lab-long"> experiment</span></button>
+            <button aria-current={step === 2 ? "step" : undefined} onClick={() => setStep(2)}>2 Real ECDH</button>
+          </div>
+          {step === 1 && (
+            <section className="lab-body" aria-label="Colour experiment">
+              <h3 className="lab-h">Colour experiment <span>not a key exchange</span></h3>
+              <p className="lab-p">Your two colours, as the computer stores them. These are teaching tricks: none of them is ECDH, and none is secure.</p>
+              {input("p", "public yellow", base, P)}
+              {input("a", "your colour", mine, A)}
+              <span className="lab-k" id="lab-try">Try a formula</span>
+              <div className="lab-opts" role="radiogroup" aria-labelledby="lab-try">
+                {LAB_FORMULAS.map((f, i) => (
+                  <button key={f.id} role="radio" aria-checked={fid === f.id} className={fid === f.id ? "on" : ""}
+                    tabIndex={fid === f.id || (!fid && i === 0) ? 0 : -1}
+                    onKeyDown={(e) => {
+                      const k = e.key, L = LAB_FORMULAS.length;
+                      const j = k === "ArrowRight" || k === "ArrowDown" ? (i + 1) % L : k === "ArrowLeft" || k === "ArrowUp" ? (i + L - 1) % L
+                        : k === "Home" ? 0 : k === "End" ? L - 1 : -1;
+                      if (j < 0) return;
+                      e.preventDefault(); setFid(LAB_FORMULAS[j].id);
+                      const g = e.currentTarget.parentElement; g && g.children[j] && g.children[j].focus();
+                    }}
+                    onClick={() => setFid(f.id)}><b>{f.name}</b><span>{f.sub}</span></button>))}
+              </div>
+              {!F0 && <p className="lab-wait">Pick one to see it worked out with your two colours.</p>}
+              {F0 && (
+                <div className="lab-calc" key={fid}>
+                  <span className="lab-head">{F0.head}</span>
+                  {rows.map(([c, f, o], i) => (
+                    <div key={i} className={"lab-row" + (i < n ? " on" : "")}>
+                      <span className="lab-c">{c}</span><span className="lab-f">{f}</span>
+                      <span className="lab-o">{i < n ? o : "= __"}</span>
+                    </div>))}
+                  <div className={"lab-out" + (phase === "done" ? " on" : phase === "run" && n >= 2 ? " grow" : "")} aria-live="polite">
+                    <i className="lab-sw" style={{ background: phase === "done" || (phase === "run" && n >= 2) ? out || "transparent" : "transparent" }} aria-hidden="true" />
+                    <span className="lab-in-t"><span className="lab-in-n">{fid === "avg" ? "result = your mixture (3c)" : fid === "sha" ? "palette colour" : "result"}</span><b className="lab-hex">{phase === "done" ? out : ""}</b></span>
+                  </div>
+                  {phase === "done" && <p className="lab-note" ref={outRef}>{F0.note}{rows.some((r) => r[2][0] === "≈") ? " (≈ means rounded to a whole byte.)" : ""}</p>}
+                </div>)}
+            </section>)}
+          {step === 2 && s && (
+            <section className={"lab-body lab-ecdh st-" + stage} aria-label="Real ECDH">
+              <h3 className="lab-h lab-real">Real ECDH</h3>
+              {stage === 5 && (
+                <div className="lab-intro">
+                  <p className="lab-p">Not colours. A colour is 3 bytes; a P‑256 private value is a random number 32 bytes long.</p>
+                  <div className="lab-scale" aria-hidden="true">
+                    <span className="lab-bytes lab-3">{[0, 1, 2].map((i) => <i key={i} style={{ background: mine }} />)}</span><span>{mine} · 3 bytes</span>
+                    <span className="lab-bytes">{[...s.dMraw].map((_, i) => <i key={i} />)}</span><span>d<sub>A</sub> · {s.dMraw.length} bytes</span>
+                  </div>
+                  <p className="lab-p">Same story, real numbers: each side keeps one, sends one, and both reach one secret that never crosses.</p>
+                </div>)}
+              {stage >= 6 && (
+                <div className="lab-cols">
+                  <div className="lab-col lab-alice">
+                    <b className="lab-who">Alice</b>
+                    {cell("dA", "d_A", "private · stays here", s.dMraw, "priv" + past(6), paints.dA)}
+                    {cell("QA", "Q_A = d_A·G", "public · sent", s.Qm, "pub" + past(6), paints.QA)}
+                    {stage >= 7 && cell("QBin", "Q_B", "received from Bob", s.Ql, "recv from-b" + past(7), paints.QB)}
+                    {stage >= 7 && cell("ZA", "Z_A = d_A·Q_B", "made here · its x-coordinate", s.Z, "made" + past(7), paints.Z)}
+                    {stage >= 8 && cell("KA", "K = HKDF(Z)", "made here", s.K, "made")}
+                  </div>
+                  <div className="lab-col lab-bob">
+                    <b className="lab-who">Bob</b>
+                    {cell("dB", "d_B", "private · stays here", s.dLraw, "priv" + past(6), paints.dB)}
+                    {cell("QB", "Q_B = d_B·G", "public · sent", s.Ql, "pub" + past(6), paints.QB)}
+                    {stage >= 7 && cell("QAin", "Q_A", "received from Alice", s.Qm, "recv from-a" + past(7), paints.QA)}
+                    {stage >= 7 && cell("ZB", "Z_B = d_B·Q_A", "made here · its x-coordinate", s.Zl, "made" + past(7), paints.Z)}
+                    {stage >= 8 && cell("KB", "K = HKDF(Z)", "made here", s.Kl, "made")}
+                  </div>
+                </div>)}
+              {stage === 6 && <p className="lab-note" ref={lastRef}>Q<sub>A</sub> and Q<sub>B</sub> cross the Wi‑Fi, and Eve copies both. Getting d back from Q is the hard direction.</p>}
+              {stage >= 7 && <p className="lab-eq" ref={stage === 7 ? lastRef : null}>{HEXB(s.Z) === HEXB(s.Zl) ? <>Z<sub>A</sub> = Z<sub>B</sub> = Z · never sent</> : <>Z<sub>A</sub> ≠ Z<sub>B</sub></>}</p>}
+              {stage === 8 && <p className="lab-eq lab-eq2">K on both sides: {HEXB(s.K) === HEXB(s.Kl) ? "the same" : "different"}</p>}
+              {stage === 8 && <p className="lab-note" ref={lastRef}>AES‑GCM uses K to lock the message. ECDH made the secret; it encrypts nothing. Eve only listens here; against swapped Q values, real systems check certificates.</p>}
+            </section>)}
+          {/* one footer, at the thumb: the way back and the way on */}
+          <div className="lab-foot">
+            {!(step === 2 && stage === 8) && (
+              <button key="back" className="lab-back" onClick={onClose} aria-label="Back to the story"><span className="lab-long">Back to the story</span><span className="lab-short">To the story</span></button>)}
+            {/* ONE next control for every step, so keyboard focus survives each
+                step; at L8 it is the single way back */}
+            <button key="next" className="lab-next"
+              onClick={() => step === 1 ? (setStep(2), setStage(5)) : stage < 8 ? setStage(stage + 1) : onClose()}>
+              {step === 1 ? "The real maths →" : stage === 5 ? "Public values →" : stage === 6 ? "Combine →" : stage === 7 ? "Make the key →" : "Return to the story"}</button>
+          </div>
+        </div>);
+    };
+
     const Cinema = ({ kit, beat, pick, setPick, text, setText, onSend, onReplay, onAct,
                      pack, opened, inRef, busy, peeking, setPeeking,
                      tampered, onTamper, onAgain, paused, onPause }) => {
@@ -2262,7 +2468,7 @@
         if (!peeking) return;
         peekFrom.current = document.activeElement;
         const pane = document.querySelector(".flm-peek-pane");
-        const first = pane && pane.querySelector("button");
+        const first = pane && (pane.querySelector("[data-autofocus]") || pane.querySelector("button"));
         first && first.focus({ preventScroll: true });
         /* D5: Tab stays inside the dialog while it holds the film */
         const esc = (e) => {
@@ -2923,11 +3129,16 @@
             <div className="cin-real late"><Eq parts={F.eq} note={F.eqn} /></div>
           )}
 
-          {(F.bridge || F.data || F.payoff) && (
+          {(F.bridge || F.data || F.payoff || F.lab) && (
             <div className="cin-ctl-aux">
+              {F.lab && (
+                <button className="flm-more flm-lab-open" onClick={() => setPeeking("lab")} aria-expanded={peeking === "lab"} aria-haspopup="dialog">
+                  Formula Lab
+                </button>)}
+              {(F.bridge || F.data || F.payoff) && (
               <button className="flm-more" onClick={() => setPeeking("values")} aria-expanded={peeking === "values"} aria-haspopup="dialog">
                 {F.data ? "See the data" : "See the actual values"}
-              </button>
+              </button>)}
             </div>
           )}
 
@@ -2938,6 +3149,14 @@
 
           {/* WHAT EVE ACTUALLY HAS, on demand and then gone again. Kept out of
               the permanent interface so the main story stays uncluttered. */}
+          {peeking === "lab" && (
+            <div className="flm-peek-pane flm-lab" role="dialog" aria-modal="true" aria-label="Formula Lab"
+              onClick={(e) => { if (e.target === e.currentTarget) setPeeking(false); }}>
+              <div className="flm-peek-in">
+                <FormulaLab s={s} base={base} mine={mine} paints={{ dA: mine, dB: bprivC, QA: qaC, QB: qbC, Z: sharedC }} onClose={() => setPeeking(false)} />
+              </div>
+            </div>
+          )}
           {peeking === "values" && (
             <div className="flm-peek-pane" role="dialog" aria-modal="true" aria-label="The actual values"
               onClick={(e) => { if (e.target === e.currentTarget) setPeeking(false); }}>
@@ -3126,7 +3345,7 @@
       mixA:   "her own private value, his public one",
       mixB:   "his own private value, her public one",
       reveal: "two separate calculations, one answer",
-      rest:   "Z is a point on a curve; HKDF turns it into key bytes"
+      rest:   "Z is the x-coordinate of a point on the curve; HKDF turns it into key bytes"
     })[b] || "";
 
     const KeyAgreement = ({ s, beat, quiet, onReplay, pending, onNext }) => {
@@ -3320,7 +3539,7 @@
           const frozen = [];
           for (const a of document.getAnimations()) {
             const t = a.effect && a.effect.target;
-            if (t && root.contains(t) && a.playState === "running") { a.pause(); frozen.push(a); }
+            if (t && root.contains(t) && !(t.closest && t.closest(".flm-peek-pane")) && a.playState === "running") { a.pause(); frozen.push(a); }
           }
           return () => { for (const a of frozen) if (a.playState === "paused") a.play(); };
         }
@@ -3629,6 +3848,8 @@
         };
         /* review only: jump to a storyboard label and freeze it there */
         window.__refs = Object.keys(REF_AT);
+        /* review only: open the Formula Lab frozen at one of its labels */
+        window.__lab = (l) => { LAB_INIT = l; setPeeking(false); setTimeout(() => setPeeking("lab"), 60); };
         window.__ref = (lab, ms) => {
           const at = REF_AT[lab];
           if (!at) throw new Error(`__ref: "${lab}" is not a film frame label`);

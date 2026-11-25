@@ -7060,3 +7060,137 @@ details.read summary:hover{color:var(--ink-2)}
 @container (max-width:559.98px){ .flm.flm .flm-arc{z-index:6} }
 .flm .flm-peek-in{background:rgb(8,11,13)}
 .flm .flm-dl dd{word-break:normal;overflow-wrap:anywhere}
+/* ---- THE FORMULA LAB (pass 62) -------------------------------------------
+   Same world as the film: dark ground, one hairline, ink type, mono only for
+   values. No cards inside cards: sections are separated by space and one
+   hairline. The accent is not used — nothing here is a step of the story.
+   Mobile first; desktop only widens the measure. */
+.flm .flm-lab .flm-peek-in{align-items:stretch;width:100%;max-width:640px;gap:0}
+.flm .lab{position:relative;display:flex;flex-direction:column;text-align:left;color:var(--ink);padding-top:14px}
+.flm .lab-ref{position:absolute;left:-14px;top:-14px;font:9px/1 var(--mono,ui-monospace,monospace);color:var(--ink-3);pointer-events:none}
+.flm .lab-title{font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.flm .lab-steps{display:flex;gap:20px;margin-top:6px;border-bottom:1px solid var(--line)}
+.flm .lab-steps button{font:inherit;font-size:14px;color:var(--ink-3);background:none;border:0;padding:0;min-height:44px;cursor:pointer;
+  box-shadow:inset 0 -1.4px 0 transparent}
+.flm .lab-steps button[aria-current]{color:var(--ink);font-weight:500;box-shadow:inset 0 -1.4px 0 var(--ink)}
+.flm .lab-steps button:focus-visible,.flm .lab button:focus-visible{outline:2px solid var(--act);outline-offset:2px}
+.flm .lab-body{display:flex;flex-direction:column;gap:12px;padding:14px 0 8px}
+.flm .lab-h{margin:0;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.flm .lab-h span{margin-left:10px;letter-spacing:.02em;text-transform:none;font-weight:400;color:var(--ink-3)}
+.flm .lab-real{color:var(--ink);font-weight:600}
+.flm .lab-p{margin:0;font-size:14px;line-height:1.4;color:var(--ink-2)}
+.flm .lab-in{display:grid;grid-template-columns:52px minmax(0,1fr) auto;column-gap:12px;align-items:center;min-height:44px}
+.flm .lab-sw{display:block;width:52px;height:30px;border-radius:6px}
+.flm .lab-in-t{display:flex;flex-direction:column;min-width:0}
+.flm .lab-in-n{font-size:12px;color:var(--ink-3)}
+.flm .lab-hex{font:500 15px/1.3 var(--mono,ui-monospace,monospace);color:var(--ink);letter-spacing:.02em}
+.flm .lab-rgb{font:12px var(--mono,ui-monospace,monospace);color:var(--ink-2);background:none;border:0;min-height:44px;min-width:56px;cursor:pointer}
+.flm .lab-ch{grid-column:2 / -1;display:flex;flex-wrap:wrap;gap:4px 14px;font:12px var(--mono,ui-monospace,monospace);color:var(--ink-2)}
+.flm .lab-k{font-size:12px;color:var(--ink-3);margin-top:4px}
+.flm .lab-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.flm .lab-opts button{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;min-height:48px;padding:6px 12px;
+  font:inherit;text-align:left;background:none;color:var(--ink);border:0;border-radius:var(--r-s,8px);box-shadow:inset 0 0 0 1px var(--line-2);cursor:pointer}
+.flm .lab-opts button b{font-size:14px;font-weight:500}
+.flm .lab-opts button span{font-size:11px;color:var(--ink-3)}
+.flm .lab-opts button.on{box-shadow:inset 0 0 0 1.4px var(--ink)}
+.flm .lab-wait{margin:0;font-size:13px;color:var(--ink-3)}
+.flm .lab-calc{display:flex;flex-direction:column;gap:6px}
+.flm .lab-head{font:12px/1.35 var(--mono,ui-monospace,monospace);color:var(--ink-3)}
+.flm .lab-row{display:grid;grid-template-columns:18px minmax(0,1fr) auto;column-gap:8px;font:14px/1.5 var(--mono,ui-monospace,monospace);color:var(--ink-3)}
+.flm .lab-row .lab-f{overflow-wrap:anywhere}
+.flm .lab-row.on{color:var(--ink);animation:labFill 260ms var(--ease) both}
+.flm .lab-row.on .lab-c{color:var(--ink-3)}
+@keyframes labFill{from{opacity:.35;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.flm .lab-out{display:grid;grid-template-columns:52px minmax(0,1fr);column-gap:12px;align-items:center;margin-top:6px}
+.flm .lab-out .lab-sw{box-shadow:inset 0 0 0 1px var(--line-2);transform:scale(.6);opacity:0;transition:transform 300ms var(--ease),opacity 300ms var(--ease)}
+.flm .lab-out.grow .lab-sw{opacity:.5;transform:scale(.8)}
+.flm .lab-out.on .lab-sw{opacity:1;transform:none;box-shadow:none}
+.flm .lab-note{margin:0;font-size:13px;line-height:1.4;color:var(--ink-2)}
+.flm .lab-next{align-self:flex-end;font:inherit;font-size:13px;color:var(--ink-2);background:none;border:0;border-radius:999px;
+  box-shadow:inset 0 0 0 1px var(--line-2);min-height:44px;padding:0 16px;cursor:pointer;margin-top:4px}
+.flm .lab-scale{display:grid;grid-template-columns:52px 1fr;column-gap:12px;row-gap:8px;align-items:center;font:13px var(--mono,ui-monospace,monospace);color:var(--ink-3)}
+.flm .lab-bytes{grid-column:1 / -1;display:flex;gap:3px;flex-wrap:wrap}
+.flm .lab-bytes i{display:block;width:6px;height:18px;border-radius:1px;background:rgba(231,239,233,.35)}
+.flm .lab-bytes + span{grid-column:1 / -1}
+.flm .lab-cols{display:grid;grid-template-columns:1fr 1fr;column-gap:0}
+.flm .lab-col{display:flex;flex-direction:column;gap:12px;padding:0 10px;min-width:0}
+.flm .lab-alice{padding-left:0;box-shadow:inset -1px 0 0 var(--line)}
+.flm .lab-bob{padding-right:0}
+.flm .lab-who{font-size:15px;font-weight:600}
+.flm .lab-cell{display:flex;flex-direction:column;gap:1px;min-width:0;transition:opacity 300ms var(--ease)}
+.flm .lab-cell.past{opacity:.5}
+.flm .lab-sym{font:13px/1.35 var(--mono,ui-monospace,monospace);color:var(--ink)}
+.flm .lab-tag{font-size:11px;color:var(--ink-3)}
+.flm .lab-val{font:13px/1.35 var(--mono,ui-monospace,monospace);color:var(--ink);background:none;border:0;padding:0;text-align:left;
+  min-height:32px;cursor:pointer;text-decoration:underline dotted rgba(231,239,233,.4);text-underline-offset:3px}
+.flm .lab-full{display:block;font:11px/1.45 var(--mono,ui-monospace,monospace);color:var(--ink-2);overflow-wrap:anywhere;margin-top:2px}
+.flm .lab-cell.recv .lab-sym,.flm .lab-cell.recv .lab-val{color:var(--ink-2)}
+.flm .lab-cell.from-b{animation:labFromB 420ms var(--ease) both}
+.flm .lab-cell.from-a{animation:labFromA 420ms var(--ease) both}
+@keyframes labFromB{from{opacity:0;transform:translateX(60%)}to{opacity:1;transform:none}}
+@keyframes labFromA{from{opacity:0;transform:translateX(-60%)}to{opacity:1;transform:none}}
+.flm .lab-cell.made{animation:labMade 360ms var(--ease) 260ms both}
+@keyframes labMade{from{opacity:0}to{opacity:1}}
+.flm .lab-cell.made.past,.flm .lab-cell.from-a.past,.flm .lab-cell.from-b.past{animation:none}
+.flm .lab-eq{margin:0;text-align:center;font:14px/1.4 var(--mono,ui-monospace,monospace);color:var(--ink)}
+.flm .lab-eq.past{opacity:.6}
+.flm .lab-ecdh .lab-note{margin-top:2px}
+@container (min-width:560px){
+  .flm .lab-body{gap:14px}
+  .flm .lab-opts{grid-template-columns:repeat(4,1fr)}
+  .flm .lab-col{padding:0 18px}
+}
+@media (prefers-reduced-motion:reduce){
+  .flm .lab *{animation:none !important;transition:none !important}
+}
+/* the lab is its own room: an opaque ground, focus lands on the lab itself
+   (not on a control), and the pinned Back never sits over the last line */
+.flm .flm-peek-pane.flm-lab{background:rgb(8,11,13)}
+.flm .lab:focus{outline:none}
+.flm .flm-lab .flm-peek-in > .cin-go{background:rgb(8,11,13);margin-top:8px}
+.flm .flm-lab .flm-peek-in{padding-bottom:4px}
+.flm .flm-peek-pane.flm-lab .flm-peek-in{margin:0 auto}
+.flm .lab-foot{position:sticky;bottom:-18px;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:8px -18px -18px;padding:10px 18px 14px;background:rgb(8,11,13);box-shadow:inset 0 1px 0 var(--line)}
+.flm .lab-back{font:inherit;font-size:13px;color:var(--ink-2);background:none;border:0;min-height:44px;padding:0 4px;cursor:pointer}
+.flm .lab-foot .lab-next{margin:0;align-self:auto}
+@media (max-width:359.98px){ .flm .lab-long{display:none} }
+.flm .lab-foot button{white-space:nowrap}
+/* review fixes (Paul): the result is what reads first; the paint links each
+   letter back to the story; the exit always says where it goes */
+.flm .lab-row{color:var(--ink-3)}
+.flm .lab-row.on{color:var(--ink-2)}
+.flm .lab-row.on .lab-o{color:var(--ink)}
+.flm .lab-out .lab-sw{width:72px;height:40px}
+.flm .lab-out{grid-template-columns:72px minmax(0,1fr)}
+.flm .lab-out .lab-hex{font-size:17px}
+.flm .lab-paint{display:inline-block;width:6px;height:13px;border-radius:2px;margin-right:6px;vertical-align:-2px}
+.flm .lab-bytes.lab-3{grid-column:1;flex-wrap:nowrap}
+.flm .lab-scale{grid-template-columns:auto 1fr}
+.flm .lab-intro{display:flex;flex-direction:column;gap:12px}
+.flm .lab-short{display:none}
+@media (max-width:359.98px){ .flm .lab-back .lab-long{display:none} .flm .lab-back .lab-short{display:inline} }
+.flm .flm-lab-open{white-space:nowrap}
+.flm .cin-ctl-aux{gap:10px}
+/* what a step reveals is scrolled clear of the pinned footer, not under it */
+.flm .lab :is(.lab-note,.lab-eq,.lab-cell){scroll-margin-bottom:84px}
+/* review fixes (Felix): earlier rows step back by ink, not opacity, so every
+   line stays ≥4.5:1; subscripts keep the floor; touch targets are 44pt */
+.flm .lab-cell.past{opacity:1}
+.flm .lab-cell.past :is(.lab-sym,.lab-val){color:var(--ink-3)}
+.flm .lab-cell.past .lab-paint{opacity:.55}
+.flm .lab-eq.past{opacity:1;color:var(--ink-3)}
+.flm .lab sub{font-size:max(11px,.75em)}
+@media (pointer:coarse){ .flm .lab-val{min-height:44px} }
+/* sideways on a phone the lab takes the whole screen and scrolls inside */
+@media (pointer:coarse) and (orientation:landscape) and (max-height:500px){
+  .flm .flm-peek-pane.flm-lab{position:fixed;inset:0;z-index:60;border-radius:0;padding:12px 24px}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:500px){
+  .flm .flm-peek-pane.flm-lab .lab-foot{bottom:-12px;margin:8px -24px -12px;padding:8px 24px 10px}
+}
+.flm .lab-eq2{font-size:13px;color:var(--ink-2)}
+.flm .lab-ref{position:sticky;top:-14px;left:auto;height:0;margin-left:-14px;z-index:3;overflow:visible}
+@media (max-width:359.98px){ .flm .cin-ctl-aux .flm-more{white-space:nowrap;font-size:12px;padding-inline:10px} }
+@media (max-width:359.98px){ .flm .cin-ctl-aux{flex-wrap:wrap;row-gap:8px} }
+.flm .lab-foot > .lab-next:only-child{margin-left:auto}

@@ -121,6 +121,7 @@ outside what was asked, ask before doing it.
 | interaction / gates (pickA, mixA, sendA, combA, type; drag, tap, timing, `wait`) | `hands.js`, `touch.js`, `walk.js` |
 | colour / blending (swatches, `MIX`, base, blend animation) | `paint.js`, `silent3.js`, `validate44.js` (accent cap, grayscale) |
 | crypto / message flow (`KIT`, values panel, packet, open) | `real.js`, `walk.js`, `hands.js` (Bob reads the message back) |
+| Formula Lab (formulas, real values, lab overlay) | `lab.js`, `a11y2.js`, `real.js` |
 | accessibility (targets, focus, reduced motion, colour-free reading) | `a11y2.js`, `validate44.js` |
 | copy / dialogue | `six.js` (advisory), `silent3.js`, `fit.js` |
 | adding, removing or renaming a beat | update `KEYS` in `tools/drive.js` first, then `node smoke.js` |
@@ -346,6 +347,22 @@ plainly that real paint could be unmixed and the one-way step is P‑256's.
 The values overlay scrolls inside the film with Back pinned; overlays trap
 Tab and close on Esc or a backdrop tap. Testing is mobile first: phones
 (393/360/320 touch, 852×393) before desktop.
+
+**Formula Lab (pass 62).** Optional depth, offered only at 6a and 10c as a
+quiet "Formula Lab" button; it opens as the film's modal overlay (`peeking ===
+"lab"`), so the film is held, focus is trapped, Esc / Back / backdrop close it.
+Step 1 COLOUR EXPERIMENT ("not a key exchange"): the two real colours as hex
+(RGB expandable) and four formulas — Average (= the film's `MIX`), Weighted
+¼/¾, XOR, SHA‑256 of the six bytes → the film's byte palette — worked out
+channel by channel from those exact values (= when exact, ≈ when rounded).
+Step 2 REAL ECDH, progressive: L5 intro (3 bytes vs 32), L6 public values
+(Alice | Bob columns), L7 Z made on each side (x-coordinate) and never sent,
+L8 K = HKDF(Z); private values stay in their column, received Q slides in,
+Z and K never move. Every value is this session's (`0x…` short, tap to
+inspect; Q as SEC1 `04 …`). Review labels L1–L8 sit in the lab's corner;
+`window.__lab("L4")` freezes a state. `tools/lab.js` recomputes every formula
+and checks every real value against the session. Figma: "IPHONE INTERACTIVE —
+FORMULA LAB V6".
 
 **Object continuity.** Every object has a stable `data-obj` id and is FLIPped
 between frames by that id — objects **transform and move**, they do not
