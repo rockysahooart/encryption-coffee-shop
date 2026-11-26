@@ -7200,6 +7200,174 @@ details.read summary:hover{color:var(--ink-2)}
 @media (max-width:359.98px){ .flm .cin-ctl-aux .flm-more{white-space:nowrap;font-size:12px;padding-inline:10px} }
 @media (max-width:359.98px){ .flm .cin-ctl-aux{flex-wrap:wrap;row-gap:8px} }
 .flm .lab-foot > .lab-next:only-child{margin-left:auto}
+/* ---- ONE WORLD, MOVING CAMERA (pass 63) -----------------------------------
+   The view is a fixed window in the film's grid; the stage inside it is the
+   whole café at the network layout, and the camera is one transform on it. */
+.flm .flm-view{position:relative;min-height:0;min-width:0;overflow:hidden;grid-row:2;grid-column:1}
+.flm .flm-view > .flm-stage{width:100%;height:100%;transform-origin:0 0;transform:var(--cam,none);
+  transition:transform 1100ms cubic-bezier(.45,0,.2,1),grid-template-columns 420ms var(--ease)}
+@media (prefers-reduced-motion:reduce){ .flm .flm-view > .flm-stage{transition:none} }
+/* the picker in the world's phone: a 3 × 2 tray at the plate's width */
+.flm.flm.world:is(.f-pickA,.f-pickB) .flm-slot.on .flm-ph-scr .cin-pick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  width:86%;margin:0 auto}
+.flm.flm.world:is(.f-pickA,.f-pickB) .flm-slot.on .flm-ph-scr .cin-sw{width:100%;height:calc(var(--u) * 4.2)}
+
+/* =========================================================================
+   PASS 63 · ONE CANONICAL STAGE
+   Anything wider than a phone gets one authored stage, 1000 x 625, scaled as
+   a whole (transform, so nothing inside reflows) to fit both the width and
+   the height left under the heading. It never grows past 1: on a big screen
+   it stops and centres. --fit comes from the App (min(1, w/1000, h/625),
+   held at .7). Phones and phones held sideways keep their own composition:
+   the box is display:contents there and changes nothing.
+   ========================================================================= */
+.stage-box{display:contents}
+html.fit-stage .stage-box{display:block;position:relative;order:3;
+  width:calc(1000px * var(--fit,1));height:calc(625px * var(--fit,1));margin:0 auto}
+html.fit-stage .stage-box > .stage{position:absolute;left:0;top:0;margin:0;
+  width:1000px;height:625px;max-width:none;min-height:0;
+  transform:scale(var(--fit,1));transform-origin:0 0;
+  display:flex;flex-direction:column}
+html.fit-stage .stage-box > .stage.inspect{display:block;height:625px;min-height:0}
+/* the café picture keeps its own proportions inside the stage: it takes the
+   height the dock leaves and centres, the room colour fills the sides */
+html.fit-stage .stage-box > .stage:not(.inspect) > .screen{flex:1 1 0;min-height:0;
+  aspect-ratio:var(--ar);align-self:center;max-width:100%;width:auto}
+html.fit-stage .stage-box > .stage:not(.inspect) > :not(.screen){flex:none}
+html.fit-stage .stage-box > .stage:not(.inspect) > .screen > svg{width:100%;height:100%}
+
+/* short windows (laptops, screen sharing): the heading becomes one row */
+html.fit-short .page{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:20px;align-items:center;
+  padding-top:14px;padding-bottom:24px}
+html.fit-short .head{grid-column:1;gap:0}
+html.fit-short .eyebrow{display:none}
+html.fit-short .h1{font-size:22px;max-width:none;margin:0}
+html.fit-short .pips{grid-column:2;margin:0}
+html.fit-short .stage-box,html.fit-short .read{grid-column:1 / -1}
+html.fit-short .stage-box{margin-top:12px}
+html.fit-short .read{margin-top:18px}
+html.fit-tiny .page{padding-top:8px}
+html.fit-tiny .h1{font-size:18px}
+html.fit-tiny .pip{padding:4px 12px 4px 10px}
+html.fit-tiny .stage-box{margin-top:8px}
+/* the film covers the café picture completely while it is open; the room
+   behind it is the film's own café, not the 0a–0d drawing peeking under it */
+html.fit-stage .stage.inspect > .screen > svg{visibility:hidden}
+html.fit-stage .read{order:4}
+
+/* 10c IN THE WORLD (pass 63): the recap no longer cuts to a separate set.
+   The café stays exactly as it was — Alice, Eve, Bob where they always
+   stood, the wire between them — and the takeaway, the recap and the way
+   out follow it in one order at every width. */
+.flm.flm.recap{grid-template-rows:auto minmax(0,1fr) auto auto auto}
+.flm.flm.recap .flm-rail{grid-row:3;justify-self:center;text-align:center;max-width:min(100%,62ch)}
+.flm.flm.recap .flm-chain{grid-row:4;display:grid;grid-template-columns:repeat(3,minmax(0,1fr) auto) minmax(0,1fr);
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;justify-items:center;gap:6px 10px;width:min(100%,640px);justify-self:center}
+.flm.flm.recap .flm-chain .tk{width:min(120px,100%)}
+.flm.flm.recap .flm-chain .tk-box{aspect-ratio:60 / 44;height:auto;overflow:hidden}
+.flm.flm.recap .flm-chain .tk-note{display:grid;place-items:center;padding:6%}
+.flm.flm.recap .flm-chain .tk-note b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;text-align:center;font-size:13px}
+.flm.flm.recap .flm-chain .tk-l{font-size:12px}
+.flm.flm.recap .flm-chain > b{font-size:16px}
+.flm.flm.flm.recap .cin-ctl{grid-row:5;justify-self:start}
+.flm.flm.flm.recap .cin-ctl-aux{grid-row:5;justify-self:end;align-self:center}
+@container (max-width:559.98px){
+  /* a phone: two by two, so the tiles stay readable */
+  .flm.flm.recap .flm-chain{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);width:100%}
+  .flm.flm.recap .flm-chain > b:nth-of-type(2){display:none}
+  .flm.flm.recap .flm-chain .tk{width:min(84px,100%)}
+  .flm.flm.flm.recap .flm-rail{justify-self:stretch;text-align:left}
+  .flm.flm.flm.recap .flm-rail .flm-rail-t{font-size:19px;line-height:1.25}
+  .flm.flm.flm.recap .flm-rail .flm-rail-s{font-size:13px;margin-top:6px}
+  .flm.flm.flm.recap .flm-rail .flm-rail-n{font-size:11px;margin-top:4px}
+}
+/* inside the canonical stage nothing reads the window: the film fills the
+   stage the same way at every window size */
+html.fit-stage .stage-box .insp{max-height:none;padding:12px 24px 14px;gap:12px 40px}
+
+/* PHONES (pass 63): the film is the viewport, at every phone height. The
+   heading shrinks to one line on shorter phones and steps aside on the
+   shortest, so the film — controls included — is always on one screen. */
+@media (max-width:559.98px){
+  .stage.inspect{min-height:0}
+}
+@media (max-width:559.98px) and (max-height:760px){
+  :root{--chrome:236px}
+  .h1{font-size:15px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .head{gap:0}
+  .pips{margin-top:8px}
+  .pip{min-height:44px}
+  .stage{margin-top:8px}
+  .stage.inspect{height:calc(100dvh - 120px)}
+}
+@media (max-width:559.98px) and (max-height:600px){
+  :root{--chrome:200px}
+  .head{display:none}
+  .pips{margin-top:0}
+  .stage.inspect{height:calc(100dvh - 84px)}
+}
+/* 10c on a phone: the recap is one row of four, so the café keeps its room */
+@container (max-width:559.98px){
+  .flm.flm.flm.recap .flm-chain{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:4px 4px}
+  .flm.flm.flm.recap .flm-chain > b:nth-of-type(2){display:inline}
+  .flm.flm.flm.recap .flm-chain > b{font-size:12px}
+  .flm.flm.flm.recap .flm-chain .tk{width:min(72px,100%)}
+  .flm.flm.flm.recap .flm-chain .tk-l{font-size:11px;line-height:1.2;text-align:center}
+  .flm.flm.flm.recap .flm-chain .tk-note b{font-size:11px}
+}
+
+/* THE ACTIVE PHONE LIFTS (pass 63). In a close-up the person stays where
+   they stand in the world; their phone is brought up toward the viewer at
+   close-up size — the size the phone's own interface is authored for — and
+   the camera frames the two. The neighbours do not move. */
+.flm.flm.flm.flm.world:is(.shot-a,.shot-b) .flm-slot.on:is(.flm-a,.flm-b) .flm-ph-body{
+  --ph-h:min(62cqh, calc(36cqw / .479))}
+.flm.flm.flm.flm.world:is(.shot-a,.shot-b) .flm-slot.on:is(.flm-a,.flm-b) .flm-ph{z-index:4;width:auto;
+  align-self:end;margin-bottom:-9cqh}
+/* held out from the shoulder toward the middle of the café */
+.flm.flm.flm.flm.world.shot-a .flm-slot.on.flm-a .flm-ph{justify-self:start;margin-left:calc(var(--face) * .6);margin-right:0}
+.flm.flm.flm.flm.world.shot-b .flm-slot.on.flm-b .flm-ph{justify-self:end;margin-right:calc(var(--face) * .6);margin-left:0}
+
+/* DIRECT CONTACT (pass 63): the overlap of the two plates, painted by the
+   app in the formula's colour. Nothing else in the blend changes colour:
+   the moving plate stays opaque and its own colour; the old one-second
+   convergence of the whole plate is gone — contact is the blend. */
+.flm .flm-ph-scr{position:relative}
+.flm .flm-contact{position:absolute;display:block;z-index:30;pointer-events:none}
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:not(:has(.tk-private)) .tk-box::after{display:none}
+@keyframes blendIn{
+  0%,6%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.32,0,.2,1)}
+  22%,56%{transform:translateY(var(--fall,96%));opacity:1}
+  60%,100%{transform:translateY(var(--fall,96%));opacity:0}
+}
+/* the café on a short phone: only the picture is held to the height; the
+   dock under it keeps the full width, so its buttons are never clipped */
+@media (max-width:559.98px){
+  html:not(.fit-stage) .stage:not(.inspect){max-width:none}
+  html:not(.fit-stage) .stage:not(.inspect) > .screen{max-width:calc((100dvh - var(--chrome)) * var(--ar));margin:0 auto}
+}
+/* 10c: the way out and the Formula Lab share one row in the one column */
+.flm.flm.flm.recap :is(.cin-ctl,.cin-ctl-aux){grid-column:1}
+/* 5f: the payoff is the two results on the phones; Eve's copies stay where
+   they are, a step quieter, so the frame's subject is unmistakable */
+.flm.flm.world.f-reveal .flm-net .flm-hold{transform:scale(.78);transform-origin:50% 30%}
+/* on a phone the lift is the close-up (the camera has no room to zoom), so
+   the phone comes a little further forward */
+@container (max-width:559.98px){
+  .flm.flm.flm.flm.flm.world:is(.shot-a,.shot-b) .flm-slot.on:is(.flm-a,.flm-b) .flm-ph-body{
+    --ph-h:min(68cqh, calc(40cqw / .479))}
+}
+/* the payoff plates (5f, 6a) and the public colour on the wire (1b) carry
+   the frame: a step larger in place (scale composes with any FLIP transform) */
+.flm.flm.world:is(.f-reveal,.f-asmath) .flm-slot:is(.flm-a,.flm-b) :is([data-obj="sa"],[data-obj="sb"]){scale:1.14}
+.flm.flm.world.f-base .flm-lane [data-obj="base"]{scale:1.2}
+/* text on the glass is sized from the phone, not only from the stage: on the
+   shortest phones the lifted phone is height-bound and its words must still
+   sit inside the glass (320×568, 1a) */
+.flm.flm.world:not(.f-open) .flm-slot .flm-ph-scr .tk-note b{font-size:min(16px, max(11px, calc(var(--ph-h) * .072)))}
+.flm.flm.world .flm-slot .flm-ph-scr .flm-noshared{height:auto;min-height:calc(var(--u,8px) * 6);padding:calc(var(--u,8px) * .8) 0}
+.flm.flm.world .flm-slot .flm-ph-scr .flm-noshared span{font-size:11px;padding:0 3px}
 </style>
 </head>
 <body>
@@ -7507,6 +7675,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 <script>(() => {
   (() => {
     const { useState, useEffect, useLayoutEffect, useRef, useMemo } = React;
+    const STAGE_W = 1e3, STAGE_H = 625;
     const SUBJECT = {
       you: "you",
       fr: "fr",
@@ -9684,7 +9853,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           const pt = e.touches ? e.touches[0] : e;
           moved = true;
           const r0 = el.__start;
-          el.style.transform = "translate(" + (pt.clientX - r0.x) + "px," + (pt.clientY - r0.y) + "px)";
+          el.style.transform = "translate(" + (pt.clientX - r0.x) / r0.k + "px," + (pt.clientY - r0.y) / r0.k + "px)";
           setOver(hit(pt.clientX, pt.clientY));
         };
         const up = (e) => {
@@ -9710,7 +9879,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         };
         const down = (e) => {
           const pt = e.touches ? e.touches[0] : e;
-          el.__start = { x: pt.clientX, y: pt.clientY };
+          el.__start = { x: pt.clientX, y: pt.clientY, k: el.getBoundingClientRect().width / (el.offsetWidth || 1) || 1 };
           moved = false;
           el.style.transition = "none";
           setLive(true);
@@ -9786,7 +9955,13 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       useLayoutEffect(() => {
         const el = ref.current;
         if (!el) return;
-        const now = el.getBoundingClientRect();
+        const st = el.closest(".flm-stage");
+        const R0 = el.getBoundingClientRect();
+        let now = R0;
+        if (st) {
+          const S = st.getBoundingClientRect(), k = S.width / (st.offsetWidth || 1) || 1;
+          now = { left: (R0.left - S.left) / k, top: (R0.top - S.top) / k, width: R0.width / k, height: R0.height / k };
+        }
         if (now.width < 1) return;
         const was = FLIPS.get(id);
         FLIPS.set(id, now);
@@ -10123,6 +10298,62 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       }, [peeking]);
       const s = kit ? kit.session : null;
       const rootRef = useRef(null);
+      const stageRef = useRef(null);
+      const [camKey, setCamKey] = useState(0);
+      const worldH = useRef(0);
+      useLayoutEffect(() => {
+        const st = stageRef.current;
+        if (!st) return;
+        const frame = () => {
+          const view = st.parentElement, vw0 = view.offsetWidth, vh0 = view.offsetHeight;
+          if (!F.chain) {
+            st.style.height = "";
+            if (vh0 > 0) worldH.current = vh0;
+          } else {
+            const root = st.closest(".flm");
+            const hw = worldH.current || (root ? root.offsetHeight * 0.64 : vh0);
+            if (vh0 > 0 && hw > vh0 + 1) {
+              st.style.height = hw + "px";
+              const zz = Math.min(1, vh0 / (hw * 0.66));
+              st.style.setProperty("--cam", "translate(" + ((vw0 - vw0 * zz) / 2).toFixed(1) + "px,0px) scale(" + zz.toFixed(4) + ")");
+              st.dataset.z = zz.toFixed(3);
+              return;
+            }
+            st.style.height = "";
+          }
+          const W = st.offsetWidth, H = st.offsetHeight;
+          const who = F.chain ? null : F.cam === "a" ? ".flm-a" : F.cam === "b" ? ".flm-b" : null;
+          let z = 1, tx = 0, ty = 0;
+          const slot = who && st.querySelector(who);
+          if (slot && W > 0 && H > 0) {
+            const S = st.getBoundingClientRect(), k = S.width / W || 1;
+            const parts = [...slot.querySelectorAll(".cin-face img, .flm-ph-body, .cin-who")].map((e) => e.getBoundingClientRect()).filter((r) => r.width > 1);
+            if (parts.length) {
+              const L = Math.min(...parts.map((r) => r.left)), R = Math.max(...parts.map((r) => r.right));
+              const T = Math.min(...parts.map((r) => r.top)), B = Math.max(...parts.map((r) => r.bottom));
+              const bx = (L - S.left) / k, by = (T - S.top) / k, bw = (R - L) / k, bh = (B - T) / k;
+              const zmax = W < 560 ? 1.75 : 2.2;
+              z = Math.max(1, Math.min(zmax, W * 0.62 / bw, H * 0.94 / bh));
+              const ax = F.cam === "a" ? 0.4 : 0.6;
+              tx = W * ax - (bx + bw / 2) * z;
+              ty = H * 0.48 - (by + bh / 2) * z;
+              tx = Math.min(0, Math.max(W - W * z, tx));
+              ty = Math.min(0, Math.max(H - H * z, ty));
+            }
+          }
+          st.style.setProperty("--cam", "translate(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px) scale(" + z.toFixed(4) + ")");
+          st.dataset.z = z.toFixed(3);
+        };
+        frame();
+        const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(frame) : null;
+        if (ro) {
+          ro.observe(st.parentElement);
+          for (const ph of st.querySelectorAll(".flm-slot.on .flm-ph-body")) ro.observe(ph);
+        }
+        return () => {
+          if (ro) ro.disconnect();
+        };
+      }, [beat]);
       const [narrow, setNarrow] = useState(false);
       useLayoutEffect(() => {
         const el = rootRef.current;
@@ -10144,14 +10375,15 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
             return;
           }
           const S = st.getBoundingClientRect(), T = tr.getBoundingClientRect(), E = face.getBoundingClientRect();
-          const x = T.left + T.width / 2 - S.left, top = E.bottom - S.top - E.height * 0.12, y = T.top + T.height / 2 - S.top;
-          const ph = Math.max(0, ...[...root.querySelectorAll(".flm-slot:is(.flm-a,.flm-b) .flm-ph-body")].map((e) => e.getBoundingClientRect()).filter((r) => r.width > 1).map((r) => r.bottom - S.top));
+          const kz = S.width / (st.offsetWidth || 1) || 1;
+          const x = (T.left + T.width / 2 - S.left) / kz, top = (E.bottom - S.top - E.height * 0.12) / kz, y = (T.top + T.height / 2 - S.top) / kz;
+          const ph = Math.max(0, ...[...root.querySelectorAll(".flm-slot:is(.flm-a,.flm-b) .flm-ph-body")].map((e) => e.getBoundingClientRect()).filter((r) => r.width > 1).map((r) => (r.bottom - S.top) / kz));
           setTap(y - top > 8 ? { x: Math.round(x), top: Math.round(top), h: Math.round(y - top), ph: Math.round(ph) } : null);
           for (const c of root.querySelectorAll('.flm-net [data-obj="qa2"], .flm-net [data-obj="qb2"]')) {
             const R = c.getBoundingClientRect(), m = new DOMMatrixReadOnly(getComputedStyle(c).transform);
-            const cx = R.left + R.width / 2 - m.m41 - S.left, cy = R.top + R.height / 2 - m.m42 - S.top;
+            const cx = (R.left + R.width / 2 - S.left) / kz - m.m41, cy = (R.top + R.height / 2 - S.top) / kz - m.m42;
             const side = c.dataset.obj === "qa2" ? -0.3 : 0.3;
-            c.style.setProperty("--jx", Math.round(x - cx + side * R.width / (m.a || 1)) + "px");
+            c.style.setProperty("--jx", Math.round(x - cx + side * (R.width / kz) / (m.a || 1)) + "px");
             c.style.setProperty("--jy", Math.round(y - cy) + "px");
           }
         };
@@ -10447,7 +10679,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           placed.add(id);
           dock[side].push(/* @__PURE__ */ React.createElement(Obj, { key: "d" + id, id, frame: beat, cls: "is-docked" }, node));
         }
-      const lit = (who) => F.cam === "wide" || F.cam === who || F.cast || F.cam === "both" && (who === "a" || who === "b") || F.cam === "duel" && (who === "eve" || who === "b");
+      const lit = (who) => F.cam === "wide" || F.cam === who || F.cast || F.chain || F.cam === "both" && (who === "a" || who === "b") || F.cam === "duel" && (who === "eve" || who === "b");
       const gate = !!F.act;
       const say = (s2) => {
         const nb = HUE_NAME(base), nm = HUE_NAME(mine), nq = HUE_NAME(qbC);
@@ -10478,6 +10710,52 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           }
         }
       }, [beat]);
+      const contactMix = F.drag ? F.k === "mixA" ? qaC : sharedC : mixc;
+      useEffect(() => {
+        if (!contactMix) return;
+        let raf = 0, zone = null, host = null;
+        const plateOf = (o) => o && o.querySelector(".tk-art rect[fill]:not([fill='none'])");
+        const tick = () => {
+          raf = requestAnimationFrame(tick);
+          const scr = document.querySelector(".flm-slot.on .flm-ph-scr");
+          const priv = scr && scr.querySelector(".flm-focal .flm-obj .tk-private");
+          const moving = F.drag ? document.querySelector(".grab.live") : scr && scr.querySelector(".flm-focal > .flm-obj.is-input:not(:has(.tk-private))");
+          const a = plateOf(moving), b = priv && plateOf(priv.closest(".flm-obj"));
+          const op = moving ? parseFloat(getComputedStyle(moving).opacity) : 0;
+          let show = false;
+          if (scr && a && b && op > 0.02) {
+            const A = a.getBoundingClientRect(), B = b.getBoundingClientRect();
+            const L = Math.max(A.left, B.left), R = Math.min(A.right, B.right);
+            const T = Math.max(A.top, B.top), Bm = Math.min(A.bottom, B.bottom);
+            if (R - L > 0.5 && Bm - T > 0.5) {
+              if (host !== scr) {
+                if (zone) zone.remove();
+                zone = document.createElement("i");
+                zone.className = "flm-contact";
+                zone.setAttribute("aria-hidden", "true");
+                scr.appendChild(zone);
+                host = scr;
+              }
+              const S = scr.getBoundingClientRect(), k = S.width / (scr.offsetWidth || 1) || 1;
+              const rad = Math.min(A.width, B.width) / 12 / k;
+              zone.style.cssText = "left:" + ((L - S.left) / k - scr.clientLeft) + "px;top:" + ((T - S.top) / k - scr.clientTop) + "px;width:" + (R - L) / k + "px;height:" + (Bm - T) / k + "px;background:" + contactMix + ";opacity:" + Math.min(1, op) + ";border-radius:" + rad.toFixed(1) + "px";
+              zone.dataset.mix = contactMix;
+              zone.dataset.area = ((R - L) * (Bm - T) / (B.width * B.height)).toFixed(3);
+              show = true;
+            }
+          }
+          if (!show && zone) {
+            zone.remove();
+            zone = null;
+            host = null;
+          }
+        };
+        tick();
+        return () => {
+          cancelAnimationFrame(raf);
+          if (zone) zone.remove();
+        };
+      }, [beat, contactMix]);
       const Shelf = ({ items }) => items.length ? /* @__PURE__ */ React.createElement("div", { className: "flm-shelf" }, items) : null;
       const controls = /* @__PURE__ */ React.createElement(React.Fragment, null, beat === "pickA" && /* @__PURE__ */ React.createElement("div", { className: "cin-pick" }, SWATCHES.map((c) => /* @__PURE__ */ React.createElement(
         "button",
@@ -10523,14 +10801,14 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         "div",
         {
           ref: rootRef,
-          className: "flm cam-" + F.cam + " f-" + F.k + (gate ? " turn" : "") + (narrow ? " is-narrow" : "") + (tampered ? " tampered" : "") + (F.act === "pick" || F.act === "type" ? " solo" : "") + (F.journey ? " journey j-" + F.journey : "") + (F.morph ? " morphing" : "") + (F.gcm ? " gcm" : "") + (F.verify ? " verifying" : "") + (F.payoff ? " payoff" : "") + (F.converge ? " converge" : "") + (F.eveShort ? " eve-short" : "") + (F.chain ? " chain" : "") + (F.arrive ? " arriving" : "") + (F.back ? " back" : "") + (F.watched ? " watched" : "") + (F.claim ? " claiming" : "") + (F.empty ? " empty-" + F.empty : "") + (F.fuse ? " fusing" : "") + (F.toMath ? " toMath" : "") + (F.open ? " wide-open" : "") + (WORK.has(F.k) ? " working" : "") + (F.cast ? " cast" : "") + (F.xchg ? " xchg" : "") + (F.eveIn ? " eve-in" : "") + (F.bridge ? " bridging" : "") + (F.sym ? " sym" : "") + (rmStep > 0 ? " rm-s1" : "") + (rmStep > 1 ? " rm-s2" : ""),
+          className: "flm world cam-wide xchg shot-" + F.cam + " f-" + F.k + (gate ? " turn" : "") + (narrow ? " is-narrow" : "") + (tampered ? " tampered" : "") + (F.journey ? " journey j-" + F.journey : "") + (F.morph ? " morphing" : "") + (F.gcm ? " gcm" : "") + (F.verify ? " verifying" : "") + (F.payoff ? " payoff" : "") + (F.converge ? " converge" : "") + (F.eveShort ? " eve-short" : "") + (F.chain ? " recap" : "") + (F.arrive ? " arriving" : "") + (F.back ? " back" : "") + (F.watched ? " watched" : "") + (F.claim ? " claiming" : "") + (F.empty ? " empty-" + F.empty : "") + (F.fuse ? " fusing" : "") + (F.toMath ? " toMath" : "") + (F.open ? " wide-open" : "") + (WORK.has(F.k) ? " working" : "") + (F.cast ? " cast" : "") + (F.xchg ? " xchg" : "") + (F.eveIn ? " eve-in" : "") + (F.bridge ? " bridging" : "") + (F.sym ? " sym" : "") + (rmStep > 0 ? " rm-s1" : "") + (rmStep > 1 ? " rm-s2" : ""),
           "data-frame": F.k,
           "data-act": F.act || "",
           "data-arc": F.arc || "",
           style: mixc ? { "--mixc": mixc } : void 0
         },
         /* @__PURE__ */ React.createElement("div", { className: "flm-arc" }, /* @__PURE__ */ React.createElement("b", { className: "flm-arc-t" }, ARCNAME[F.arc]), /* @__PURE__ */ React.createElement("span", { className: "flm-arc-ticks", role: "img", "aria-label": "part " + (ARCS.indexOf(F.arc) + 1) + " of 3" }, ARCS.map((a) => /* @__PURE__ */ React.createElement("i", { key: a, className: a === F.arc ? "on" : "" }))), onPause && !F.end && /* @__PURE__ */ React.createElement("button", { className: "flm-pause", onClick: onPause, "data-on": paused ? "1" : void 0 }, paused ? "Resume" : "Pause")),
-        /* @__PURE__ */ React.createElement("div", { className: "flm-stage" }, tap && /* @__PURE__ */ React.createElement(
+        /* @__PURE__ */ React.createElement("div", { className: "flm-view" }, /* @__PURE__ */ React.createElement("div", { className: "flm-stage", ref: stageRef }, tap && /* @__PURE__ */ React.createElement(
           "i",
           {
             className: "flm-tap",
@@ -10579,7 +10857,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           [mine, "d", "a private number, one each"],
           [qaC, "Q", /* @__PURE__ */ React.createElement(React.Fragment, null, "a public value: ", /* @__PURE__ */ React.createElement("span", { className: "nw" }, "Q = d\xB7G"))],
           [sharedC, "Z", "the shared secret"]
-        ].map(([c, sym, t], i) => /* @__PURE__ */ React.createElement("div", { className: "flm-xmap-r", key: sym, style: { animationDelay: 400 + i * 650 + "ms" } }, /* @__PURE__ */ React.createElement("i", { className: "flm-xmap-c", style: { background: c } }), /* @__PURE__ */ React.createElement("b", { className: "flm-xmap-a", "aria-hidden": "true" }, "\u2192"), /* @__PURE__ */ React.createElement("span", { className: "flm-xmap-s" }, sym), /* @__PURE__ */ React.createElement("span", { className: "flm-xmap-t" }, t))))),
+        ].map(([c, sym, t], i) => /* @__PURE__ */ React.createElement("div", { className: "flm-xmap-r", key: sym, style: { animationDelay: 400 + i * 650 + "ms" } }, /* @__PURE__ */ React.createElement("i", { className: "flm-xmap-c", style: { background: c } }), /* @__PURE__ */ React.createElement("b", { className: "flm-xmap-a", "aria-hidden": "true" }, "\u2192"), /* @__PURE__ */ React.createElement("span", { className: "flm-xmap-s" }, sym), /* @__PURE__ */ React.createElement("span", { className: "flm-xmap-t" }, t)))))),
         /* @__PURE__ */ React.createElement(
           "div",
           {
@@ -11032,6 +11310,10 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
           for (const a of document.getAnimations()) {
             const t = a.effect && a.effect.target;
             if (!t || !root.contains(t)) continue;
+            if (a.transitionProperty && t.classList && t.classList.contains("flm-stage")) {
+              a.finish();
+              continue;
+            }
             a.pause();
             a.currentTime = refPin.ms;
           }
@@ -11666,6 +11948,41 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       );
     };
     function App() {
+      const fitRef = useRef(null);
+      useLayoutEffect(() => {
+        const box = fitRef.current;
+        if (!box) return;
+        const root = document.documentElement;
+        const sideways = matchMedia("(pointer:coarse) and (orientation:landscape) and (max-height:500px)");
+        const run = () => {
+          const vw = innerWidth, vh = innerHeight;
+          const page = box.parentElement, cs = getComputedStyle(page);
+          const w = page.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+          const floor = Math.max(0.35, 0.7 / Math.min(2, devicePixelRatio || 1));
+          const phone = vw < 560 || sideways.matches || w / STAGE_W < floor;
+          root.classList.toggle("fit-stage", !phone);
+          root.classList.toggle("fit-short", !phone && vh < 860);
+          root.classList.toggle("fit-tiny", !phone && vh < 620);
+          if (phone) {
+            root.style.removeProperty("--fit");
+            box.dataset.fit = "";
+            return;
+          }
+          const top = box.getBoundingClientRect().top + scrollY;
+          const h = vh - top - 12;
+          const f = Math.max(floor, Math.min(1, w / STAGE_W, h / STAGE_H));
+          root.style.setProperty("--fit", f.toFixed(4));
+          box.dataset.fit = f.toFixed(3);
+        };
+        run();
+        addEventListener("resize", run);
+        const ro = new ResizeObserver(run);
+        ro.observe(box.parentElement);
+        return () => {
+          removeEventListener("resize", run);
+          ro.disconnect();
+        };
+      }, []);
       const [act, setAct] = useState(1);
       const [step, setStep] = useState(1);
       const [note, setNote] = useState(NOTE.wifi);
@@ -12300,253 +12617,265 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       const spAt = spWho ? L.sp[spWho] : void 0;
       const chips = Object.keys(calls).filter((c) => c !== "d" && calls[c]);
       const boxPos = L.tall || shot === "msg" || shot === "wide" || shot === "trio" || shot === "work" || shot === "workFr" || shot === "atk" || spAt ? "dock" : shot === "fr" ? "dock" : "tl";
-      return /* @__PURE__ */ React.createElement("div", { className: "page" }, /* @__PURE__ */ React.createElement("header", { className: "head" }, /* @__PURE__ */ React.createElement("span", { className: "eyebrow" }, "Three people \xB7 one caf\xE9 \xB7 one secret"), /* @__PURE__ */ React.createElement("h1", { className: "h1" }, ACTS[act - 1].title)), /* @__PURE__ */ React.createElement("nav", { className: "pips", "aria-label": "Chapters" }, ACTS.map((a, i) => /* @__PURE__ */ React.createElement(
-        "button",
-        {
-          key: a.label,
-          className: "pip",
-          "data-on": i + 1 === act ? "now" : i + 1 < act ? "done" : "next",
-          onClick: () => setAct(i + 1)
-        },
-        /* @__PURE__ */ React.createElement("span", { className: "dot" }),
-        /* @__PURE__ */ React.createElement("span", { className: "lbl" }, a.label)
-      ))), /* @__PURE__ */ React.createElement(
+      return /* @__PURE__ */ React.createElement(
         "div",
-        {
-          /* The interactive mode is not bound to the film frame's aspect ratio:
-             at laptop heights the 1000x700 picture leaves the inspection about
-             350px, which cannot hold a phone and two panels. While it is open the
-             stage takes the room it needs. */
-          className: "stage" + (frameOn ? " frozen" : "") + (frameOn && frame && frame.soft ? " soft" : "") + (inspecting ? " inspect" : ""),
-          style: { ["--ar"]: String(L.w / L.h) }
-        },
-        /* the café's review label; once the film is open it carries its own */
-        !inspecting && CAFE_REF.get(note) && /* @__PURE__ */ React.createElement("span", { className: "ref-label", "aria-hidden": "true", "data-ref": CAFE_REF.get(note) }, CAFE_REF.get(note)),
-        /* @__PURE__ */ React.createElement("div", { className: "screen" }, /* @__PURE__ */ React.createElement("svg", { ref: svgRef, viewBox: `0 0 ${L.w} ${L.h}`, role: "img", "aria-label": note.s }, /* @__PURE__ */ React.createElement("defs", null, ["you", "fr", "key", "danger"].map((t2) => /* @__PURE__ */ React.createElement(
-          "marker",
+        { className: "page" },
+        /* @__PURE__ */ React.createElement("header", { className: "head" }, /* @__PURE__ */ React.createElement("span", { className: "eyebrow" }, "Three people \xB7 one caf\xE9 \xB7 one secret"), /* @__PURE__ */ React.createElement("h1", { className: "h1" }, ACTS[act - 1].title)),
+        /* @__PURE__ */ React.createElement("nav", { className: "pips", "aria-label": "Chapters" }, ACTS.map((a, i) => /* @__PURE__ */ React.createElement(
+          "button",
           {
-            key: t2,
-            id: `arw-${t2}`,
-            viewBox: "0 0 10 10",
-            refX: "7.5",
-            refY: "5",
-            markerWidth: "4",
-            markerHeight: "4",
-            orient: "auto-start-reverse"
+            key: a.label,
+            className: "pip",
+            "data-on": i + 1 === act ? "now" : i + 1 < act ? "done" : "next",
+            onClick: () => setAct(i + 1)
           },
-          /* @__PURE__ */ React.createElement("path", { className: `arw arw-${t2}`, d: "M0.5 1 L9 5 L0.5 9 Z" })
-        ))), /* @__PURE__ */ React.createElement(
-          "g",
+          /* @__PURE__ */ React.createElement("span", { className: "dot" }),
+          /* @__PURE__ */ React.createElement("span", { className: "lbl" }, a.label)
+        ))),
+        /* ONE CANONICAL STAGE (pass 63): on anything wider than a phone the
+        stage is authored once at STAGE_W x STAGE_H and scaled as a whole
+        to fit both the width and the height left under the heading; it
+        never grows past 1, and it never reflows. Phones get their own
+        composition (no box, no scale). */
+        React.createElement("div", { className: "stage-box", ref: fitRef }, React.createElement(
+          "div",
           {
-            className: "cam" + (snap ? " snap" : "") + (k >= 1.4 ? " tight" : "") + (frameOn && frame && frame.on ? " spot spot-" + frame.on : spot ? " spot spot-" + spot : ""),
-            style: { transform: cam }
+            /* The interactive mode is not bound to the film frame's aspect ratio:
+               at laptop heights the 1000x700 picture leaves the inspection about
+               350px, which cannot hold a phone and two panels. While it is open the
+               stage takes the room it needs. */
+            className: "stage" + (frameOn ? " frozen" : "") + (frameOn && frame && frame.soft ? " soft" : "") + (inspecting ? " inspect" : ""),
+            style: { ["--ar"]: String(L.w / L.h) }
           },
-          /* @__PURE__ */ React.createElement(Dressing, { L }),
-          /* @__PURE__ */ React.createElement("path", { className: "link", d: L.paths.netYou }),
-          /* @__PURE__ */ React.createElement("path", { className: "link", d: L.paths.netFr }),
-          /* @__PURE__ */ React.createElement("path", { className: "link", d: L.paths.netAtk }),
-          /* @__PURE__ */ React.createElement("path", { id: "p-main", className: "ghostpath", d: L.paths.main }),
-          /* @__PURE__ */ React.createElement("path", { id: "p-netYou", className: "ghostpath", d: L.paths.netYou }),
-          /* @__PURE__ */ React.createElement("path", { id: "p-netFr", className: "ghostpath", d: L.paths.netFr }),
-          /* @__PURE__ */ React.createElement("path", { id: "p-netAtk", className: "ghostpath", d: L.paths.netAtk }),
-          flows.map(([pth, tone, dir], i) => /* @__PURE__ */ React.createElement(
-            "path",
+          /* the café's review label; once the film is open it carries its own */
+          !inspecting && CAFE_REF.get(note) && /* @__PURE__ */ React.createElement("span", { className: "ref-label", "aria-hidden": "true", "data-ref": CAFE_REF.get(note) }, CAFE_REF.get(note)),
+          /* @__PURE__ */ React.createElement("div", { className: "screen" }, /* @__PURE__ */ React.createElement("svg", { ref: svgRef, viewBox: `0 0 ${L.w} ${L.h}`, role: "img", "aria-label": note.s }, /* @__PURE__ */ React.createElement("defs", null, ["you", "fr", "key", "danger"].map((t2) => /* @__PURE__ */ React.createElement(
+            "marker",
             {
-              key: i,
-              className: `flow tone-${tone} ${dir === 1 ? "fwd" : "rev"}`,
-              d: L.paths[pth],
-              markerEnd: dir === 1 ? `url(#arw-${tone})` : void 0,
-              markerStart: dir === -1 ? `url(#arw-${tone})` : void 0
-            }
-          )),
-          tap && /* @__PURE__ */ React.createElement("path", { className: "tap", d: L.paths.main }),
-          /* the observer's attention, drawn: two lines from his table to theirs.
-             They sweep on rather than blink, so it reads as looking rather than as
-             a diagram of a connection. */
-          watch && L.watch && /* @__PURE__ */ React.createElement(
-            "path",
-            { className: "watch" + (look === "you" ? " lead" : ""), d: L.watch.you, "data-audit": "SIGHT" }
-          ),
-          watch && L.watch && /* @__PURE__ */ React.createElement(
-            "path",
-            { className: "watch" + (look === "fr" ? " lead" : ""), d: L.watch.fr, "data-audit": "SIGHT" }
-          ),
-          seen && /* @__PURE__ */ React.createElement("path", { className: "sight", d: L.sight, "data-audit": "SIGHT" }),
-          /* @__PURE__ */ React.createElement(Router, { x: L.router.x, y: L.router.y, live: flows.length > 0, inv }),
-          /* @__PURE__ */ React.createElement(
-            Patron,
-            {
-              spot: L.atk,
-              who: "a-atk",
-              sprite: SPRITE.atk,
-              idle: -1400,
-              name: "Eve",
-              state: stateOf("atk", vis),
-              inv,
-              cls: near("atk"),
-              hostile: true,
-              lit: lit.atk,
-              /* While he is watching and holding nothing, his screen is not
-                 blank: it scans. Idle hardware reads as a man sitting near them;
-                 a moving readout reads as a man monitoring them. */
-              screen: watch && vis.size === 0 ? /* @__PURE__ */ React.createElement(
-                "g",
-                { className: "scan" },
-                [0, 1, 2].map((i) => /* @__PURE__ */ React.createElement("rect", {
-                  key: i,
-                  className: "scan-bar",
-                  x: -20,
-                  y: -7 + i * 6,
-                  width: 40,
-                  height: 3,
-                  rx: 1.5,
-                  style: { animationDelay: `${i * 240}ms` }
-                }))
-              ) : /* @__PURE__ */ React.createElement(
-                Screen,
-                {
-                  who: "atk",
-                  vis,
-                  wire: wire["atk"],
-                  focus,
-                  hot,
-                  mix: mix === "atk",
-                  tok,
-                  reveal
-                }
-              ),
-              extra: /* @__PURE__ */ React.createElement(React.Fragment, null, guess > 0 && /* @__PURE__ */ React.createElement(
-                Reverse,
-                {
-                  inv,
-                  s: L.atk.s,
-                  start: tok["atk.setup"],
-                  pubA: tok["atk.pubYou"],
-                  pubB: tok["atk.pubFr"],
-                  tries: TRIES(vals.a).slice(0, Math.max(0, Math.min(3, guess - 1))),
-                  phase: guess
-                }
-              ), /* @__PURE__ */ React.createElement("g", { className: "eye" + (seen ? " on" : ""), transform: "translate(0,-150)" }, /* @__PURE__ */ React.createElement("g", { className: "hold", style: { transform: `scale(${inv / L.atk.s})` } }, /* @__PURE__ */ React.createElement("circle", { className: "eye-pulse", cx: "0", cy: "0", r: "17" }), /* @__PURE__ */ React.createElement(
-                "path",
-                {
-                  className: "f-danger glowed-d",
-                  d: "M-15 0 C -9 -9, 9 -9, 15 0 C 9 9, -9 9, -15 0 Z"
-                }
-              ), /* @__PURE__ */ React.createElement("circle", { cx: "0", cy: "0", r: "3.6", fill: "#0b0d10" }))))
-            }
-          ),
-          /* @__PURE__ */ React.createElement(
-            Patron,
-            {
-              spot: L.you,
-              who: "a-you",
-              sprite: SPRITE.you,
-              idle: 0,
-              name: "Alice",
-              state: stateOf("you", vis),
-              inv,
-              cls: near("you"),
-              lit: lit.you,
-              morphing,
-              screen: /* @__PURE__ */ React.createElement(
-                Screen,
-                {
-                  who: "you",
-                  vis,
-                  wire: wire["you"],
-                  focus,
-                  hot,
-                  mix: mix === "you",
-                  tok,
-                  reveal,
-                  fn: fn && fn.who === "you" ? fn : null,
-                  fnp
-                }
-              )
-            }
-          ),
-          /* @__PURE__ */ React.createElement(
-            Patron,
-            {
-              spot: L.fr,
-              who: "a-fr",
-              sprite: SPRITE.fr,
-              idle: -2100,
-              name: "Bob",
-              state: stateOf("fr", vis),
-              inv,
-              cls: near("fr"),
-              lit: lit.fr,
-              morphing,
-              screen: /* @__PURE__ */ React.createElement(
-                Screen,
-                {
-                  who: "fr",
-                  vis,
-                  wire: wire["fr"],
-                  focus,
-                  hot,
-                  mix: mix === "fr",
-                  tok,
-                  reveal,
-                  fn: fn && fn.who === "fr" ? fn : null,
-                  fnp
-                }
-              )
-            }
-          ),
-          /* @__PURE__ */ React.createElement("g", { className: "packets", ref: packRef }),
-          chips.map((slot) => /* @__PURE__ */ React.createElement(Callout, { key: slot, def: calls[slot], at: L.ch[slot], inv, narrow: L.tall })),
-          dlg && spAt && /* @__PURE__ */ React.createElement(Callout, { def: dlg, at: spAt, inv, narrow: L.tall })
-        )), /* @__PURE__ */ React.createElement("div", { className: "crt bloom", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "crt lines", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "crt vig", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement(KeyFrame, { f: frame, on: frameOn }), ask && ask.kind === "inspect" && /* @__PURE__ */ React.createElement(Inspection, { kit, tall: L.tall, onFinish: answer }), !frameOn && !ledger && !inspecting && /* @__PURE__ */ React.createElement(Caption, { line: note, zone: nz, swap: noteSwap })),
-        ledger && /* @__PURE__ */ React.createElement(Ledger, { line: note, rows: step === 4 ? [
-          ["Alice\u2019s private value", "still unknown", "var(--alice)"],
-          ["Bob\u2019s private value", "still unknown", "var(--bob)"],
-          ["The shared secret", "still unknown", "var(--key)"]
-        ] : step >= 6 ? [
-          ["Alice", "sent the message", "var(--alice)"],
-          ["Bob", "read the message", "var(--bob)"],
-          ["Eve", "intercepted only scrambled characters", "var(--eve)"]
-        ] : [
-          ["Alice", "shared secret " + tok["you.key"], "var(--alice)"],
-          ["Bob", "shared secret " + tok["fr.key"], "var(--bob)"],
-          ["Eve", "?", "var(--eve)"]
-        ] }),
-        /* @__PURE__ */ React.createElement(
-          Scrub,
-          {
-            pos: durs.slice(0, act - 1).reduce((x, y) => x + y, 0) + Math.min(t, durs[act - 1]),
-            dur: durs.reduce((x, y) => x + y, 0),
-            marks: durs.slice(0, -1).map((_, i) => durs.slice(0, i + 1).reduce((x, y) => x + y, 0)),
-            labels: ACTS.map((a) => a.label),
-            playing,
-            onSeek: seek,
-            onScrub: (on) => {
-              setScrubbing(on);
-              if (on) setPlaying(false);
+              key: t2,
+              id: `arw-${t2}`,
+              viewBox: "0 0 10 10",
+              refX: "7.5",
+              refY: "5",
+              markerWidth: "4",
+              markerHeight: "4",
+              orient: "auto-start-reverse"
             },
-            onToggle: () => setPlaying((p) => !p),
-            /* R1: while the film is open these sit under it, unseen; they
-               leave the tab order and the accessibility tree with it */
-            hide: inspecting
-          }
-        ),
-        ask && ask.kind !== "inspect" && /* @__PURE__ */ React.createElement(Gate, { ask, pos: "dock", onPick: answer }),
-        /* @__PURE__ */ React.createElement(
-          Controls,
-          {
-            act,
-            playing,
-            waiting: !!ask,
-            go: (a) => a === act ? nextBeat() : setAct(a),
-            replay: () => {
-              setAnswers((p) => ({ ...p, [act]: [] }));
-              setNonce((n) => n + 1);
+            /* @__PURE__ */ React.createElement("path", { className: `arw arw-${t2}`, d: "M0.5 1 L9 5 L0.5 9 Z" })
+          ))), /* @__PURE__ */ React.createElement(
+            "g",
+            {
+              className: "cam" + (snap ? " snap" : "") + (k >= 1.4 ? " tight" : "") + (frameOn && frame && frame.on ? " spot spot-" + frame.on : spot ? " spot spot-" + spot : ""),
+              style: { transform: cam }
             },
-            hide: inspecting
-          }
-        )
-      ), /* @__PURE__ */ React.createElement("details", { className: "read" }, /* @__PURE__ */ React.createElement("summary", null, "How it works in plain English"), /* @__PURE__ */ React.createElement("p", null, CLOSER)));
+            /* @__PURE__ */ React.createElement(Dressing, { L }),
+            /* @__PURE__ */ React.createElement("path", { className: "link", d: L.paths.netYou }),
+            /* @__PURE__ */ React.createElement("path", { className: "link", d: L.paths.netFr }),
+            /* @__PURE__ */ React.createElement("path", { className: "link", d: L.paths.netAtk }),
+            /* @__PURE__ */ React.createElement("path", { id: "p-main", className: "ghostpath", d: L.paths.main }),
+            /* @__PURE__ */ React.createElement("path", { id: "p-netYou", className: "ghostpath", d: L.paths.netYou }),
+            /* @__PURE__ */ React.createElement("path", { id: "p-netFr", className: "ghostpath", d: L.paths.netFr }),
+            /* @__PURE__ */ React.createElement("path", { id: "p-netAtk", className: "ghostpath", d: L.paths.netAtk }),
+            flows.map(([pth, tone, dir], i) => /* @__PURE__ */ React.createElement(
+              "path",
+              {
+                key: i,
+                className: `flow tone-${tone} ${dir === 1 ? "fwd" : "rev"}`,
+                d: L.paths[pth],
+                markerEnd: dir === 1 ? `url(#arw-${tone})` : void 0,
+                markerStart: dir === -1 ? `url(#arw-${tone})` : void 0
+              }
+            )),
+            tap && /* @__PURE__ */ React.createElement("path", { className: "tap", d: L.paths.main }),
+            /* the observer's attention, drawn: two lines from his table to theirs.
+               They sweep on rather than blink, so it reads as looking rather than as
+               a diagram of a connection. */
+            watch && L.watch && /* @__PURE__ */ React.createElement(
+              "path",
+              { className: "watch" + (look === "you" ? " lead" : ""), d: L.watch.you, "data-audit": "SIGHT" }
+            ),
+            watch && L.watch && /* @__PURE__ */ React.createElement(
+              "path",
+              { className: "watch" + (look === "fr" ? " lead" : ""), d: L.watch.fr, "data-audit": "SIGHT" }
+            ),
+            seen && /* @__PURE__ */ React.createElement("path", { className: "sight", d: L.sight, "data-audit": "SIGHT" }),
+            /* @__PURE__ */ React.createElement(Router, { x: L.router.x, y: L.router.y, live: flows.length > 0, inv }),
+            /* @__PURE__ */ React.createElement(
+              Patron,
+              {
+                spot: L.atk,
+                who: "a-atk",
+                sprite: SPRITE.atk,
+                idle: -1400,
+                name: "Eve",
+                state: stateOf("atk", vis),
+                inv,
+                cls: near("atk"),
+                hostile: true,
+                lit: lit.atk,
+                /* While he is watching and holding nothing, his screen is not
+                   blank: it scans. Idle hardware reads as a man sitting near them;
+                   a moving readout reads as a man monitoring them. */
+                screen: watch && vis.size === 0 ? /* @__PURE__ */ React.createElement(
+                  "g",
+                  { className: "scan" },
+                  [0, 1, 2].map((i) => /* @__PURE__ */ React.createElement("rect", {
+                    key: i,
+                    className: "scan-bar",
+                    x: -20,
+                    y: -7 + i * 6,
+                    width: 40,
+                    height: 3,
+                    rx: 1.5,
+                    style: { animationDelay: `${i * 240}ms` }
+                  }))
+                ) : /* @__PURE__ */ React.createElement(
+                  Screen,
+                  {
+                    who: "atk",
+                    vis,
+                    wire: wire["atk"],
+                    focus,
+                    hot,
+                    mix: mix === "atk",
+                    tok,
+                    reveal
+                  }
+                ),
+                extra: /* @__PURE__ */ React.createElement(React.Fragment, null, guess > 0 && /* @__PURE__ */ React.createElement(
+                  Reverse,
+                  {
+                    inv,
+                    s: L.atk.s,
+                    start: tok["atk.setup"],
+                    pubA: tok["atk.pubYou"],
+                    pubB: tok["atk.pubFr"],
+                    tries: TRIES(vals.a).slice(0, Math.max(0, Math.min(3, guess - 1))),
+                    phase: guess
+                  }
+                ), /* @__PURE__ */ React.createElement("g", { className: "eye" + (seen ? " on" : ""), transform: "translate(0,-150)" }, /* @__PURE__ */ React.createElement("g", { className: "hold", style: { transform: `scale(${inv / L.atk.s})` } }, /* @__PURE__ */ React.createElement("circle", { className: "eye-pulse", cx: "0", cy: "0", r: "17" }), /* @__PURE__ */ React.createElement(
+                  "path",
+                  {
+                    className: "f-danger glowed-d",
+                    d: "M-15 0 C -9 -9, 9 -9, 15 0 C 9 9, -9 9, -15 0 Z"
+                  }
+                ), /* @__PURE__ */ React.createElement("circle", { cx: "0", cy: "0", r: "3.6", fill: "#0b0d10" }))))
+              }
+            ),
+            /* @__PURE__ */ React.createElement(
+              Patron,
+              {
+                spot: L.you,
+                who: "a-you",
+                sprite: SPRITE.you,
+                idle: 0,
+                name: "Alice",
+                state: stateOf("you", vis),
+                inv,
+                cls: near("you"),
+                lit: lit.you,
+                morphing,
+                screen: /* @__PURE__ */ React.createElement(
+                  Screen,
+                  {
+                    who: "you",
+                    vis,
+                    wire: wire["you"],
+                    focus,
+                    hot,
+                    mix: mix === "you",
+                    tok,
+                    reveal,
+                    fn: fn && fn.who === "you" ? fn : null,
+                    fnp
+                  }
+                )
+              }
+            ),
+            /* @__PURE__ */ React.createElement(
+              Patron,
+              {
+                spot: L.fr,
+                who: "a-fr",
+                sprite: SPRITE.fr,
+                idle: -2100,
+                name: "Bob",
+                state: stateOf("fr", vis),
+                inv,
+                cls: near("fr"),
+                lit: lit.fr,
+                morphing,
+                screen: /* @__PURE__ */ React.createElement(
+                  Screen,
+                  {
+                    who: "fr",
+                    vis,
+                    wire: wire["fr"],
+                    focus,
+                    hot,
+                    mix: mix === "fr",
+                    tok,
+                    reveal,
+                    fn: fn && fn.who === "fr" ? fn : null,
+                    fnp
+                  }
+                )
+              }
+            ),
+            /* @__PURE__ */ React.createElement("g", { className: "packets", ref: packRef }),
+            chips.map((slot) => /* @__PURE__ */ React.createElement(Callout, { key: slot, def: calls[slot], at: L.ch[slot], inv, narrow: L.tall })),
+            dlg && spAt && /* @__PURE__ */ React.createElement(Callout, { def: dlg, at: spAt, inv, narrow: L.tall })
+          )), /* @__PURE__ */ React.createElement("div", { className: "crt bloom", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "crt lines", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "crt vig", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement(KeyFrame, { f: frame, on: frameOn }), ask && ask.kind === "inspect" && /* @__PURE__ */ React.createElement(Inspection, { kit, tall: L.tall, onFinish: answer }), !frameOn && !ledger && !inspecting && /* @__PURE__ */ React.createElement(Caption, { line: note, zone: nz, swap: noteSwap })),
+          ledger && /* @__PURE__ */ React.createElement(Ledger, { line: note, rows: step === 4 ? [
+            ["Alice\u2019s private value", "still unknown", "var(--alice)"],
+            ["Bob\u2019s private value", "still unknown", "var(--bob)"],
+            ["The shared secret", "still unknown", "var(--key)"]
+          ] : step >= 6 ? [
+            ["Alice", "sent the message", "var(--alice)"],
+            ["Bob", "read the message", "var(--bob)"],
+            ["Eve", "intercepted only scrambled characters", "var(--eve)"]
+          ] : [
+            ["Alice", "shared secret " + tok["you.key"], "var(--alice)"],
+            ["Bob", "shared secret " + tok["fr.key"], "var(--bob)"],
+            ["Eve", "?", "var(--eve)"]
+          ] }),
+          /* @__PURE__ */ React.createElement(
+            Scrub,
+            {
+              pos: durs.slice(0, act - 1).reduce((x, y) => x + y, 0) + Math.min(t, durs[act - 1]),
+              dur: durs.reduce((x, y) => x + y, 0),
+              marks: durs.slice(0, -1).map((_, i) => durs.slice(0, i + 1).reduce((x, y) => x + y, 0)),
+              labels: ACTS.map((a) => a.label),
+              playing,
+              onSeek: seek,
+              onScrub: (on) => {
+                setScrubbing(on);
+                if (on) setPlaying(false);
+              },
+              onToggle: () => setPlaying((p) => !p),
+              /* R1: while the film is open these sit under it, unseen; they
+                 leave the tab order and the accessibility tree with it */
+              hide: inspecting
+            }
+          ),
+          ask && ask.kind !== "inspect" && /* @__PURE__ */ React.createElement(Gate, { ask, pos: "dock", onPick: answer }),
+          /* @__PURE__ */ React.createElement(
+            Controls,
+            {
+              act,
+              playing,
+              waiting: !!ask,
+              go: (a) => a === act ? nextBeat() : setAct(a),
+              replay: () => {
+                setAnswers((p) => ({ ...p, [act]: [] }));
+                setNonce((n) => n + 1);
+              },
+              hide: inspecting
+            }
+          )
+        )),
+        /* @__PURE__ */ React.createElement("details", { className: "read" }, /* @__PURE__ */ React.createElement("summary", null, "How it works in plain English"), /* @__PURE__ */ React.createElement("p", null, CLOSER))
+      );
     }
     ReactDOM.createRoot(document.getElementById("root")).render(/* @__PURE__ */ React.createElement(App, null));
   })();

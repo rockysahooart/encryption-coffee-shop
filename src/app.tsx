@@ -1,5 +1,6 @@
 (() => {
     const { useState, useEffect, useLayoutEffect, useRef, useMemo } = React;
+    const STAGE_W = 1000, STAGE_H = 625;
     const SUBJECT = {
       you: "you",
       fr: "fr",
@@ -2016,7 +2017,9 @@
           const pt = e.touches ? e.touches[0] : e;
           moved = true;
           const r0 = el.__start;
-          el.style.transform = "translate(" + (pt.clientX - r0.x) + "px," + (pt.clientY - r0.y) + "px)";
+          /* the stage may be scaled (the canonical fit, the camera): a screen
+             delta is divided by that scale so the plate stays under the finger */
+          el.style.transform = "translate(" + ((pt.clientX - r0.x) / r0.k) + "px," + ((pt.clientY - r0.y) / r0.k) + "px)";
           setOver(hit(pt.clientX, pt.clientY));
         };
         const up = (e) => {
@@ -2043,7 +2046,7 @@
         };
         const down = (e) => {
           const pt = e.touches ? e.touches[0] : e;
-          el.__start = { x: pt.clientX, y: pt.clientY };
+          el.__start = { x: pt.clientX, y: pt.clientY, k: (el.getBoundingClientRect().width / (el.offsetWidth || 1)) || 1 };
           moved = false;
           el.style.transition = "none";
           setLive(true);
@@ -2147,7 +2150,13 @@
       useLayoutEffect(() => {
         const el = ref.current;
         if (!el) return;
-        const now = el.getBoundingClientRect();
+        /* measured in WORLD coordinates (pass 63): the camera may be zooming
+           while this runs, and a screen-space delta would be off by its scale */
+        const st = el.closest(".flm-stage");
+        const R0 = el.getBoundingClientRect();
+        let now = R0;
+        if (st) { const S = st.getBoundingClientRect(), k = (S.width / (st.offsetWidth || 1)) || 1;
+          now = { left: (R0.left - S.left) / k, top: (R0.top - S.top) / k, width: R0.width / k, height: R0.height / k }; }
         /* an object measured while its side of the stage was hidden has no
            position; keeping that zero rect made it fly in from the page
            corner when the camera came back to it (pass 58) */
@@ -2494,6 +2503,72 @@
          Measured from the film's own width, so it follows the module, not
          the window. Each control is rendered once, in one place. */
       const rootRef = useRef(null);
+      const stageRef = useRef(null);
+      /* THE CAMERA. A close-up of Alice or Bob is the same world, zoomed and
+         panned so their station fills about two thirds of the view; the
+         neighbour stays visible at the edge. Wide and two-shot beats show the
+         whole café. Measured from the live layout in world coordinates (the
+         stage's own, untransformed), so it frames correctly at every size and
+         even while a previous camera move is still running. */
+      const [camKey, setCamKey] = useState(0);
+      const worldH = useRef(0);
+      useLayoutEffect(() => {
+        const st = stageRef.current;
+        if (!st) return;
+        const frame = () => {
+          /* 10c: the recap takes room under the café, so the camera pulls
+             back instead of the café being re-laid out: the world keeps the
+             height it had on every other beat and is shown smaller, whole */
+          const view = st.parentElement, vw0 = view.offsetWidth, vh0 = view.offsetHeight;
+          if (!F.chain) { st.style.height = ""; if (vh0 > 0) worldH.current = vh0; }
+          else {
+            const root = st.closest(".flm");
+            const hw = worldH.current || (root ? root.offsetHeight * .64 : vh0);
+            if (vh0 > 0 && hw > vh0 + 1) {
+              st.style.height = hw + "px";
+              /* frame the people, not the empty wire under them (the lane is
+                 the bottom 36% of a wide shot and nothing crosses at 10c) */
+              const zz = Math.min(1, vh0 / (hw * .66));
+              st.style.setProperty("--cam", "translate(" + ((vw0 - vw0 * zz) / 2).toFixed(1) + "px,0px) scale(" + zz.toFixed(4) + ")");
+              st.dataset.z = zz.toFixed(3);
+              return;
+            }
+            st.style.height = "";
+          }
+          const W = st.offsetWidth, H = st.offsetHeight;
+          const who = F.chain ? null : F.cam === "a" ? ".flm-a" : F.cam === "b" ? ".flm-b" : null;
+          let z = 1, tx = 0, ty = 0;
+          const slot = who && st.querySelector(who);
+          if (slot && W > 0 && H > 0) {
+            const S = st.getBoundingClientRect(), k = S.width / W || 1;
+            /* the station: the person, their name and their phone — the name
+               is how the viewer knows who the camera is on, so it stays in */
+            const parts = [...slot.querySelectorAll(".cin-face img, .flm-ph-body, .cin-who")].map((e) => e.getBoundingClientRect()).filter((r) => r.width > 1);
+            if (parts.length) {
+              const L = Math.min(...parts.map((r) => r.left)), R = Math.max(...parts.map((r) => r.right));
+              const T = Math.min(...parts.map((r) => r.top)), B = Math.max(...parts.map((r) => r.bottom));
+              const bx = (L - S.left) / k, by = (T - S.top) / k, bw = (R - L) / k, bh = (B - T) / k;
+              /* a phone's view is narrow: zoom less, so the neighbour stays in
+                 frame and the type inside the phone does not balloon */
+              const zmax = W < 560 ? 1.75 : 2.2;
+              z = Math.max(1, Math.min(zmax, (W * .62) / bw, (H * .94) / bh));
+              const ax = F.cam === "a" ? .4 : .6;
+              tx = W * ax - (bx + bw / 2) * z;
+              ty = H * .48 - (by + bh / 2) * z;
+              tx = Math.min(0, Math.max(W - W * z, tx));
+              ty = Math.min(0, Math.max(H - H * z, ty));
+            }
+          }
+          st.style.setProperty("--cam", "translate(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px) scale(" + z.toFixed(4) + ")");
+          st.dataset.z = z.toFixed(3);
+        };
+        frame();
+        const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(frame) : null;
+        if (ro) { ro.observe(st.parentElement);
+          /* the active phone lifts with a layout change: frame it once it has its size */
+          for (const ph of st.querySelectorAll(".flm-slot.on .flm-ph-body")) ro.observe(ph); }
+        return () => { if (ro) ro.disconnect(); };
+      }, [beat]);
       const [narrow, setNarrow] = useState(false);
       useLayoutEffect(() => {
         const el = rootRef.current;
@@ -2517,11 +2592,13 @@
           const shown = (e) => e && e.getBoundingClientRect().width > 1 && getComputedStyle(e).display !== "none"
             && getComputedStyle(e.closest(".flm-net, .flm-lane") || e).display !== "none";
           if (!st || !shown(tr) || !shown(face)) { setTap(null); return; }
+          /* world coordinates: divide out the camera's current scale */
           const S = st.getBoundingClientRect(), T = tr.getBoundingClientRect(), E = face.getBoundingClientRect();
-          const x = T.left + T.width / 2 - S.left, top = E.bottom - S.top - E.height * .12, y = T.top + T.height / 2 - S.top;
+          const kz = (S.width / (st.offsetWidth || 1)) || 1;
+          const x = (T.left + T.width / 2 - S.left) / kz, top = (E.bottom - S.top - E.height * .12) / kz, y = (T.top + T.height / 2 - S.top) / kz;
           /* the failure card's anchor: just under the phones, nearest Eve */
           const ph = Math.max(0, ...[...root.querySelectorAll(".flm-slot:is(.flm-a,.flm-b) .flm-ph-body")]
-            .map((e) => e.getBoundingClientRect()).filter((r) => r.width > 1).map((r) => r.bottom - S.top));
+            .map((e) => e.getBoundingClientRect()).filter((r) => r.width > 1).map((r) => (r.bottom - S.top) / kz));
           setTap(y - top > 8 ? { x: Math.round(x), top: Math.round(top), h: Math.round(y - top), ph: Math.round(ph) } : null);
           /* THE COPIES BRANCH OFF THE WIRE (pass 57). Each copy starts at the
              point where Eve's tap meets the wire and climbs the tap into her
@@ -2530,11 +2607,11 @@
              transform, so it lands on the junction at every size. */
           for (const c of root.querySelectorAll('.flm-net [data-obj="qa2"], .flm-net [data-obj="qb2"]')) {
             const R = c.getBoundingClientRect(), m = new DOMMatrixReadOnly(getComputedStyle(c).transform);
-            const cx = R.left + R.width / 2 - m.m41 - S.left, cy = R.top + R.height / 2 - m.m42 - S.top;
+            const cx = (R.left + R.width / 2 - S.left) / kz - m.m41, cy = (R.top + R.height / 2 - S.top) / kz - m.m42;
             /* born side by side at the tap, each on its own side, so the
                two copies never read as one blob (pass 58) */
             const side = c.dataset.obj === "qa2" ? -.3 : .3;
-            c.style.setProperty("--jx", Math.round(x - cx + side * R.width / (m.a || 1)) + "px");
+            c.style.setProperty("--jx", Math.round(x - cx + side * (R.width / kz) / (m.a || 1)) + "px");
             c.style.setProperty("--jy", Math.round(y - cy) + "px");
           }
         };
@@ -2781,7 +2858,7 @@
           placed.add(id);
           dock[side].push(<Obj key={"d" + id} id={id} frame={beat} cls="is-docked">{node}</Obj>);
         }
-      const lit = (who) => F.cam === "wide" || F.cam === who || F.cast
+      const lit = (who) => F.cam === "wide" || F.cam === who || F.cast || F.chain
         || (F.cam === "both" && (who === "a" || who === "b"))
         /* the duel is Eve against Bob: both of them are the subject */
         || (F.cam === "duel" && (who === "eve" || who === "b"));
@@ -2835,6 +2912,49 @@
         }
       }, [beat]);
 
+      /* DIRECT CONTACT (pass 63). Where two plates touch, the touching area
+         IS the mixture: no overlap shows both colours as they are, a partial
+         overlap blends only the overlapping area, a full overlap shows the
+         full blend. The colour painted there is the teaching formula's own
+         result (MIX, the mean of the ingredients' RGB), computed here, never
+         by CSS blending. It runs while the viewer drags (3a, 5a) and while a
+         blend plays (3b–3e, 5b–5e), so Bob's blends follow the same physics. */
+      const contactMix = F.drag ? (F.k === "mixA" ? qaC : sharedC) : mixc;
+      useEffect(() => {
+        if (!contactMix) return;
+        let raf = 0, zone = null, host = null;
+        const plateOf = (o) => o && o.querySelector(".tk-art rect[fill]:not([fill='none'])");
+        const tick = () => {
+          raf = requestAnimationFrame(tick);
+          const scr = document.querySelector(".flm-slot.on .flm-ph-scr");
+          const priv = scr && scr.querySelector(".flm-focal .flm-obj .tk-private");
+          const moving = F.drag
+            ? document.querySelector(".grab.live")
+            : scr && scr.querySelector(".flm-focal > .flm-obj.is-input:not(:has(.tk-private))");
+          const a = plateOf(moving), b = priv && plateOf(priv.closest(".flm-obj"));
+          const op = moving ? parseFloat(getComputedStyle(moving).opacity) : 0;
+          let show = false;
+          if (scr && a && b && op > .02) {
+            const A = a.getBoundingClientRect(), B = b.getBoundingClientRect();
+            const L = Math.max(A.left, B.left), R = Math.min(A.right, B.right);
+            const T = Math.max(A.top, B.top), Bm = Math.min(A.bottom, B.bottom);
+            if (R - L > .5 && Bm - T > .5) {
+              if (host !== scr) { if (zone) zone.remove(); zone = document.createElement("i"); zone.className = "flm-contact"; zone.setAttribute("aria-hidden", "true"); scr.appendChild(zone); host = scr; }
+              const S = scr.getBoundingClientRect(), k = (S.width / (scr.offsetWidth || 1)) || 1;
+              const rad = Math.min(A.width, B.width) / 12 / k;
+              zone.style.cssText = "left:" + ((L - S.left) / k - scr.clientLeft) + "px;top:" + ((T - S.top) / k - scr.clientTop) + "px;width:" + ((R - L) / k) + "px;height:" + ((Bm - T) / k)
+                + "px;background:" + contactMix + ";opacity:" + Math.min(1, op) + ";border-radius:" + rad.toFixed(1) + "px";
+              zone.dataset.mix = contactMix;
+              zone.dataset.area = ((R - L) * (Bm - T) / (B.width * B.height)).toFixed(3);
+              show = true;
+            }
+          }
+          if (!show && zone) { zone.remove(); zone = null; host = null; }
+        };
+        tick();
+        return () => { cancelAnimationFrame(raf); if (zone) zone.remove(); };
+      }, [beat, contactMix]);
+
       const Shelf = ({ items }) => items.length
         ? <div className="flm-shelf">{items}</div> : null;
 
@@ -2875,14 +2995,13 @@
       );
 
       return (
-        <div ref={rootRef} className={"flm cam-" + F.cam + " f-" + F.k + (gate ? " turn" : "") + (narrow ? " is-narrow" : "")
+        <div ref={rootRef} className={"flm world cam-wide xchg shot-" + F.cam + " f-" + F.k + (gate ? " turn" : "") + (narrow ? " is-narrow" : "")
               + (tampered ? " tampered" : "")
-              + (F.act === "pick" || F.act === "type" ? " solo" : "")
               + (F.journey ? " journey j-" + F.journey : "")
               + (F.morph ? " morphing" : "") + (F.gcm ? " gcm" : "")
               + (F.verify ? " verifying" : "") + (F.payoff ? " payoff" : "")
               + (F.converge ? " converge" : "") + (F.eveShort ? " eve-short" : "")
-              + (F.chain ? " chain" : "")
+              + (F.chain ? " recap" : "")
               + (F.arrive ? " arriving" : "")
               + (F.back ? " back" : "")
               + (F.watched ? " watched" : "") + (F.claim ? " claiming" : "")
@@ -2914,7 +3033,13 @@
               </button>
             )}
           </div>
-          <div className="flm-stage">
+          {/* ONE WORLD, MOVING CAMERA (pass 63). The stage is the whole café —
+              Alice left, Eve between, Bob right — on every beat. The view is
+              a fixed window onto it; the camera zooms and pans toward whoever
+              is acting, and the others stay where they are, dimmed, at the
+              edge of the frame. Nobody is removed between shots. */}
+          <div className="flm-view">
+          <div className="flm-stage" ref={stageRef}>
             {tap && <i className="flm-tap" aria-hidden="true"
               style={{ left: tap.x + "px", top: tap.top + "px", height: tap.h + "px" }} />}
               {/* FAILED RECOVERY (pass 59): one picture for "Eve has what
@@ -3046,6 +3171,7 @@
                 ))}
               </div>
             )}
+          </div>
           </div>
 
 
@@ -3505,6 +3631,8 @@
           for (const a of document.getAnimations()) {
             const t = a.effect && a.effect.target;
             if (!t || !root.contains(t)) continue;
+            /* the camera is where the label says it is, not mid-move */
+            if (a.transitionProperty && t.classList && t.classList.contains("flm-stage")) { a.finish(); continue; }
             a.pause();
             a.currentTime = refPin.ms;
           }
@@ -4082,6 +4210,39 @@ E && /* @__PURE__ */ React.createElement("div", { className: "ipk" + (scene.same
         line[1] && rate === 1 ? /* @__PURE__ */ React.createElement("span", null, Say(line[1])) : null), err && /* @__PURE__ */ React.createElement("p", { className: "insp-err" }, err), stage === "done" && /* @__PURE__ */ React.createElement("div", { className: "insp-end" }, /* @__PURE__ */ React.createElement("button", { className: "insp-again", onClick: again }, "Another message"), /* @__PURE__ */ React.createElement("button", { className: "insp-next", onClick: () => onFinish(text) }, "Done")));
     };
     function App() {
+      /* the canonical stage's scale: min(1, width left / STAGE_W, height left / STAGE_H) */
+      const fitRef = useRef(null);
+      useLayoutEffect(() => {
+        const box = fitRef.current;
+        if (!box) return;
+        const root = document.documentElement;
+        const sideways = matchMedia("(pointer:coarse) and (orientation:landscape) and (max-height:500px)");
+        const run = () => {
+          const vw = innerWidth, vh = innerHeight;
+          const page = box.parentElement, cs = getComputedStyle(page);
+          const w = page.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+          /* the legibility floor is physical: .7 on a 1x screen, lower where
+             each CSS pixel is several device pixels (browser zoom, retina) */
+          const floor = Math.max(0.35, 0.7 / Math.min(2, devicePixelRatio || 1));
+          /* a window too narrow for the canonical stage at that floor gets the phone composition */
+          const phone = vw < 560 || sideways.matches || w / STAGE_W < floor;
+          root.classList.toggle("fit-stage", !phone);
+          root.classList.toggle("fit-short", !phone && vh < 860);
+          root.classList.toggle("fit-tiny", !phone && vh < 620);
+          if (phone) { root.style.removeProperty("--fit"); box.dataset.fit = ""; return; }
+          const top = box.getBoundingClientRect().top + scrollY;
+          const h = vh - top - 12;
+          /* below the floor the type would be too small to read: hold there and let the page scroll */
+          const f = Math.max(floor, Math.min(1, w / STAGE_W, h / STAGE_H));
+          root.style.setProperty("--fit", f.toFixed(4));
+          box.dataset.fit = f.toFixed(3);
+        };
+        run();
+        addEventListener("resize", run);
+        const ro = new ResizeObserver(run);
+        ro.observe(box.parentElement);
+        return () => { removeEventListener("resize", run); ro.disconnect(); };
+      }, []);
       const [act, setAct] = useState(1);
       const [step, setStep] = useState(1);
       const [note, setNote] = useState(NOTE.wifi);
@@ -4728,7 +4889,12 @@ E && /* @__PURE__ */ React.createElement("div", { className: "ipk" + (scene.same
         },
         /* @__PURE__ */ React.createElement("span", { className: "dot" }),
         /* @__PURE__ */ React.createElement("span", { className: "lbl" }, a.label)
-      ))), /* @__PURE__ */ React.createElement(
+      ))), /* ONE CANONICAL STAGE (pass 63): on anything wider than a phone the
+         stage is authored once at STAGE_W x STAGE_H and scaled as a whole
+         to fit both the width and the height left under the heading; it
+         never grows past 1, and it never reflows. Phones get their own
+         composition (no box, no scale). */
+      React.createElement("div", { className: "stage-box", ref: fitRef }, React.createElement(
         "div",
         {
           /* The interactive mode is not bound to the film frame's aspect ratio:
@@ -4964,7 +5130,7 @@ E && /* @__PURE__ */ React.createElement("div", { className: "ipk" + (scene.same
             hide: inspecting
           }
         )
-      ), /* @__PURE__ */ React.createElement("details", { className: "read" }, /* @__PURE__ */ React.createElement("summary", null, "How it works in plain English"), /* @__PURE__ */ React.createElement("p", null, CLOSER)));
+      )), /* @__PURE__ */ React.createElement("details", { className: "read" }, /* @__PURE__ */ React.createElement("summary", null, "How it works in plain English"), /* @__PURE__ */ React.createElement("p", null, CLOSER)));
     }
     ReactDOM.createRoot(document.getElementById("root")).render(/* @__PURE__ */ React.createElement(App, null));
   })();

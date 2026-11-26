@@ -364,6 +364,41 @@ inspect; Q as SEC1 `04 …`). Review labels L1–L8 sit in the lab's corner;
 and checks every real value against the session. Figma: "IPHONE INTERACTIVE —
 FORMULA LAB V6".
 
+**One world, moving camera (pass 63).** Supersedes the per-beat layouts
+above where they conflict. Every beat renders the same café (the wide
+network layout: Alice left, Eve centre, Bob right, the wire below); the root
+is always `flm world cam-wide xchg shot-<cam>`. Inactive people dim where
+they stand (`.flm-slot.off`); nobody is removed or moved between beats. The
+**camera** is a transform on `.flm-stage` inside `.flm-view` (`--cam`,
+1.1s), computed in `Cinema` from live rects in world coordinates: a close-up
+(`shot-a`/`shot-b`) frames the active station (face, name, phone) at ~62% of
+the width, zoom ≤2.2 (≤1.75 on a phone); wide beats are unzoomed; 10c
+(`recap`, not `chain`) pulls back to show the café whole above the takeaway,
+the recap and the controls. In a close-up the **active phone lifts**: it is
+held out from the shoulder toward the middle at `--ph-h:min(62cqh,36cqw/.479)`,
+the size its interface is authored for. Anything measured on screen (FLIP,
+Eve's tap, drags, the contact painter) divides by the stage's effective
+scale (`rect.width / offsetWidth`). Frozen labels finish the camera move.
+**Responsive strategy.** Wider than a phone, the stage is **one canonical
+box, 1000 × 625** (`STAGE_W`/`STAGE_H`, `.stage-box`), scaled as a whole by
+`--fit = max(floor, min(1, w/1000, h/625))` from the App, where the
+legibility floor is physical (`.7 / devicePixelRatio`, ≥.35, so browser zoom
+and retina keep the canonical stage); it never grows past 1
+and nothing inside it reads the window (no vh/vw/media rules inside the
+stage). `html.fit-short` (<860 high) puts the heading on one row,
+`fit-tiny` (<620) shrinks it. Too narrow for the floor → the phone
+composition; too short for it → the page scrolls (1x windows under ~540 high).
+Phones (<560, or sideways) are not scaled: the film is the viewport; ≤760
+high the heading is one line, ≤600 it steps aside.
+**Direct-contact blending.** Where two plates touch, the touching area is
+the mixture: no overlap shows both colours, a partial overlap blends only
+the overlap, a full overlap shows the full blend. The app paints the
+intersection (`.flm-contact`, in the phone screen) in the formula's `MIX`
+colour — never CSS blending — under the viewer's finger (3a, 5a) and in
+every scripted blend (3b–3e, 5b–5e), at the moving plate's opacity. The old
+1.0s whole-plate convergence is gone; the blend clock is otherwise as below.
+Figma: "IPHONE INTERACTIVE — ONE WORLD, MOVING CAMERA V7".
+
 **Object continuity.** Every object has a stable `data-obj` id and is FLIPped
 between frames by that id — objects **transform and move**, they do not
 disappear and reappear. If you add an object, give it an id and add it to
@@ -419,9 +454,10 @@ the easiest way to break every harness at once.**
   - **0–1.3s:** the moving ingredient drops from row 1 *onto* the private
     plate in row 2 until the edges coincide (the travel is exactly one grid
     pitch; FLIP is suspended in a blend frame so both sources start in
-    place). The ingredient is translucent, so both colours stay identifiable.
-  - **1.8–2.82s:** a **1.0s convergence** to one colour (`--mixc`, the real
-    `MIX` result).
+    place). The ingredient stays opaque; where it overlaps the plate, the overlap
+    is painted as the mixture (pass 63).
+  - **from first contact:** the overlapping area is the real `MIX` result
+    (pass 63, direct contact); full overlap from ~1.3s.
   - **2.82–3.36s:** a synchronised hold.
   - **3.36s:** the result is born on the stack; from 3.6s it pulls down into
     row 3 (by 4.8s), uncovering the private plate, which never moved.

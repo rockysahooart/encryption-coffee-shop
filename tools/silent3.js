@@ -10,7 +10,8 @@ const HIDE = `.insp-say,.tk-l,.tk-h,.tk-n,.cin-who,.flm-turn,.grab-hint,
 const shot = () => {
   const zone = (e) => e.closest(".flm-a") ? "alice" : e.closest(".flm-b") ? "bob"
     : e.closest(".flm-lane") ? "wire" : e.closest(".flm-net") ? "eve" : "?";
-  const st = document.querySelector(".flm-stage").getBoundingClientRect();
+  /* the frame the viewer sees: the camera viewport (pass 63), not the zoomed world */
+  const st = (document.querySelector(".flm-view") || document.querySelector(".flm-stage")).getBoundingClientRect();
   const o = {};
   for (const e of document.querySelectorAll(".flm-obj[data-obj]")) {
     const r = e.getBoundingClientRect(), c = getComputedStyle(e);

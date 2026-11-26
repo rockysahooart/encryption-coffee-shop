@@ -37,6 +37,10 @@ const probe = () => {
   const tiny = texts.filter((e) => { const fs = parseFloat(getComputedStyle(e).fontSize); return fs > 0 && fs < 8.5; }).length;
   const clipList = [...document.querySelectorAll(".flm *")].filter((e) => {
     if (!vis(e)) return false;
+    /* the camera's viewport (pass 63) crops the zoomed world by design, as
+       the stage itself crops with contain:paint; what is inside the world is
+       still checked */
+    if (e.classList.contains("flm-view")) return false;
     return e.scrollWidth > e.clientWidth + 2 && getComputedStyle(e).overflow !== "visible";
   }).length;
 
@@ -53,6 +57,10 @@ const probe = () => {
 
   const clipEls = [...document.querySelectorAll(".flm *")].filter((e) => {
     if (!vis(e)) return false;
+    /* the camera's viewport (pass 63) crops the zoomed world by design, as
+       the stage itself crops with contain:paint; what is inside the world is
+       still checked */
+    if (e.classList.contains("flm-view")) return false;
     return e.scrollWidth > e.clientWidth + 2 && getComputedStyle(e).overflow !== "visible";
   });
   const clipped = clipEls.length;
@@ -77,7 +85,9 @@ const probe = () => {
 
   /* characters: the file's own ratio, undistorted */
   const faces = [...document.querySelectorAll(".cin-face")].filter(vis).map((e) => {
-    const r = e.getBoundingClientRect();
+    /* in WORLD size (pass 63): the camera zooms the whole café, which is not
+       a character scale; layout boxes ignore that transform */
+    const r = { width: e.offsetWidth, height: e.offsetHeight };
     const zone = e.closest(".flm-a") ? ".flm-a" : e.closest(".flm-b") ? ".flm-b" : ".flm-net";
     return { zone, w: +r.width.toFixed(1), h: +r.height.toFixed(1), ratio: +(r.width / r.height).toFixed(4) };
   });

@@ -60,6 +60,15 @@ known; anything else is a regression.
 | `six.js` | **advisory, not a failure** — the wide network shots (`base`, `exchange`, `xland`, `pubvals`, `journey`) report "biggest object under 5% of stage" (2.3–4.4%). Pass 48 made the characters much larger in those shots, so the objects are a smaller share of the frame; whether the 5% threshold still describes the intended design is unresolved pending a visual review. |
 | `hands.js`, `touch.js`, `walk.js`, `validate44.js`, `labels.js`, `silent3.js`, `locked.js`, `paint.js`, `real.js`, `a11y2.js` | pass (pass 48 removed the old `exchange` 88>82 clip) |
 
+**Pass 63 (one world, moving camera) changed what three harnesses measure,
+not what they demand.** The camera zooms the whole café, so:
+`validate44` ignores the camera viewport `.flm-view` when looking for clipped
+elements (it crops the zoomed world by design, as the stage crops with
+`contain:paint`; everything inside the world is still checked) and counts
+character scales from layout size (`offsetHeight`), not the zoomed rect —
+the film now uses one character scale per width. `silent3` measures an
+object's share of the frame against `.flm-view`, the frame the viewer sees.
+
 `fit`, `validate44`, `silent3`, `locked` and `six` step through all 22 beats;
 `hands` and `touch` play all 22 in order through the five gates. `paint`,
 `a11y2` and `real` visit the beats their claims are about.

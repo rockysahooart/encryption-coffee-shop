@@ -7194,3 +7194,171 @@ details.read summary:hover{color:var(--ink-2)}
 @media (max-width:359.98px){ .flm .cin-ctl-aux .flm-more{white-space:nowrap;font-size:12px;padding-inline:10px} }
 @media (max-width:359.98px){ .flm .cin-ctl-aux{flex-wrap:wrap;row-gap:8px} }
 .flm .lab-foot > .lab-next:only-child{margin-left:auto}
+/* ---- ONE WORLD, MOVING CAMERA (pass 63) -----------------------------------
+   The view is a fixed window in the film's grid; the stage inside it is the
+   whole café at the network layout, and the camera is one transform on it. */
+.flm .flm-view{position:relative;min-height:0;min-width:0;overflow:hidden;grid-row:2;grid-column:1}
+.flm .flm-view > .flm-stage{width:100%;height:100%;transform-origin:0 0;transform:var(--cam,none);
+  transition:transform 1100ms cubic-bezier(.45,0,.2,1),grid-template-columns 420ms var(--ease)}
+@media (prefers-reduced-motion:reduce){ .flm .flm-view > .flm-stage{transition:none} }
+/* the picker in the world's phone: a 3 × 2 tray at the plate's width */
+.flm.flm.world:is(.f-pickA,.f-pickB) .flm-slot.on .flm-ph-scr .cin-pick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  width:86%;margin:0 auto}
+.flm.flm.world:is(.f-pickA,.f-pickB) .flm-slot.on .flm-ph-scr .cin-sw{width:100%;height:calc(var(--u) * 4.2)}
+
+/* =========================================================================
+   PASS 63 · ONE CANONICAL STAGE
+   Anything wider than a phone gets one authored stage, 1000 x 625, scaled as
+   a whole (transform, so nothing inside reflows) to fit both the width and
+   the height left under the heading. It never grows past 1: on a big screen
+   it stops and centres. --fit comes from the App (min(1, w/1000, h/625),
+   held at .7). Phones and phones held sideways keep their own composition:
+   the box is display:contents there and changes nothing.
+   ========================================================================= */
+.stage-box{display:contents}
+html.fit-stage .stage-box{display:block;position:relative;order:3;
+  width:calc(1000px * var(--fit,1));height:calc(625px * var(--fit,1));margin:0 auto}
+html.fit-stage .stage-box > .stage{position:absolute;left:0;top:0;margin:0;
+  width:1000px;height:625px;max-width:none;min-height:0;
+  transform:scale(var(--fit,1));transform-origin:0 0;
+  display:flex;flex-direction:column}
+html.fit-stage .stage-box > .stage.inspect{display:block;height:625px;min-height:0}
+/* the café picture keeps its own proportions inside the stage: it takes the
+   height the dock leaves and centres, the room colour fills the sides */
+html.fit-stage .stage-box > .stage:not(.inspect) > .screen{flex:1 1 0;min-height:0;
+  aspect-ratio:var(--ar);align-self:center;max-width:100%;width:auto}
+html.fit-stage .stage-box > .stage:not(.inspect) > :not(.screen){flex:none}
+html.fit-stage .stage-box > .stage:not(.inspect) > .screen > svg{width:100%;height:100%}
+
+/* short windows (laptops, screen sharing): the heading becomes one row */
+html.fit-short .page{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:20px;align-items:center;
+  padding-top:14px;padding-bottom:24px}
+html.fit-short .head{grid-column:1;gap:0}
+html.fit-short .eyebrow{display:none}
+html.fit-short .h1{font-size:22px;max-width:none;margin:0}
+html.fit-short .pips{grid-column:2;margin:0}
+html.fit-short .stage-box,html.fit-short .read{grid-column:1 / -1}
+html.fit-short .stage-box{margin-top:12px}
+html.fit-short .read{margin-top:18px}
+html.fit-tiny .page{padding-top:8px}
+html.fit-tiny .h1{font-size:18px}
+html.fit-tiny .pip{padding:4px 12px 4px 10px}
+html.fit-tiny .stage-box{margin-top:8px}
+/* the film covers the café picture completely while it is open; the room
+   behind it is the film's own café, not the 0a–0d drawing peeking under it */
+html.fit-stage .stage.inspect > .screen > svg{visibility:hidden}
+html.fit-stage .read{order:4}
+
+/* 10c IN THE WORLD (pass 63): the recap no longer cuts to a separate set.
+   The café stays exactly as it was — Alice, Eve, Bob where they always
+   stood, the wire between them — and the takeaway, the recap and the way
+   out follow it in one order at every width. */
+.flm.flm.recap{grid-template-rows:auto minmax(0,1fr) auto auto auto}
+.flm.flm.recap .flm-rail{grid-row:3;justify-self:center;text-align:center;max-width:min(100%,62ch)}
+.flm.flm.recap .flm-chain{grid-row:4;display:grid;grid-template-columns:repeat(3,minmax(0,1fr) auto) minmax(0,1fr);
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;justify-items:center;gap:6px 10px;width:min(100%,640px);justify-self:center}
+.flm.flm.recap .flm-chain .tk{width:min(120px,100%)}
+.flm.flm.recap .flm-chain .tk-box{aspect-ratio:60 / 44;height:auto;overflow:hidden}
+.flm.flm.recap .flm-chain .tk-note{display:grid;place-items:center;padding:6%}
+.flm.flm.recap .flm-chain .tk-note b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;text-align:center;font-size:13px}
+.flm.flm.recap .flm-chain .tk-l{font-size:12px}
+.flm.flm.recap .flm-chain > b{font-size:16px}
+.flm.flm.flm.recap .cin-ctl{grid-row:5;justify-self:start}
+.flm.flm.flm.recap .cin-ctl-aux{grid-row:5;justify-self:end;align-self:center}
+@container (max-width:559.98px){
+  /* a phone: two by two, so the tiles stay readable */
+  .flm.flm.recap .flm-chain{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);width:100%}
+  .flm.flm.recap .flm-chain > b:nth-of-type(2){display:none}
+  .flm.flm.recap .flm-chain .tk{width:min(84px,100%)}
+  .flm.flm.flm.recap .flm-rail{justify-self:stretch;text-align:left}
+  .flm.flm.flm.recap .flm-rail .flm-rail-t{font-size:19px;line-height:1.25}
+  .flm.flm.flm.recap .flm-rail .flm-rail-s{font-size:13px;margin-top:6px}
+  .flm.flm.flm.recap .flm-rail .flm-rail-n{font-size:11px;margin-top:4px}
+}
+/* inside the canonical stage nothing reads the window: the film fills the
+   stage the same way at every window size */
+html.fit-stage .stage-box .insp{max-height:none;padding:12px 24px 14px;gap:12px 40px}
+
+/* PHONES (pass 63): the film is the viewport, at every phone height. The
+   heading shrinks to one line on shorter phones and steps aside on the
+   shortest, so the film — controls included — is always on one screen. */
+@media (max-width:559.98px){
+  .stage.inspect{min-height:0}
+}
+@media (max-width:559.98px) and (max-height:760px){
+  :root{--chrome:236px}
+  .h1{font-size:15px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .head{gap:0}
+  .pips{margin-top:8px}
+  .pip{min-height:44px}
+  .stage{margin-top:8px}
+  .stage.inspect{height:calc(100dvh - 120px)}
+}
+@media (max-width:559.98px) and (max-height:600px){
+  :root{--chrome:200px}
+  .head{display:none}
+  .pips{margin-top:0}
+  .stage.inspect{height:calc(100dvh - 84px)}
+}
+/* 10c on a phone: the recap is one row of four, so the café keeps its room */
+@container (max-width:559.98px){
+  .flm.flm.flm.recap .flm-chain{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:4px 4px}
+  .flm.flm.flm.recap .flm-chain > b:nth-of-type(2){display:inline}
+  .flm.flm.flm.recap .flm-chain > b{font-size:12px}
+  .flm.flm.flm.recap .flm-chain .tk{width:min(72px,100%)}
+  .flm.flm.flm.recap .flm-chain .tk-l{font-size:11px;line-height:1.2;text-align:center}
+  .flm.flm.flm.recap .flm-chain .tk-note b{font-size:11px}
+}
+
+/* THE ACTIVE PHONE LIFTS (pass 63). In a close-up the person stays where
+   they stand in the world; their phone is brought up toward the viewer at
+   close-up size — the size the phone's own interface is authored for — and
+   the camera frames the two. The neighbours do not move. */
+.flm.flm.flm.flm.world:is(.shot-a,.shot-b) .flm-slot.on:is(.flm-a,.flm-b) .flm-ph-body{
+  --ph-h:min(62cqh, calc(36cqw / .479))}
+.flm.flm.flm.flm.world:is(.shot-a,.shot-b) .flm-slot.on:is(.flm-a,.flm-b) .flm-ph{z-index:4;width:auto;
+  align-self:end;margin-bottom:-9cqh}
+/* held out from the shoulder toward the middle of the café */
+.flm.flm.flm.flm.world.shot-a .flm-slot.on.flm-a .flm-ph{justify-self:start;margin-left:calc(var(--face) * .6);margin-right:0}
+.flm.flm.flm.flm.world.shot-b .flm-slot.on.flm-b .flm-ph{justify-self:end;margin-right:calc(var(--face) * .6);margin-left:0}
+
+/* DIRECT CONTACT (pass 63): the overlap of the two plates, painted by the
+   app in the formula's colour. Nothing else in the blend changes colour:
+   the moving plate stays opaque and its own colour; the old one-second
+   convergence of the whole plate is gone — contact is the blend. */
+.flm .flm-ph-scr{position:relative}
+.flm .flm-contact{position:absolute;display:block;z-index:30;pointer-events:none}
+.flm.fusing:not(.gcm) .flm-focal > .flm-obj.is-input:not(:has(.tk-private)) .tk-box::after{display:none}
+@keyframes blendIn{
+  0%,6%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.32,0,.2,1)}
+  22%,56%{transform:translateY(var(--fall,96%));opacity:1}
+  60%,100%{transform:translateY(var(--fall,96%));opacity:0}
+}
+/* the café on a short phone: only the picture is held to the height; the
+   dock under it keeps the full width, so its buttons are never clipped */
+@media (max-width:559.98px){
+  html:not(.fit-stage) .stage:not(.inspect){max-width:none}
+  html:not(.fit-stage) .stage:not(.inspect) > .screen{max-width:calc((100dvh - var(--chrome)) * var(--ar));margin:0 auto}
+}
+/* 10c: the way out and the Formula Lab share one row in the one column */
+.flm.flm.flm.recap :is(.cin-ctl,.cin-ctl-aux){grid-column:1}
+/* 5f: the payoff is the two results on the phones; Eve's copies stay where
+   they are, a step quieter, so the frame's subject is unmistakable */
+.flm.flm.world.f-reveal .flm-net .flm-hold{transform:scale(.78);transform-origin:50% 30%}
+/* on a phone the lift is the close-up (the camera has no room to zoom), so
+   the phone comes a little further forward */
+@container (max-width:559.98px){
+  .flm.flm.flm.flm.flm.world:is(.shot-a,.shot-b) .flm-slot.on:is(.flm-a,.flm-b) .flm-ph-body{
+    --ph-h:min(68cqh, calc(40cqw / .479))}
+}
+/* the payoff plates (5f, 6a) and the public colour on the wire (1b) carry
+   the frame: a step larger in place (scale composes with any FLIP transform) */
+.flm.flm.world:is(.f-reveal,.f-asmath) .flm-slot:is(.flm-a,.flm-b) :is([data-obj="sa"],[data-obj="sb"]){scale:1.14}
+.flm.flm.world.f-base .flm-lane [data-obj="base"]{scale:1.2}
+/* text on the glass is sized from the phone, not only from the stage: on the
+   shortest phones the lifted phone is height-bound and its words must still
+   sit inside the glass (320×568, 1a) */
+.flm.flm.world:not(.f-open) .flm-slot .flm-ph-scr .tk-note b{font-size:min(16px, max(11px, calc(var(--ph-h) * .072)))}
+.flm.flm.world .flm-slot .flm-ph-scr .flm-noshared{height:auto;min-height:calc(var(--u,8px) * 6);padding:calc(var(--u,8px) * .8) 0}
+.flm.flm.world .flm-slot .flm-ph-scr .flm-noshared span{font-size:11px;padding:0 3px}
